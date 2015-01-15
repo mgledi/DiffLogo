@@ -69,7 +69,7 @@ letterG = function (x.pos, y.pos, ht, wt) {
 }
 
 # calculates the information content of the given PWM
-pwm2ic = function(pwm) {
+pwm2ic_col = function(pwm) {
 	npos = ncol(pwm)
 	ic = numeric(length = npos)
 	for (i in 1:npos) {
@@ -85,7 +85,7 @@ pwm2ic = function(pwm) {
 }
 
 # calculates the information content for each base in each column
-myPwm2ic = function(pwm) {
+pwm2ic_base = function(pwm) {
 	ic = matrix(0,nrow(pwm),ncol(pwm))
 	for(k in 1:ncol(pwm)) {
 		for(a in 1:nrow(pwm)) {
@@ -190,8 +190,8 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0)) {
 # sparse: if TRUE margins are reduced and tickmarks are removed from the logo
 #
 diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, sparse=FALSE) {
-    if(type < 1 || type > 6) {
-        stop("Unknown type. Type must be 1 <= type <= 6")
+    if(type < 1 || type > 8) {
+        stop("Unknown type. Type must be 1 <= type <= 8")
     }    
 
     if (class(pwm1) == "pwm") {
@@ -234,9 +234,11 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     ylim.negMax = 0;
     ylim.posMax = 0;
     facs = numeric(npos) + 1; # heights are initialised with 1
-    facs1 = pwm2ic(pwm1) # calc entropies for pwm1
-    facs2 = pwm2ic(pwm2) # calc entropies for pwm2
-	
+    facs1 = pwm2ic_col(pwm1) # calc entropies for pwm1
+    facs2 = pwm2ic_col(pwm2) # calc entropies for pwm2
+    IC_base1 = pwm2ic_base(pwm1);
+    IC_base2 = pwm2ic_base(pwm2);
+
     # set ylab
     if( type==1 ) {
 	ylab = "Difference of probabilities"
@@ -250,11 +252,15 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
 	ylab = "Relative difference of information content [%]"
     } else if( type==6 ) {
 	ylab = "Relative pairwise difference of nucleotide information content [%]"
+    } else if( type==7 ) {
+	ylab = "Difference of information content [bits]"
+    } else if( type==8 ) {
+	ylab = "Relative difference of information content [%]"
     } 
 
     # for type 1 and 5 recalculate heights
     if( type == 1 ) {
-	facs = abs(facs1- facs2); # heights are set to the difference of ICs of the two given PWMs
+	facs = abs(facs1 - facs2); # heights are set to the difference of ICs of the two given PWMs
 	sums = colSums(abs(diffPWM))
 	for( i in 1:npos) {
 	    diffPWM[,i] = diffPWM[,i]/sums[i]	# normalize diffPWM
@@ -274,14 +280,19 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
 	column = diffPWM[, j]
 
 	if(type==1 || type==2 || type==5) { # calculate heights of letters relative to overall hight
-	    hts = -1.0* column * facs[j] 
+	    hts = -1.0 * column * facs[j] 
 	} else if( type==3 ) {
 	    hts = -1.0* (pwm1[,j]*facs1[j] - pwm2[,j]*facs2[j])
 	} else if( type==4 ) {
 	    hts = -1.0* (pwm1[,j] - pwm2[,j]) / pwm1[,j] * 100
 	} else if( type==6 ) {
 	    hts = -1.0* (pwm1[,j]*facs1[j] - pwm2[,j]*facs2[j]) / pwm1[,j]*facs1[j] * 100
-	}
+	} else if( type==7 ) { # calculate heights only on difference of ICs per base
+	    hts = IC_base1[,j] - IC_base2[,j]
+        } else if( type==8 ) { # calculate heights  only on difference of ICs per base, normalized with the sum of differences
+	    tmp = 2 - sum(abs(IC_base1[,j] - IC_base2[,j]))
+	    hts = (IC_base1[,j] - IC_base2[,j]) / tmp
+        }
 
 	letterOrder = order(abs(hts)) # reorder letters
 	yneg.pos = 0 
@@ -348,6 +359,5 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     polygon(letters, col=letters$col, border=F)
     lines(c(0,x.pos), c(0,0) )
 }
-
 
 
