@@ -289,10 +289,10 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
 	    hts = -1.0* (pwm1[,j]*facs1[j] - pwm2[,j]*facs2[j]) / pwm1[,j]*facs1[j] * 100
 	} else if( type==7 ) { # calculate heights only on difference of ICs per base
 	    hts = IC_base1[,j] - IC_base2[,j]
-        } else if( type==8 ) { # calculate heights  only on difference of ICs per base, normalized with the sum of differences
+    } else if( type==8 ) { # calculate heights  only on difference of ICs per base, normalized with the sum of differences
 	    tmp = 2 - sum(abs(IC_base1[,j] - IC_base2[,j]))
 	    hts = (IC_base1[,j] - IC_base2[,j]) / tmp
-        }
+    }
 
 	letterOrder = order(abs(hts)) # reorder letters
 	yneg.pos = 0 
@@ -310,7 +310,7 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
 	    letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
 	}
 	
-        x.pos = x.pos + wt
+    x.pos = x.pos + wt
 	ylim.negMax = min(ylim.negMax, yneg.pos)
 	ylim.posMax = max(ylim.posMax, ypos.pos)
 	# remember values for plotting
@@ -326,33 +326,40 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     }
 
     if(sparse) {
-	plot(NA, xlim=c(0.5,x.pos), ylim=c(min(ylim.posMax*1.15,yAbsMax),max(ylim.negMax*1.15,-yAbsMax))*1.1, mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8,xaxt="n",yaxt="n", ylab="", frame.plot=F,xlab="")
+        if(ymin == 0) {
+            ymin = min(ylim.posMax*1.15,yAbsMax);
+        }	    
+        if(ymax == 0) {
+            ymax = max(ylim.negMax*1.15,-yAbsMax);
+        }
+
+	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, xaxt="n",ylab="", frame.plot=F,xlab="")
     } else {
-	plot(NA, xlim=c(0.5,x.pos), ylim=c(min(ylim.posMax*1.1,yAbsMax),max(ylim.negMax*1.1,-yAbsMax)), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
+	    plot(NA, xlim=c(0.5,x.pos), ylim=c(min(ylim.posMax*1.1,yAbsMax),max(ylim.negMax*1.1,-yAbsMax)), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
     }
 
     # add sums over columns if wanted
     if( showSums ) {
-	if(type==1 || type==2 || type==3) {
-	   text(x=c(1:npos),y=ymins,paste(round(heights,2),"",sep=""),cex=0.8,font=3,pos=3)
-	} else if(type==4 || type==5 || type==6) {
-	   text(x=c(1:npos)+.20,y=ymins*1.01,paste(round(heights,0),"%",sep=""),cex=0.8,font=3,pos=3,srt=30)
-	}
+	    if(type==1 || type==2 || type==3) {
+	       text(x=c(1:npos),y=ymins,paste(round(heights,2),"",sep=""),cex=0.8,font=3,pos=3)
+	    } else if(type==4 || type==5 || type==6) {
+	       text(x=c(1:npos)+.20,y=ymins*1.01,paste(round(heights,0),"%",sep=""),cex=0.8,font=3,pos=3,srt=30)
+	    }
     }
 
     if( type==5 ) {
-      yAt = (-5:5)*15
-      yLabs = paste(yAt,"%",sep="")
+        yAt = (-5:5)*15
+        yLabs = paste(yAt,"%",sep="")
     } else {
-	yLabs = c("","0","");
-	yAt = c(-yAbsMax,0,yAbsMax);
+	    yLabs = c("","","");
+	    yAt = c(-yAbsMax,0,yAbsMax);
     }
 	
     if(sparse) {
-	axis(1,labels=c("",rep("",npos),""), at=c(0,1:npos,npos+1),tck=-0.02)
+	    axis(1,labels=c("",rep("",npos),""), at=c(0,1:npos,npos+1),tck=-0.02)
         axis(2,labels=yLabs,at=yAt,mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8)
     } else {
-	axis(1,labels=c("",1:npos,""),at=c(0,1:npos,npos+1))
+	    axis(1,labels=c("",1:npos,""),at=c(0,1:npos,npos+1))
         axis(2,labels=c("",""),at=c(-yAbsMax,yAbsMax))
     }
     
