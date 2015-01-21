@@ -28,7 +28,7 @@ Examples of usage can be found in the file <a href="compareCTCF.R">compareCTCF.R
 Cite this work
 --------------
 
-<div size="small">
+<div size="50%">
 [1] Schneider TD, Stephens RM. 1990. Sequence Logos: A New Way to Display Consensus Sequences. _Nucleic Acids Res. 18_:6097-6100<br>
 [2] http://en.wikipedia.org/wiki/Position_weight_matrix<br>
 [3]
