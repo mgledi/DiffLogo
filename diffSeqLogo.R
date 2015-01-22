@@ -129,7 +129,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0)) {
         pwm = as.matrix(pwm)
     } else if (class(pwm) != "matrix") {
         print("pwm must be of class matrix or data.frame. Trying to convert")
-	pwm = matrix(pwm,4,length(pwm)/4)
+	    pwm = matrix(pwm,4,length(pwm)/4)
     }
 
     chars = c("A", "C", "G", "T")
@@ -138,7 +138,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0)) {
 
     ylim.negMax = 0;
     ylim.posMax = 0;
-    facs = pwm2ic(pwm);
+    facs = pwm2ic_col(pwm);
     
     ylab = "Information content [bits]"
    
@@ -185,13 +185,13 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0)) {
 #
 # pwm1: the minuend pwm 
 # pwm2: the subtrahend pwm
-# type: a value between 1 and 6. Indicates the type of difference
+# type: a value between 1 and 2. Indicates the type of difference
 # showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
 # sparse: if TRUE margins are reduced and tickmarks are removed from the logo
 #
-diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, sparse=FALSE) {
-    if(type < 1 || type > 8) {
-        stop("Unknown type. Type must be 1 <= type <= 8")
+diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
+    if(type < 1 || type > 2) {
+        stop("Unknown type. Type must be 1 <= type <= 2")
     }    
 
     if (class(pwm1) == "pwm") {
@@ -199,8 +199,8 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     } else if (class(pwm1) == "data.frame") {
         pwm1 = as.matrix(pwm1)
     } else if (class(pwm1) != "matrix") {
-	print("pwm1 must be of class matrix or data.frame. Trying to convert")
-	pwm1 = matrix(pwm1,4,length(pwm1)/4)
+	    print("pwm1 must be of class matrix or data.frame. Trying to convert")
+	    pwm1 = matrix(pwm1,4,length(pwm1)/4)
     }
 
     if (class(pwm2) == "pwm") {
@@ -209,7 +209,7 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
         pwm2 = as.matrix(pwm2)
     } else if (class(pwm2) != "matrix") {
         print("pwm2 must be of class matrix or data.frame. Trying to convert")
-	pwm2 = matrix(pwm2,4,length(pwm2)/4)
+	    pwm2 = matrix(pwm2,4,length(pwm2)/4)
     }
 
 
@@ -226,134 +226,92 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     }
 
     # init needed variables
-    diffPWM = pwm1-pwm2
     chars = c("A", "C", "G", "T")
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
-    npos = ncol(diffPWM)
-
+    npos = ncol(pwm1)
     ylim.negMax = 0;
     ylim.posMax = 0;
-    facs = numeric(npos) + 1; # heights are initialised with 1
-    facs1 = pwm2ic_col(pwm1) # calc entropies for pwm1
-    facs2 = pwm2ic_col(pwm2) # calc entropies for pwm2
-    IC_base1 = pwm2ic_base(pwm1);
-    IC_base2 = pwm2ic_base(pwm2);
+    wt = 1.0 # the width of one letter
+    x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
+    heights = c(); ymins=c(); ymaxs=c()
+
+    # determine intermediate values
+    diffPWM = pwm1-pwm2    
+    diffPWM_norm = diffPWM;
+    sums = colSums(abs(diffPWM))
+    for( i in 1:npos) {
+        diffPWM_norm[,i] = diffPWM_norm[,i]/sums[i]	# normalize diffPWM
+    }
+
+    IC_col1 = pwm2ic_col(pwm1) # calc IC per column for pwm1
+    IC_col2 = pwm2ic_col(pwm2) # calc IC per column for pwm2
+    IC_diff_col = abs(IC_col1 - IC_col2); # differences of IC per column
+    IC_base1 = pwm2ic_base(pwm1); # calculate entropy per base for pwm1
+    IC_base2 = pwm2ic_base(pwm2); # calculate entropy per base for pwm2
+
 
     # set ylab
     if( type==1 ) {
-	ylab = "Difference of probabilities"
+	    ylab = "Difference of IC [bits]"
     } else if( type==2 ) {
-	ylab = "Difference of information content [bits]"
-    } else if( type==3 ) {
-	ylab = "Pairwise Difference of nucleotide information content [bits]"
-    } else if( type==4 ) {
-	ylab = "Relative difference of probabilities [%]"
-    } else if( type==5 ) {
-	ylab = "Relative difference of information content [%]"
-    } else if( type==6 ) {
-	ylab = "Relative pairwise difference of nucleotide information content [%]"
-    } else if( type==7 ) {
-	ylab = "Difference of information content [bits]"
-    } else if( type==8 ) {
-	ylab = "Relative difference of information content [%]"
+	    ylab = "Difference of IC [bits]"
     } 
+  
 
-    # for type 1 and 5 recalculate heights
-    if( type == 1 ) {
-	facs = abs(facs1 - facs2); # heights are set to the difference of ICs of the two given PWMs
-	sums = colSums(abs(diffPWM))
-	for( i in 1:npos) {
-	    diffPWM[,i] = diffPWM[,i]/sums[i]	# normalize diffPWM
-	}
-    } else if (type==5) {
-	facs = abs((facs1 - facs2)) / facs1 * 100; # heights are set to the ratio of ICs of the two given PWMs
-	sums = colSums(abs(diffPWM))
-	for( i in 1:npos) {
-	    diffPWM[,i] = diffPWM[,i]/sums[i]	# normalize diffPWM
-	}
-    }
-     
-    wt = 1.0
-    x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
-    heights = c(); ymins=c(); ymaxs=c()
     for (j in 1:npos) {
-	column = diffPWM[, j]
-
-	if(type==1 || type==2 || type==5) { # calculate heights of letters relative to overall hight
-	    hts = -1.0 * column * facs[j] 
-	} else if( type==3 ) {
-	    hts = -1.0* (pwm1[,j]*facs1[j] - pwm2[,j]*facs2[j])
-	} else if( type==4 ) {
-	    hts = -1.0* (pwm1[,j] - pwm2[,j]) / pwm1[,j] * 100
-	} else if( type==6 ) {
-	    hts = -1.0* (pwm1[,j]*facs1[j] - pwm2[,j]*facs2[j]) / pwm1[,j]*facs1[j] * 100
-	} else if( type==7 ) { # calculate heights only on difference of ICs per base
-	    hts = IC_base1[,j] - IC_base2[,j]
-    } else if( type==8 ) { # calculate heights  only on difference of ICs per base, normalized with the sum of differences
-	    tmp = 2 - sum(abs(IC_base1[,j] - IC_base2[,j]))
-	    hts = (IC_base1[,j] - IC_base2[,j]) / tmp
-    }
-
-	letterOrder = order(abs(hts)) # reorder letters
-	yneg.pos = 0 
-	ypos.pos = 0
-	for (i in 1:4) {
-	    letter = chars[letterOrder[i]]
-	    ht = hts[letterOrder[i]]
-	    if (ht >= 0){ 
-	 	y.pos = ypos.pos;
-		ypos.pos = ypos.pos + ht + 0.0005
-	    } else if(ht < 0 ) {
-		y.pos = yneg.pos;
-		yneg.pos = yneg.pos + ht - 0.0005
+	    if(type==1) {
+	        hts = -1.0 * (pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j])
+	    } else if( type==2 ) {
+	        hts = -1.0 * diffPWM_norm[,j] * sum(abs(pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j]))
 	    }
-	    letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
-	}
+
+	    letterOrder = order(abs(hts)) # reorder letters
+	    yneg.pos = 0 
+	    ypos.pos = 0
+        # adds all letters as polygons to the list of letters
+	    for (i in 1:4) {
+	        letter = chars[letterOrder[i]]
+	        ht = hts[letterOrder[i]]
+	        if (ht >= 0){ 
+	     	    y.pos = ypos.pos;
+		        ypos.pos = ypos.pos + ht + 0.0005
+	        } else if(ht < 0 ) {
+		        y.pos = yneg.pos;
+		        yneg.pos = yneg.pos + ht - 0.0005
+	        }
+	        letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
+	    }
 	
-    x.pos = x.pos + wt
-	ylim.negMax = min(ylim.negMax, yneg.pos)
-	ylim.posMax = max(ylim.posMax, ypos.pos)
-	# remember values for plotting
+        x.pos = x.pos + wt
+	    ylim.negMax = min(ylim.negMax, yneg.pos)
+	    ylim.posMax = max(ylim.posMax, ypos.pos)
+	    # remember values for plotting
 
-	heights[j] = sum(abs(hts))
-	ymins[j] = yneg.pos
-	ymaxs[j] = ypos.pos
+	    heights[j] = sum(abs(hts))
+	    ymins[j] = yneg.pos
+	    ymaxs[j] = ypos.pos
     }
-
+    
     yAbsMax=2
     if( type==4 || type==5 || type==6) {
     	yAbsMax=400;
     }
 
+    if(ymin == 0) {
+        ymin = min(ylim.posMax*1.15,yAbsMax);
+    }	    
+    if(ymax == 0) {
+        ymax = max(ylim.negMax*1.15,-yAbsMax);
+    }
+
     if(sparse) {
-        if(ymin == 0) {
-            ymin = min(ylim.posMax*1.15,yAbsMax);
-        }	    
-        if(ymax == 0) {
-            ymax = max(ylim.negMax*1.15,-yAbsMax);
-        }
-
-	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, xaxt="n",ylab="", frame.plot=F,xlab="")
+	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), xaxt="n",ylab="", mgp=c(0, .35, 0), tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
     } else {
-	    plot(NA, xlim=c(0.5,x.pos), ylim=c(min(ylim.posMax*1.1,yAbsMax),max(ylim.negMax*1.1,-yAbsMax)), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
+	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=F, )
     }
 
-    # add sums over columns if wanted
-    if( showSums ) {
-	    if(type==1 || type==2 || type==3) {
-	       text(x=c(1:npos),y=ymins,paste(round(heights,2),"",sep=""),cex=0.8,font=3,pos=3)
-	    } else if(type==4 || type==5 || type==6) {
-	       text(x=c(1:npos)+.20,y=ymins*1.01,paste(round(heights,0),"%",sep=""),cex=0.8,font=3,pos=3,srt=30)
-	    }
-    }
-
-    if( type==5 ) {
-        yAt = (-5:5)*15
-        yLabs = paste(yAt,"%",sep="")
-    } else {
-	    yLabs = c("","","");
-	    yAt = c(-yAbsMax,0,yAbsMax);
-    }
+    yLabs = c("","","");
+    yAt = c(-yAbsMax,0,yAbsMax);
 	
     if(sparse) {
 	    axis(1,labels=c("",rep("",npos),""), at=c(0,1:npos,npos+1),tck=-0.02)
@@ -365,6 +323,30 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, showSums=FALSE, spar
     
     polygon(letters, col=letters$col, border=F)
     lines(c(0,x.pos), c(0,0) )
+}
+
+diffSeqLogoScatterPlot = function (PWMs, ymin=0, ymax=0, type=1, sparse=FALSE, margin=0.02, ratio=16/10) {
+    plot.new();
+    dim = length(PWMs);
+    names = names(PWMs);
+    for ( i in 1:dim) {
+        motif_i = names[i];
+        for ( k in 1:dim) {
+            if( i != k ) {
+                motif_k = names[k];
+                print(paste("plotting ",motif_i," and ",motif_k));
+                par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
+                diffSeqLogo(PWMs[[ motif_i ]],PWMs[[ motif_k ]],
+                    type=type,sparse=sparse,ymin=ymin,ymax=ymax)
+            }
+        }
+    }
+
+    # add names
+    par(fig=c(0,1,0,1) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
+    plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
+    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[1:dim]), tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
+    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[1:dim], tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
 }
 
 

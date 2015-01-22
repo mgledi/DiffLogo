@@ -3,37 +3,36 @@
 source("./diffSeqLogo.R");
 
 motif_folder = "CTCF_motifs";
-motif_names = c("GM12878","HeLa-S3","HepG2","HUVEC","K562","MCF7","NHEK","ProgFib");
+#motif_names = c("GM12878","HeLa-S3","HepG2","HUVEC","K562","MCF7","NHEK","ProgFib");
+motif_names = c("HepG2","HUVEC","MCF7","ProgFib");
 marSeqLogo=c(1,1.5,0.1,0.1);
-margin = 0.02;
+margin = 0.03;
+ratio=16/10;
+
+ymin=-0.22; ymax=0.22;
+#ymin=-0.4; ymax=0.4;
+
+if( !exists("type") ) {
+  stop("Please define \"type\" before continuing");
+}  
 
 
-pdf(paste("CTCF_motifs_comparison.pdf",sep=""), width=16, height=16);
-#dev.off();
+
 CTCF = list();
 
+pdf(paste("CTCF_motifs.pdf",sep=""), width=6, height=4.5);
 for (name in motif_names) {
     file = paste("./",motif_folder,"/",name,".txt",sep="");
     CTCF[[name]] = as.matrix(read.delim(file,header=F));
-}
 
-dim = length(CTCF);
-#dim = 3;
-for ( i in 1:dim) {
-    motif_i = motif_names[i];
-    for ( k in 1:dim) {
-        if( i != k ) {
-            motif_k = motif_names[k];
-            print(paste("plotting ",motif_i," and ",motif_k));
-            par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * (1-margin) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
-            diffSeqLogo(CTCF[[ motif_i ]],CTCF[[ motif_k ]],type=3,showSums=F,sparse=T,ymin=-0.4, ymax=0.4)
-        }
-    }
+    seqLogo(CTCF[[name]])
+    
 }
-# add names
-par(fig=c(0,1,0,1)* (1-margin) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
-plot(NA,ylim=c(0,dim),xlim=c(0,dim),,xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
-axis(4, pos=-0.19, at=(1:dim) - 0.5, labels = rev(motif_names[1:dim]), tick = F, cex.axis=1.5)
-axis(3, pos=dim-.10, at= (1:dim) - 0.5, labels = motif_names[1:dim], tick = F, cex.axis=1.5)
-
 dev.off();
+
+# TODO: formulate this as function of a list of TFBSs
+dim = length(CTCF);
+
+#pdf(paste("CTCF_motifs_comparison_short_",type,".pdf",sep=""), width=dim*2, height=dim*2/ratio);
+diffSeqLogoScatterPlot(CTCF,type=type,margin=margin);
+#dev.off();
