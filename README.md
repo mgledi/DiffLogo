@@ -28,8 +28,6 @@ Examples of usage can be found in the file <a href="compareCTCF.R">compareCTCF.R
 Cite this work
 --------------
 
-<div size="50%">
 [1] Schneider TD, Stephens RM. 1990. Sequence Logos: A New Way to Display Consensus Sequences. _Nucleic Acids Res. 18_:6097-6100<br>
 [2] http://en.wikipedia.org/wiki/Position_weight_matrix<br>
-[3]
-</div>
+[3] Eggeling, R., Gohr, A., Keilwagen, J., Mohr, M., Posch, S., Smith, A.D., Grosse, I.: On the value of intra-motifdependencies of human insulator protein ctcf. PLoS ONE9(1), 85629 (2014). doi:10.1371/journal.pone.0085629
