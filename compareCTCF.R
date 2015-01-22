@@ -30,9 +30,7 @@ for (name in motif_names) {
 }
 dev.off();
 
-# TODO: formulate this as function of a list of TFBSs
-dim = length(CTCF);
 
-#pdf(paste("CTCF_motifs_comparison_short_",type,".pdf",sep=""), width=dim*2, height=dim*2/ratio);
-diffSeqLogoScatterPlot(CTCF,type=type,margin=margin);
-#dev.off();
+pdf(paste("CTCF_motifs_comparison_short_",type,".pdf",sep=""), width=dim*2, height=dim*2/ratio);
+    diffSeqLogoMulti(CTCF,type=type,margin=margin);
+dev.off();

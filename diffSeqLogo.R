@@ -325,7 +325,7 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
     lines(c(0,x.pos), c(0,0) )
 }
 
-diffSeqLogoScatterPlot = function (PWMs, ymin=0, ymax=0, type=1, sparse=FALSE, margin=0.02, ratio=16/10) {
+diffSeqLogoMulti = function (PWMs, ymin=0, ymax=0, type=1, sparse=FALSE, margin=0.02, ratio=16/10) {
     plot.new();
     dim = length(PWMs);
     names = names(PWMs);
