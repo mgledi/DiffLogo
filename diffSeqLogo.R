@@ -180,50 +180,42 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0)) {
     polygon(letters, col=letters$col, border=F)
 }
 
-###
-# Draws the difference of two sequence logos. 
-#
-# pwm1: the minuend pwm 
-# pwm2: the subtrahend pwm
-# type: a value between 1 and 2. Indicates the type of difference
-# showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
-# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
-#
-diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
+preconditionTpye = function(type) {
     if(type < 1 || type > 2) {
         stop("Unknown type. Type must be 1 <= type <= 2")
-    }    
-
-    if (class(pwm1) == "pwm") {
-        pwm1 = pwm@pwm
-    } else if (class(pwm1) == "data.frame") {
-        pwm1 = as.matrix(pwm1)
-    } else if (class(pwm1) != "matrix") {
-	    print("pwm1 must be of class matrix or data.frame. Trying to convert")
-	    pwm1 = matrix(pwm1,4,length(pwm1)/4)
+    }  
+}
+preconditionPWM = function(pwm) {
+    if (any(abs(1 - apply(pwm, 2, sum)) > 0.01)) { # check if the sum of each columns is near 1
+        stop("Columns of PWM must add up to 1.0")
     }
+}
 
-    if (class(pwm2) == "pwm") {
-        pwm2 = pwm@pwm
-    } else if (class(pwm2) == "data.frame") {
-        pwm2 = as.matrix(pwm2)
-    } else if (class(pwm2) != "matrix") {
-        print("pwm2 must be of class matrix or data.frame. Trying to convert")
-	    pwm2 = matrix(pwm2,4,length(pwm2)/4)
+preconditionTransformPWM = function(pwm) {
+    if (class(pwm) == "pwm") {
+        return (pwm@pwm)
+    } else if (class(pwm) == "data.frame") {
+        return (as.matrix(pwm))
+    } else if (class(pwm) != "matrix") {
+        print("pwm must be of class matrix or data.frame. Trying to convert")
+        return (matrix(pwm,4,length(pwm)/4))
     }
+    return(pwm)
+}
 
-
-    if (any(abs(1 - apply(pwm1, 2, sum)) > 0.01)) { # check if the sum of each columns is near 1
-        stop("Columns of PWM1 must add up to 1.0")
-    }
-
-    if (any(abs(1 - apply(pwm2, 2, sum)) > 0.01)) { # check if the sum of each columns is near 1
-        stop("Columns of PWM2 must add up to 1.0")
-    }
-
+preconditionPWMSameSize = function(pwm1, pwm2) {
     if(ncol(pwm1) != ncol(pwm2)) {  # check if the two PWMs have the same length
         stop("The two given PWMs must have the same dimension");
     }
+}
+
+createDiffLogoObject = function (pwm1, pwm2, type=1) {
+    preconditionTpye(type)
+    pwm1 = preconditionTransformPWM(pwm1);
+    pwm2 = preconditionTransformPWM(pwm2);
+    preconditionPWM(pwm1);
+    preconditionPWM(pwm2);
+    preconditionPWMSameSize(pwm1,pwm2);
 
     # init needed variables
     chars = c("A", "C", "G", "T")
@@ -231,6 +223,8 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
     npos = ncol(pwm1)
     ylim.negMax = 0;
     ylim.posMax = 0;
+
+    npos = ncol(pwm1)
     wt = 1.0 # the width of one letter
     x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
     heights = c(); ymins=c(); ymaxs=c()
@@ -248,96 +242,169 @@ diffSeqLogo = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
     IC_diff_col = abs(IC_col1 - IC_col2); # differences of IC per column
     IC_base1 = pwm2ic_base(pwm1); # calculate entropy per base for pwm1
     IC_base2 = pwm2ic_base(pwm2); # calculate entropy per base for pwm2
-
-
-    # set ylab
-    if( type==1 ) {
-	    ylab = "Difference of IC [bits]"
-    } else if( type==2 ) {
-	    ylab = "Difference of IC [bits]"
-    } 
   
 
     for (j in 1:npos) {
-	    if(type==1) {
-	        hts = -1.0 * (pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j])
-	    } else if( type==2 ) {
-	        hts = -1.0 * diffPWM_norm[,j] * sum(abs(pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j]))
-	    }
-
-	    letterOrder = order(abs(hts)) # reorder letters
-	    yneg.pos = 0 
-	    ypos.pos = 0
+        if(type==1) {
+            hts = -1.0 * (pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j])
+	} else if( type==2 ) {
+	    hts = -1.0 * diffPWM_norm[,j] * sum(abs(pwm1[,j]*IC_col1[j] - pwm2[,j]*IC_col2[j]))
+	}
+        
+	letterOrder = order(abs(hts)) # reorder letters
+	yneg.pos = 0 
+	ypos.pos = 0
         # adds all letters as polygons to the list of letters
-	    for (i in 1:4) {
-	        letter = chars[letterOrder[i]]
-	        ht = hts[letterOrder[i]]
-	        if (ht >= 0){ 
-	     	    y.pos = ypos.pos;
-		        ypos.pos = ypos.pos + ht + 0.0005
-	        } else if(ht < 0 ) {
-		        y.pos = yneg.pos;
-		        yneg.pos = yneg.pos + ht - 0.0005
-	        }
-	        letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
+	for (i in 1:4) {
+	    letter = chars[letterOrder[i]]
+	    ht = hts[letterOrder[i]]
+	    if (ht >= 0){ 
+	        y.pos = ypos.pos;
+		    ypos.pos = ypos.pos + ht + 0.0005
+	    } else if(ht < 0 ) {
+	        y.pos = yneg.pos;
+		yneg.pos = yneg.pos + ht - 0.0005
 	    }
+	    letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
+	}
 	
         x.pos = x.pos + wt
-	    ylim.negMax = min(ylim.negMax, yneg.pos)
-	    ylim.posMax = max(ylim.posMax, ypos.pos)
-	    # remember values for plotting
+	ylim.negMax = min(ylim.negMax, yneg.pos)
+	ylim.posMax = max(ylim.posMax, ypos.pos)
+	# remember values for plotting
 
-	    heights[j] = sum(abs(hts))
-	    ymins[j] = yneg.pos
-	    ymaxs[j] = ypos.pos
+	heights[j] = sum(abs(hts))
+	ymins[j] = yneg.pos
+	ymins[j] = ypos.pos
     }
-    
-    yAbsMax=2
-    if( type==4 || type==5 || type==6) {
-    	yAbsMax=400;
+
+    diffObj = list();
+    diffObj$npos = npos;
+    diffObj$type = type;
+    diffObj$heights = heights;
+    diffObj$ymins = ymins
+    diffObj$ymaxs = ymins
+    diffObj$ylim.negMax = ylim.negMax
+    diffObj$ylim.posMax = ylim.posMax
+    diffObj$letters = letters;
+    diffObj$pwm1 = pwm1
+    diffObj$pwm2 = pwm2
+    diffObj$diffPWM = diffPWM
+    diffObj$diffPWM_norm = diffPWM_norm
+    diffObj$euclid = "not implemented yet"
+    diffObj$KLdivergence = "not implemented yet"
+    diffObj$ICdistance = abs(sum(heights))
+    class(diffObj) = "DiffLogo"
+    return(diffObj);
+}
+
+
+###
+# Draws the difference of two sequence logos. 
+#
+# diffLogoObj: the minuend pwm 
+# type: a value between 1 and 2. Indicates the type of difference
+# showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
+# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
+#
+diffSeqLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
+    if(class(diffLogoObj) != "DiffLogo") {
+        msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
+        stop(msg)
     }
+
+    yAbsMax=2 # this variable defines the possible maximum and the minimum of the y-axis
 
     if(ymin == 0) {
-        ymin = min(ylim.posMax*1.15,yAbsMax);
+        ymin = min(diffLogoObj$ylim.posMax*1.0,yAbsMax);
     }	    
     if(ymax == 0) {
-        ymax = max(ylim.negMax*1.15,-yAbsMax);
+        ymax = max(diffLogoObj$ylim.negMax*1.0,-yAbsMax);
     }
 
+        # set ylab
+    if( diffLogoObj$type==1 ) {
+        ylab = "Difference of IC [bits]"
+    } else if( diffLogoObj$type==2 ) {
+        ylab = "Difference of IC [bits]"
+    } 
+
     if(sparse) {
-	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), xaxt="n",ylab="", mgp=c(0, .35, 0), tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
+        # the sparse plot has small ticks, small y-labels, no x-labels, no xlab, no ylab
+        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab="", mgp=c(0, .35, 0), tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
     } else {
-	    plot(NA, xlim=c(0.5,x.pos), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=F, )
+        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=F, )
     }
 
     yLabs = c("","","");
     yAt = c(-yAbsMax,0,yAbsMax);
-	
+
+
     if(sparse) {
-	    axis(1,labels=c("",rep("",npos),""), at=c(0,1:npos,npos+1),tck=-0.02)
+        axis(1,labels=c(rep("",diffLogoObj$npos)), at=(1:diffLogoObj$npos),tck=-0.02)
         axis(2,labels=yLabs,at=yAt,mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8)
     } else {
-	    axis(1,labels=c("",1:npos,""),at=c(0,1:npos,npos+1))
+        axis(1,labels=c(1:diffLogoObj$npos),at=(1:diffLogoObj$npos))
         axis(2,labels=c("",""),at=c(-yAbsMax,yAbsMax))
     }
     
-    polygon(letters, col=letters$col, border=F)
-    lines(c(0,x.pos), c(0,0) )
+    polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=F)
+    lines(c(0,diffLogoObj$npos), c(0,0) ) # the line at y = 0
 }
+
+###
+# Draws the difference of two sequence logos. 
+#
+# pwm1: the minuend pwm 
+# pwm2: the subtrahend pwm
+# type: a value between 1 and 2. Indicates the type of difference
+# showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
+# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
+#
+diffSeqLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0, type=1, sparse=FALSE) {
+    diffLogoObj = createDiffLogoObject(pwm1,pwm2,type=type);
+    diffSeqLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
+}
+
+
 
 diffSeqLogoMulti = function (PWMs, ymin=0, ymax=0, type=1, sparse=FALSE, margin=0.02, ratio=16/10) {
     plot.new();
     dim = length(PWMs);
+    marSeqLogo= c(1,1.5,0.1,0.1);
+
+    similarities = matrix(0,dim,dim);
+    palette = colorRampPalette(c(rgb(0.9,1,0.9),rgb(1,0.9,0.9)))(100)
     names = names(PWMs);
     for ( i in 1:dim) {
         motif_i = names[i];
         for ( k in 1:dim) {
+            motif_k = names[k];
+	    similarities[i,k] = NA
             if( i != k ) {
-                motif_k = names[k];
+		diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],type=type);
+		similarities[i,k] = diffLogoObj$ICdistance;
+	    }
+        }
+    }
+    colors = matrix(palette[cut(similarities,100)],dim,dim)
+    hc = hclust(dist(similarities));
+    reorder = hc$order;
+
+    for ( i in 1:dim) {
+        motif_i = names[reorder[i]];
+        for ( k in 1:dim) {
+            if( i != k ) {
+                motif_k = names[reorder[k]];
                 print(paste("plotting ",motif_i," and ",motif_k));
+                par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
+		diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],type=type)
+		
+		plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
+		rect(0,0,1,1,col=colors[reorder[i],reorder[k]],border=NA);
+		
                 par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
-                diffSeqLogo(PWMs[[ motif_i ]],PWMs[[ motif_k ]],
-                    type=type,sparse=sparse,ymin=ymin,ymax=ymax)
+                diffSeqLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
             }
         }
     }
@@ -345,8 +412,6 @@ diffSeqLogoMulti = function (PWMs, ymin=0, ymax=0, type=1, sparse=FALSE, margin=
     # add names
     par(fig=c(0,1,0,1) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
     plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
-    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[1:dim]), tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
-    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[1:dim], tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
+    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[reorder]), tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
+    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[reorder], tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
 }
-
-
