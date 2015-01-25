@@ -32,5 +32,5 @@ for (name in motif_names) {
 
 
 pdf(paste("CTCF_motifs_comparison_",type,".pdf",sep=""), width=dim*2, height=dim*2/ratio);
-    diffSeqLogoMulti(CTCF,type=type,margin=margin,ymin=ymin, ymax=ymax);
+    diffSeqLogoMulti(CTCF,type=type,margin=margin,ymin=ymin, ymax=ymax, sparse=T);
 dev.off();
