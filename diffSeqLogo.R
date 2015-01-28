@@ -12,7 +12,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=sumOfAbsICDifferences, 
     preconditionPWMSameSize(pwm1,pwm2);
 
     # init needed variables
-    chars = c("A", "C", "G", "T")
+    chars = c("A", "C", "G", "T","A", "C", "G", "T")
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm1)
     eps = 0.0005; # spacer between two bases in one stack
@@ -30,12 +30,12 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=sumOfAbsICDifferences, 
 	heights[j] = heightObj$height;
 	ylab = heightObj$ylab;
 	hts = heights[j] * baseDistribution(pwm1[,j],pwm2[,j]);
-               
-	letterOrder = order(abs(hts)) # reorder letters
+        letterOrder = order(abs(hts)) # reorder letters
+
 	yneg.pos = 0 
 	ypos.pos = 0
         # adds all letters as polygons to the list of letters
-	for (i in 1:4) {
+	for (i in 1:length(hts)) {
 	    letter = chars[letterOrder[i]]
 	    ht = hts[letterOrder[i]]
 	    if (ht >= 0){ 
@@ -52,7 +52,6 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=sumOfAbsICDifferences, 
 	ylim.negMax = min(ylim.negMax, yneg.pos)
 	ylim.posMax = max(ylim.posMax, ypos.pos)
 	# remember values for plotting
-
 	ymins[j] = yneg.pos
 	ymaxs[j] = ypos.pos
     }
