@@ -3,10 +3,11 @@
 source("./diffSeqLogo.R");
 
 motif_folder = "CTCF_motifs";
-#motif_names = c("GM12878","HeLa-S3","HepG2","HUVEC","K562","MCF7","NHEK","ProgFib");
-motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
-margin = 0.03;
+motif_names = c("GM12878","HeLa-S3","HepG2","HUVEC","K562","MCF7","NHEK","ProgFib");
+#motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
+margin = 0.02;
 ratio=16/10;
+pixelPerCol=400;
 
 dim = length(motif_names);
 
@@ -23,6 +24,8 @@ for (name in motif_names) {
 #dev.off();
 
 
-#pdf(paste("CTCF_motifs_comparison_",type,".pdf",sep=""), width=dim*2, height=dim*2/ratio);
+png(paste("CTCF_motifs_comparison_1.png",sep=""),width=dim*300, height=dim*300/ratio);
+#pdf(paste("CTCF_motifs_comparison_1.pdf",sep=""), width=dim*2, height=dim*2/ratio);
     diffLogoTable(CTCF,margin=margin);
-#dev.off();
+dev.off();
+

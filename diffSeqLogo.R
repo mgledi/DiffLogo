@@ -1,7 +1,7 @@
 source("preconditions.R"); # contains functions that check preconditions
 source("seqLogo.R"); # contains functions for drawing
-source("stackHeights.R"); # contains functions to calculate the stackheihts in a DiffSeqLogo
-source("baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a DiffSeqLogo
+source("stackHeights.R"); # contains functions to calculate the stackheihts in a diffLogo
+source("baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a diffLogo
 
 
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities) {
@@ -135,7 +135,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 #
 diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE) {
     diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution);
-    diffSeqLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
+    diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
 
@@ -194,10 +194,9 @@ diffLogoTable = function (PWMs, uniformYaxis=T,stackHeight=shannonDivergence, ba
 		
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution); 
-		        diffSeqLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
+		        diffLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
             }
         }
-
         if(showSequenceLogosTop) {
             subplotcoords = c(i-1+sl,i+sl,dim,dim + st)
             par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin,margin), new=TRUE, mar=marSeqLogo)
@@ -207,7 +206,7 @@ diffLogoTable = function (PWMs, uniformYaxis=T,stackHeight=shannonDivergence, ba
 
     # add names
     par(fig=c(0,1,0,1) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
-    plot(NA,ylim=c(0,dim+st),xlim=c(0,dim+sl),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
+    plot(NA,ylim=c(0,dim+st),xlim=c(0,dim+sl),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n", mar=c(0,0,0,0)) #xaxt="n",yaxt="n",
     axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[reorder]), tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
     axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[reorder], tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
 }
