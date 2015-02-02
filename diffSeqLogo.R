@@ -4,7 +4,7 @@ source("stackHeights.R"); # contains functions to calculate the stackheihts in a
 source("baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a DiffSeqLogo
 
 
-createDiffLogoObject = function (pwm1, pwm2, stackHeight=sumOfAbsICDifferences, baseDistribution=normalizedDifferenceOfProbabilities) {
+createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities) {
     pwm1 = preconditionTransformPWM(pwm1);
     pwm2 = preconditionTransformPWM(pwm2);
     preconditionPWM(pwm1);
@@ -79,10 +79,11 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=sumOfAbsICDifferences, 
 #
 # diffLogoObj: 
 # type: a value between 1 and 2. Indicates the type of difference
-# showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
+# stackHeight: function that defines the stackheight 
+# baseDistribution: function that describes the relative heights of nucleotides in a stack
 # sparse: if TRUE margins are reduced and tickmarks are removed from the logo
 #
-diffSeqLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
+diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if(class(diffLogoObj) != "DiffLogo") {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
         stop(msg)
@@ -128,20 +129,27 @@ diffSeqLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 #
 # pwm1: the minuend pwm 
 # pwm2: the subtrahend pwm
-# type: a value between 1 and 2. Indicates the type of difference
-# showSums: if TRUE the sum of a column is shown over the nucleotides. E.g. the overall difference of IC
+# stackHeight: function that defines the stackheight 
+# baseDistribution: function that describes the relative heights of nucleotides in a stack
 # sparse: if TRUE margins are reduced and tickmarks are removed from the logo
 #
-diffSeqLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=sumOfAbsICDifferences, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE) {
+diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE) {
     diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution);
     diffSeqLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
 
 
-diffSeqLogoMulti = function (PWMs, uniformYaxis=T,stackHeight=sumOfAbsICDifferences, baseDistribution=normalizedDifferenceOfProbabilities, sparse=TRUE, margin=0.02, ratio=16/10) {
+diffLogoTable = function (PWMs, uniformYaxis=T,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=TRUE, showSequenceLogosTop=TRUE, margin=0.02, ratio=16/10) {
     plot.new();
     dim = length(PWMs);
+    sl = 0;
+
+    if ( showSequenceLogosTop ) {
+        st = 0.5;
+    } else {
+        st = 0;
+    }
     marSeqLogo= c(1,1.5,0.1,0.1);
 
     similarities = matrix(0,dim,dim);
@@ -154,43 +162,52 @@ diffSeqLogoMulti = function (PWMs, uniformYaxis=T,stackHeight=sumOfAbsICDifferen
         motif_i = names[i];
         for ( k in 1:dim) {
             motif_k = names[k];
-	    similarities[i,k] = NA
+	        similarities[i,k] = NA
             if( i != k ) {
-		diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution);
-#		diffLogos[[i]][[k]] = diffLogoObj;
+		        diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution);
+        #		diffLogos[[i]][[k]] = diffLogoObj;
                 if(uniformYaxis) {
-		    ymin = min(diffLogoObj$ylim.negMax,ymin)
-		    ymax = max(diffLogoObj$ylim.posMax,ymax)
-		}
-		similarities[i,k] = diffLogoObj$distance;
-	    }
+		            ymin = min(diffLogoObj$ylim.negMax,ymin)
+		            ymax = max(diffLogoObj$ylim.posMax,ymax)
+		        }
+		        similarities[i,k] = diffLogoObj$distance;
+	        }
         }
     }
     colors = matrix(palette[cut(similarities,100)],dim,dim)
     hc = hclust(dist(similarities));
     reorder = hc$order;
 
+    # draw DiffLogos
     for ( i in 1:dim) {
         motif_i = names[reorder[i]];
         for ( k in 1:dim) {
             if( i != k ) {
                 motif_k = names[reorder[k]];
+                subplotcoords = c(i-1+sl,i+sl,dim-k,dim-k+1)
+                dimV = c(dim+sl, dim+sl,dim+st,dim+st);
                 print(paste("plotting ",motif_i," and ",motif_k));
-                par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
+                par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 		
-		plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
-		rect(0,0,1,1,col=colors[reorder[i],reorder[k]],border=NA);
+		        plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
+        		rect(0,0,1,1,col=colors[reorder[i],reorder[k]],border=NA);
 		
-                par(fig=(c(i-1,i,dim-k,dim-k+1) / dim) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
+                par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marSeqLogo)
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution); 
-		diffSeqLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
+		        diffSeqLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
             }
+        }
+
+        if(showSequenceLogosTop) {
+            subplotcoords = c(i-1+sl,i+sl,dim,dim + st)
+            par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin,margin), new=TRUE, mar=marSeqLogo)
+            seqLogo(PWMs[[ motif_i ]],sparse=sparse)
         }
     }
 
     # add names
     par(fig=c(0,1,0,1) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
-    plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
+    plot(NA,ylim=c(0,dim+st),xlim=c(0,dim+sl),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n") #xaxt="n",yaxt="n",
     axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[reorder]), tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
     axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[reorder], tick = F, mgp = c(3, 0, 0), cex.axis=1.3)
 }
