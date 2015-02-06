@@ -1,8 +1,8 @@
 # set working folder to this directory
 # setwd("/data/m.gleditzsch/workspace_git/comparative-sequence-logo/")
-source("./diffSeqLogo.R");
+source("./R/diffSeqLogo.R");
 
-motif_folder = "CTCF_motifs";
+motif_folder = "data/CTCF_motifs";
 #motif_names = c("GM12878","HeLa-S3","HepG2","HUVEC","K562","MCF7","NHEK","ProgFib");
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
 margin = 0.02;
