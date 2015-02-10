@@ -1,10 +1,11 @@
 source("./R/preconditions.R"); # contains functions that check preconditions
+source("./R/alphabet.R"); # contains functions for drawing
 source("./R/seqLogo.R"); # contains functions for drawing
 source("./R/stackHeights.R"); # contains functions to calculate the stackheihts in a diffLogo
 source("./R/baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a diffLogo
 
 
-createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities) {
+createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
     pwm1 = preconditionTransformPWM(pwm1);
     pwm2 = preconditionTransformPWM(pwm2);
     preconditionPWM(pwm1);
@@ -12,7 +13,6 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     preconditionPWMSameSize(pwm1,pwm2);
 
     # init needed variables
-    chars = c("A", "C", "G", "T","A", "C", "G", "T")
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm1)
     eps = 0.0005; # spacer between two bases in one stack
@@ -36,7 +36,6 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 	ypos.pos = 0
         # adds all letters as polygons to the list of letters
 	for (i in 1:length(hts)) {
-	    letter = chars[letterOrder[i]]
 	    ht = hts[letterOrder[i]]
 	    if (ht >= 0){ 
 	        y.pos = ypos.pos;
@@ -45,7 +44,8 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 	        y.pos = yneg.pos;
 		yneg.pos = yneg.pos + ht - eps
 	    }
-	    letters = addLetter(letters, letter, x.pos, y.pos, ht, wt)
+            char = DNA$chars[letterOrder[i]]
+	    letters = addLetter(letters, DNA$letters[[char]], x.pos, y.pos, ht, wt)
 	}
 	
         x.pos = x.pos + wt
@@ -68,6 +68,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     diffObj$pwm1 = pwm1
     diffObj$pwm2 = pwm2
     diffObj$distance = sum(heights) # TODO as function
+    diffObj$alphabet = alphabet
     
     class(diffObj) = "DiffLogo"
     return(diffObj);
@@ -133,8 +134,8 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 # baseDistribution: function that describes the relative heights of nucleotides in a stack
 # sparse: if TRUE margins are reduced and tickmarks are removed from the logo
 #
-diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE) {
-    diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution);
+diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE, alphabet=DNA) {
+    diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
@@ -142,7 +143,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ###
 # Draws a table of DiffLogos. 
 #
-diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=T, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.03, ratio=16/10, ...) {
+diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=T, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.03, ratio=16/10, alphabet=DNA,...) {
     plot.new();
     dim = length(PWMs);
 
@@ -169,7 +170,7 @@ diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=
             motif_k = names[k];
 	        similarities[i,k] = NA
             if( i != k ) {
-		        diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution);
+		        diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
                 if(uniformYaxis) {
 		            ymin = min(diffLogoObj$ylim.negMax,ymin)
 		            ymax = max(diffLogoObj$ylim.posMax,ymax)
@@ -198,7 +199,7 @@ diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=
         		rect(0,0,1,1,col=colors[leaveOrder[i],leaveOrder[k]],border=NA);
 		
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marDiffLogo)
-                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution); 
+                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet); 
                 diffLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
             }
         }
