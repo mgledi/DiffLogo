@@ -6,8 +6,8 @@ source("./R/baseDistrs.R"); # contains functions to calculate the proportions fo
 
 
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
-    pwm1 = preconditionTransformPWM(pwm1);
-    pwm2 = preconditionTransformPWM(pwm2);
+    pwm1 = preconditionTransformPWM(pwm1,alphabet);
+    pwm2 = preconditionTransformPWM(pwm2,alphabet);
     preconditionPWM(pwm1);
     preconditionPWM(pwm2);
     preconditionPWMSameSize(pwm1,pwm2);
@@ -26,34 +26,35 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 
     # determine intermediate values
     for (j in 1:npos) {
-	heightObj = stackHeight(pwm1[,j],pwm2[,j]);
-	heights[j] = heightObj$height;
-	ylab = heightObj$ylab;
-	hts = heights[j] * baseDistribution(pwm1[,j],pwm2[,j]);
-    letterOrder = order(abs(hts)) # reorder letters
+	    heightObj = stackHeight(pwm1[,j],pwm2[,j]);
+	    heights[j] = heightObj$height;
+	    ylab = heightObj$ylab;
+	    hts = heights[j] * baseDistribution(pwm1[,j],pwm2[,j]);
+        letterOrder = order(abs(hts)) # reorder letters
 
-	yneg.pos = 0 
-	ypos.pos = 0
+	    yneg.pos = 0 
+	    ypos.pos = 0
         # adds all letters as polygons to the list of letters
-	for (i in 1:length(hts)) {
-	    ht = hts[letterOrder[i]]
-	    if (ht >= 0){ 
-	        y.pos = ypos.pos;
+	    for (i in 1:length(hts)) {
+	        ht = hts[letterOrder[i]]
+	        if (ht >= 0){ 
+	            y.pos = ypos.pos;
                 ypos.pos = ypos.pos + ht + eps
-	    } else if(ht < 0 ) {
-	        y.pos = yneg.pos;
-		yneg.pos = yneg.pos + ht - eps
+	        } else if(ht < 0 ) {
+	            y.pos = yneg.pos;
+		        yneg.pos = yneg.pos + ht - eps
+	        }
+            char = alphabet$chars[ (letterOrder[i]-1)%%alphabet$size+1 ]
+            col = alphabet$cols[ (letterOrder[i]-1)%%alphabet$size+1 ];
+            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt, col=col)
 	    }
-            char = DNA$chars[letterOrder[i]]
-	    letters = addLetter(letters, DNA$letters[[char]], x.pos, y.pos, ht, wt)
-	}
 	
         x.pos = x.pos + wt
-	ylim.negMax = min(ylim.negMax, yneg.pos)
-	ylim.posMax = max(ylim.posMax, ypos.pos)
-	# remember values for plotting
-	ymins[j] = yneg.pos
-	ymaxs[j] = ypos.pos
+	    ylim.negMax = min(ylim.negMax, yneg.pos)
+	    ylim.posMax = max(ylim.posMax, ypos.pos)
+	    # remember values for plotting
+	    ymins[j] = yneg.pos
+	    ymaxs[j] = ypos.pos
     }
 
     diffObj = list();
