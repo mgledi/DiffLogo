@@ -5,7 +5,7 @@ pwm2ic_col = function(pwm) {
     for (i in 1:npos) {
         ic[i] = 2 + sum(sapply(pwm[, i], function(x) {
             if (x > 0) {
-                x * log2(x) / log2(nrow(m))
+                x * log2(x) / log2(nrow(pwm))
             } else {
                 0
             }
@@ -25,14 +25,15 @@ pwm2ic_base = function(pwm) {
     return(ic);
 }
 
-
-###
-# Draws the classic sequence logo. 
-#
-# pwm:  the pwm for that the sequence logo should be drawn
-# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
-# drawLines: a vector of y-values where to draw gray lines
-#
+##' Draws the classic sequence logo. 
+##'
+##' @title Draw sequence logo
+##' @param pwm representation of a position weight matrix (PWM) of type pwm, data.frame, or matrix
+##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
+##' @param drawLines a vector of y-values where to draw horizontal gray lines
+##' @param alphabet of type Alphabet
+##' @export
+##' @author Martin Gleditzsch
 seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);

@@ -17,6 +17,6 @@ differenceOfICs = function(p1,p2) {
     return( diff / sum(abs(diff)));
 }
 
-test8bases = function(p,q) {
-   return( c( c(1,2,3,4)/10,-c(1.0,0.9,1,1.1)/4))
-}
+#test8bases = function(p,q) {
+#   return( c( c(1,2,3,4)/10,-c(1.0,0.9,1,1.1)/4))
+#}

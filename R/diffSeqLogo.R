@@ -4,7 +4,17 @@ source("./R/seqLogo.R"); # contains functions for drawing
 source("./R/stackHeights.R"); # contains functions to calculate the stackheihts in a diffLogo
 source("./R/baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a diffLogo
 
-
+##' Creates a DiffLogo object
+##'
+##' @title DiffLogo object
+##' @param pwm1 representation of the first position weight matrix (PWM) of type pwm, data.frame, or matrix
+##' @param pwm2 representation of the second position weight matrix (PWM) of type pwm, data.frame, or matrix
+##' @param stackHeight function for the height of a stack at position i
+##' @param baseDistribution function for the heights of the individual bases
+##' @param alphabet of type Alphabet
+##' @return DiffLogo object
+##' @export
+##' @author Martin Gleditzsch
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
@@ -75,16 +85,15 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     return(diffObj);
 }
 
-
-###
-# Draws the difference of two sequence logos. 
-#
-# diffLogoObj: 
-# type: a value between 1 and 2. Indicates the type of difference
-# stackHeight: function that defines the stackheight 
-# baseDistribution: function that describes the relative heights of nucleotides in a stack
-# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
-#
+##' Draws the difference of two sequence logos. 
+##'
+##' @title Draw DiffLogo
+##' @param diffLogoObj a DiffLogoObject created by the function createDiffLogoObject
+##' @param ymin minimum value on the y-axis
+##' @param ymax maximum value on the y-axis
+##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
+##' @export
+##' @author Martin Gleditzsch
 diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if(class(diffLogoObj) != "DiffLogo") {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
@@ -126,24 +135,39 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     lines(c(0,diffLogoObj$npos), c(0,0) ) # the line at y = 0
 }
 
-###
-# Draws the difference of two sequence logos. 
-#
-# pwm1: the minuend pwm 
-# pwm2: the subtrahend pwm
-# stackHeight: function that defines the stackheight 
-# baseDistribution: function that describes the relative heights of nucleotides in a stack
-# sparse: if TRUE margins are reduced and tickmarks are removed from the logo
-#
+##' Draws the difference of two sequence logos. 
+##'
+##' @title Draw DiffLogo from PWM
+##' @param pwm1 representation of the first position weight matrix (PWM) of type pwm, data.frame, or matrix
+##' @param pwm2 representation of the second position weight matrix (PWM) of type pwm, data.frame, or matrix
+##' @param ymin minimum value on the y-axis
+##' @param ymax maximum value on the y-axis
+##' @param stackHeight function for the height of a stack at position i
+##' @param baseDistribution function for the heights of the individual bases
+##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
+##' @param alphabet of type Alphabet
+##' @export
+##' @author Martin Gleditzsch
 diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE, alphabet=DNA) {
     diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
-
-###
-# Draws a table of DiffLogos. 
-#
+##' Draws a table of DiffLogos.
+##'
+##' @title Draw DiffLogo-table
+##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
+##' @param stackHeight function for the height of a stack at position i
+##' @param baseDistribution function for the heights of the individual bases
+##' @param uniformYaxis if TRUE each DiffLogo is plotted with the same scaling of the y-axis
+##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
+##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
+##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
+##' @param margin TODO
+##' @param ratio TODO
+##' @param alphabet of type Alphabet
+##' @export
+##' @author Martin Gleditzsch
 diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=T, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.03, ratio=16/10, alphabet=DNA,...) {
     plot.new();
     dim = length(PWMs);

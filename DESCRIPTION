@@ -1,15 +1,20 @@
 Package: DiffLogo
-Version: 1.0-0
-Date: 2015-02-05
+Type: Package
 Title: DiffLogo: A comparative visualisation of DNA motifs
-Authors@R: c(person("Martin", "Nettling", role = c("aut", "cre"), email = "martin.nettling@informatik.uni-halle.de"),
-	      person("Hendrik", "Treutler, role = c("aut", "cre"),email=""),
-      	      person("Jan", "Grau", role = c("aut", "ctb"),email=""),
-      	      person("Jens", "Keilwagen", role = c("aut", "ctb"),email=""),
-	      person("Stefan", "Posch", role = "aut"))
-      	      person("Ivo", "Grosse", role = "aut"))
+Version: 1.0-0
+Date: 2015-02-12
+Author: c(
+          person("Martin", "Nettling", role = c("aut", "cre"), email = "martin.nettling@informatik.uni-halle.de"),
+          person("Hendrik", "Treutler, role = c("aut", "cre"),email="hendrik.treutler@ipb-halle.de"),
+      	  person("Jan", "Grau", role = c("aut", "ctb"),email=""),
+      	  person("Jens", "Keilwagen", role = c("aut", "ctb"),email=""),
+	        person("Stefan", "Posch", role = "aut"))
+      	  person("Ivo", "Grosse", role = "aut")
+        )
 Depends: R (>= 1.8.0), stats
-Suggests:
+Suggests: knitr
+VignetteBuilder: knitr
+Maintainer: Martin Nettling<martin.nettling@informatik.uni-halle.de>
 Description: DiffLogo is an easy-to-use tool to visualize motif differences.
 License: GPL (>= 2)
 URL: https://github.com/mgledi/DiffLogo/
