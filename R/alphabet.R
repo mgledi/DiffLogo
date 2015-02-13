@@ -29,17 +29,17 @@ tmpy.1=cos(seq(0, 1*pi, length = 80))*2.875 +7.125
 tmpx.2=rev(sin(seq(0, 1*pi, length = 80))*3 +5.0)
 tmpy.2=rev(cos(seq(0, 1*pi, length = 80))*1.375 +7.125)
 letterPolygons$P = Letter(
-  c(0, 2, 2,0,NA,0, 5, tmpx.1,5,0,0,5,tmpx.2,5,0)*0.1,
+  c(0, 2, 2,0,NA,1, 5, tmpx.1,5,1,1,5,tmpx.2,5,1)*0.1,
   c(10,10,0,0,NA,10,10,tmpy.1,4.25,4.25,5.75,5.75,tmpy.2,8.5,8.5)*0.1
 )
 ############## B
 letterPolygons$B = Letter(
-  c(0, 2, 2,0,NA,0, 5, 5,  0,  NA,0,   5,   5,   0,   NA,0,5,5,  0,  NA,tmpx.1,tmpx.2,NA,tmpx.1,tmpx.2)*0.1,
+  c(0, 2, 2,0,NA,1, 5, 5,  1,  NA,1,   5,   5,   1,   NA,1,5,5,  1,  NA,tmpx.1,tmpx.2,NA,tmpx.1,tmpx.2)*0.1,
   c(10,10,0,0,NA,10,10,8.5,8.5,NA,5.75,5.75,4.25,4.25,NA,0,0,1.5,1.5,NA,tmpy.1,tmpy.2,NA,tmpy.1-4.25,tmpy.2-4.25)*0.1
 )
 ############## R
 letterPolygons$R = Letter(
-  c(0, 2, 2,0,NA,0, 5, 5,  0,  NA,0,   5,   5,   0,   NA,5, 10, 8, 3,NA,tmpx.1,tmpx.2)*0.1,
+  c(0, 2, 2,0,NA,1, 5, 5,  1,  NA,1,   5,   5,   1,   NA,5, 10, 8, 3,NA,tmpx.1,tmpx.2)*0.1,
   c(10,10,0,0,NA,10,10,8.5,8.5,NA,5.75,5.75,4.25,4.25,NA,5, 0 , 0, 5,NA,tmpy.1,tmpy.2)*0.1
 )
 ############## C is copied from SeqLogo
@@ -77,22 +77,22 @@ tmpy.1=cos(seq(0, 1*pi, length = 80))*5 +5
 tmpx.2=rev(sin(seq(0, 1*pi, length = 40))*3.5 +5.0)
 tmpy.2=rev(cos(seq(0, 1*pi, length = 40))*3.5 +5.0)
 letterPolygons$D = Letter(
-  c(0, 2, 2,0,NA,0, 5, 5,  0,  NA,0,5,5, 0,   NA,tmpx.1,tmpx.2)*0.1,
+  c(0, 2, 2,0,NA,1, 5, 5,  1,  NA,1,5,5, 1,   NA,tmpx.1,tmpx.2)*0.1,
   c(10,10,0,0,NA,10,10,8.5,8.5,NA,0,0,1.5,1.5,NA,tmpy.1,tmpy.2)*0.1
 )
 ############## E
 letterPolygons$E = Letter(
-  c(0,  10, 10,  2,   2, 0, 0,  NA, 2, 9, 9,   2,   NA, 2,10,10  ,2  ) * 0.1,
+  c(0,  10, 10,  2,   2, 0, 0,  NA, 1, 9, 9,   1,   NA, 1,10,10  ,1  ) * 0.1,
   c(10, 10, 8.5, 8.5, 0, 0, 10, NA, 4, 4, 5.5, 5.5, NA, 0,0,1.5,1.5) * 0.1
 )
 ############## F
 letterPolygons$F = Letter(
-  c(0,  10, 10,  2,   2, 0, 0,  NA, 2, 8, 8, 2 ) * 0.1,
+  c(0,  10, 10,  2,   2, 0, 0,  NA, 1, 8, 8, 1 ) * 0.1,
   c(10, 10, 8.5, 8.5, 0, 0, 10, NA, 4, 4, 5.5, 5.5 ) * 0.1
 )
 ############## H
 letterPolygons$H = Letter(
-  c(0,  2,  2, 0, NA, 8, 10, 10, 8, NA,0,10,10,0) * 0.1,
+  c(0,  2,  2, 0, NA, 8, 10, 10, 8, NA,1,9,9,1) * 0.1,
   c(10, 10, 0, 0, NA, 10, 10, 0, 0, NA,4,4,6,6) * 0.1
 )
 ############## H
@@ -111,7 +111,7 @@ letterPolygons$J = Letter(
 )
 ############## K
 letterPolygons$K = Letter(
-    c(0,  2,  2, 0, NA, 0,8, 10, 0, NA, 5, 10, 8, 3) * 0.1,
+    c(0,  2,  2, 0, NA, 0.2,8, 10, 0.2, NA, 5, 10, 8, 3) * 0.1,
     c(10, 10, 0, 0, NA, 4,10,10,2, NA, 6, 0 , 0, 6) * 0.1
 )
 ############## L
@@ -197,8 +197,8 @@ letterPolygons$Z = Letter(
 #par(mfcol=c(5,5),mar=c(0,0,0,0))
 #for(a in c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y")) {
 #  plot(NA,0,xlim=c(0,10),ylim=c(0,10),xaxt="n",yaxt="n"); 
-#  #text(0,0,a,adj=c(0,0),cex=10,font=2,family="sans")
-#  polygon(letterPolygons[[a]]$x*10,letterPolygons[[a]]$y*10,col="black",border="black")
+  #text(0,0,a,adj=c(0,0),cex=10,font=2,family="sans")
+#  polygon(letterPolygons[[a]]$x*10,letterPolygons[[a]]$y*10,col="green",border="black")
 #}
 #dev.off();
 

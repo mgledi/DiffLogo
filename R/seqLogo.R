@@ -33,7 +33,7 @@ pwm2ic_base = function(pwm) {
 ##' @param drawLines a vector of y-values where to draw horizontal gray lines
 ##' @param alphabet of type Alphabet
 ##' @export
-##' @author Martin Gleditzsch
+##' @author Martin Nettling
 seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
@@ -82,7 +82,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA
     } else {
         axis(1,labels=c("",1:npos,""),at=c(0,1:npos,npos+1))
     }
-    polygon(letters, col=letters$col, border=letters$col)
+    polygon(letters, col=letters$col, border=NA)
 }
 
 

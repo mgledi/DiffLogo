@@ -14,7 +14,7 @@ source("./R/baseDistrs.R"); # contains functions to calculate the proportions fo
 ##' @param alphabet of type Alphabet
 ##' @return DiffLogo object
 ##' @export
-##' @author Martin Gleditzsch
+##' @author Martin Nettling
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
@@ -25,7 +25,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     # init needed variables
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm1)
-    eps = 0.0005; # spacer between two bases in one stack
+    eps = 0.0000; # spacer between two bases in one stack
     ylim.negMax = 0;
     ylim.posMax = 0;
 
@@ -93,7 +93,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 ##' @param ymax maximum value on the y-axis
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @export
-##' @author Martin Gleditzsch
+##' @author Martin Nettling
 diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if(class(diffLogoObj) != "DiffLogo") {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
@@ -147,7 +147,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param alphabet of type Alphabet
 ##' @export
-##' @author Martin Gleditzsch
+##' @author Martin Nettling
 diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE, alphabet=DNA) {
     diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
@@ -167,7 +167,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param ratio TODO
 ##' @param alphabet of type Alphabet
 ##' @export
-##' @author Martin Gleditzsch
+##' @author Martin Nettling
 diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=T, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.03, ratio=16/10, alphabet=DNA,...) {
     plot.new();
     dim = length(PWMs);
