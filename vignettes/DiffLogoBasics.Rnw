@@ -13,12 +13,67 @@
 \author{Hendrik Treutler}
 \maketitle
 
+\section{Import library}
+
+Bla
+
+<<ImportLibrary>>=
+library(DiffLogo)
+@
+
 \section{Import PWMs}
 
 Bla
 
 <<ImportPWMs>>=
-1 + 1
+## import PWMs
+motif_folder = "pwm";
+motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
+motifs = list();
+for (name in motif_names) {
+  file = system.file(paste(motif_folder,"/",name,".txt",sep=""), package = "DiffLogo")
+  motifs[[name]] = as.matrix(read.delim(file,header=F));
+}
 @
+
+
+\section{Plot sequence logo}
+
+Bla
+
+<<PlotSequenceLogo>>=
+## plot classic sequence logo
+pwm1 = motifs[[motif_names[[1]]]]
+pwm2 = motifs[[motif_names[[2]]]]
+
+par(mfrow=c(1,2), pin=c(3, 1))
+seqLogo(pwm = pwm1)
+seqLogo(pwm = pwm2)
+@
+
+
+\section{Plot DiffLogo}
+
+Bla
+
+<<PlotDiffLogo>>=
+## plot DiffLogo
+diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
+
+## diffLogoFromPwm is a convenience function for
+diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2);
+diffLogo(diffLogoObj)
+@
+
+
+\section{Plot DiffLogo table}
+
+Bla
+
+<<PlotDiffLogoTable>>=
+## plot DiffLogo table
+diffLogoTable(motifs);
+@
+
 
 \end{document}
