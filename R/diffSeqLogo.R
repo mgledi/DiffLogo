@@ -163,12 +163,24 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
 ##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
-##' @param margin TODO
-##' @param ratio TODO
+##' @param margin the space reseverved for labels.
+##' @param ratio the ratio of the plot. This is needed to determine the margin sizes correctly.
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
-diffLogoTable = function (PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=T, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.03, ratio=16/10, alphabet=DNA,...) {
+diffLogoTable = function (
+			PWMs, 
+			stackHeight=shannonDivergence, 
+            baseDistribution=normalizedDifferenceOfProbabilities, 
+            uniformYaxis=TRUE, 
+            sparse=TRUE, 
+            showSequenceLogosTop=TRUE, 
+            treeHeight=0.5, 
+            margin=0.02, 
+            ratio=1, 
+            alphabet=DNA,
+            ...
+) {
     plot.new();
     dim = length(PWMs);
 
