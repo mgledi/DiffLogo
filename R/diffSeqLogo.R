@@ -37,14 +37,20 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     # determine intermediate values
     for (j in 1:npos) {
 	    heightObj = stackHeight(pwm1[,j],pwm2[,j]);
+        preconditionStackHeight(heightObj); # check for correctness
 	    heights[j] = heightObj$height;
 	    ylab = heightObj$ylab;
-	    hts = heights[j] * baseDistribution(pwm1[,j],pwm2[,j]);
+
+	    distr = baseDistribution(pwm1[,j],pwm2[,j]);
+        preconditionBaseDistribution(distr); # check for correctness
+
+        hts = distr*heights[j];
         letterOrder = order(abs(hts)) # reorder letters
 
 	    yneg.pos = 0 
 	    ypos.pos = 0
         # adds all letters as polygons to the list of letters
+        
 	    for (i in 1:length(hts)) {
 	        ht = hts[letterOrder[i]]
 	        if (ht >= 0){ 

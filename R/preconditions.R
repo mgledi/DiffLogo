@@ -21,3 +21,15 @@ preconditionPWMSameSize = function(pwm1, pwm2) {
         stop("The two given PWMs must have the same dimension");
     }
 }
+
+preconditionStackHeight = function(h) {
+    if(is.na(h$height)) {
+        stop("Height is not allowed to be NA.");
+    }
+}
+
+preconditionBaseDistribution = function(distr) {
+    if(any(is.na(distr))) {
+        stop("A value in the given distribution is NA.");
+    }
+}
