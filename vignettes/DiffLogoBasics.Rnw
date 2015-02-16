@@ -13,17 +13,24 @@
 \author{Hendrik Treutler}
 \maketitle
 
-\section{Import library}
 
-Bla
+\section{Introduction}
+
+The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single DiffLogo and the comparison of multiple motifs by a DiffLogo-table. DiffLogo is based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the \emph{stackHeight} function computes the height of each stack. Second, the \emph{baseDistribution} function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions \emph{stackHeight} and \emph{baseDistribution}. Default implementations of both functions are provided.
+
+
+\section{Download and import library}
+
+The user is able to download the R package DiffLogo from GitHub\footnote{http://github.com/mgledi/DiffLogo}. After installing the package, the user is able to import DiffLogo.
 
 <<ImportLibrary>>=
 library(DiffLogo)
 @
 
+
 \section{Import PWMs}
 
-Bla
+PWMs can be represented as object of type pwm, data.frame, or matrix. In the package DiffLogo, there are example PWMs in file \emph{exampleLogos.R} as R objects as well as in folder \emph{pwm} as tab--delimited files (extracted from [3]). 
 
 <<ImportPWMs>>=
 ## import PWMs
@@ -31,15 +38,18 @@ motif_folder = "pwm";
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
 motifs = list();
 for (name in motif_names) {
-  file = system.file(paste(motif_folder,"/",name,".txt",sep=""), package = "DiffLogo")
+  fileName = paste(motif_folder,"/",name,".txt",sep="")
+  file = system.file(fileName, package = "DiffLogo")
   motifs[[name]] = as.matrix(read.delim(file,header=F));
 }
 @
 
+Here, we import a set of four motifs from the folder \emph{pwm}.
+
 
 \section{Plot sequence logo}
 
-Bla
+The user is able to plot the classical sequence logo. The result is equivalent to the result of the package \emph{seqLogo}
 
 <<PlotSequenceLogo>>=
 ## plot classic sequence logo
@@ -54,7 +64,7 @@ seqLogo(pwm = pwm2)
 
 \section{Plot DiffLogo}
 
-Bla
+The user is easily able to plot a DiffLogo for a pair of PWMs.
 
 <<PlotDiffLogo>>=
 ## plot DiffLogo
@@ -68,12 +78,20 @@ diffLogo(diffLogoObj)
 
 \section{Plot DiffLogo table}
 
-Bla
+The user is easily able to plot a DiffLogo table for a set of PWMs.
 
 <<PlotDiffLogoTable>>=
 ## plot DiffLogo table
 diffLogoTable(motifs);
 @
 
+
+\section*{Literature}
+
+[1] http://en.wikipedia.org/wiki/Position\_weight\_matrix
+\newline
+[2] Schneider TD, Stephens RM. 1990. Sequence Logos: A New Way to Display Consensus Sequences. Nucleic Acids Res. 18:6097-6100
+\newline
+[3] Eggeling, R., Gohr, A., Keilwagen, J., Mohr, M., Posch, S., Smith, A.D., Grosse, I.: On the value of intra-motifdependencies of human insulator protein ctcf. PLoS ONE 9(1), 85629 (2014). doi:10.1371/journal.pone.0085629
 
 \end{document}

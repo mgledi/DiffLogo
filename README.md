@@ -2,7 +2,7 @@ DiffLogo
 ========
 What is DiffLogo
 ---------------
-The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single DiffLogo and the comparison of multiple motifs by a DiffLogo-table. DiffLogo is based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the stackHeight function computes the height of each stack. Second, the baseDistribution function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions stackHeight and baseDistribution. Default implementations are provided.
+The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single DiffLogo and the comparison of multiple motifs by a DiffLogo-table. DiffLogo is based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the <code>stackHeight</code> function computes the height of each stack. Second, the <code>baseDistribution</code> function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions <code>stackHeight</code> and <code>baseDistribution</code>. Default implementations of both functions are provided.
 
 Who should use DiffLogo
 -----------------------
