@@ -1,2 +1,6 @@
 *.pdf
 .project
+.Rproj.user
+.Rbuildignore
+.Rhistory
+DiffLogo.Rproj

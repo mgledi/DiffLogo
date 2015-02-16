@@ -8,7 +8,7 @@ Draw DiffLogo-table
 Draws a table of DiffLogos.
 }
 \usage{
-diffLogoTable(PWMs, stackHeight = shannonDivergence, baseDistribution = normalizedDifferenceOfProbabilities, uniformYaxis = T, sparse = TRUE, showSequenceLogosTop = TRUE, treeHeight = 0.5, margin = 0.03, ratio = 16/10, alphabet = DNA, ...)
+diffLogoTable(PWMs, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, uniformYaxis=TRUE, sparse=TRUE, showSequenceLogosTop=TRUE, treeHeight=0.5, margin=0.02, ratio=1, alphabet=DNA, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -77,10 +77,17 @@ Martin Gleditzsch
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (PWMs, stackHeight = shannonDivergence, baseDistribution = normalizedDifferenceOfProbabilities, 
-    uniformYaxis = T, sparse = TRUE, showSequenceLogosTop = TRUE, 
-    treeHeight = 0.5, margin = 0.03, ratio = 16/10, alphabet = DNA, 
-    ...) 
+function (PWMs, 
+			stackHeight=shannonDivergence, 
+            baseDistribution=normalizedDifferenceOfProbabilities, 
+            uniformYaxis=TRUE, 
+            sparse=TRUE, 
+            showSequenceLogosTop=TRUE, 
+            treeHeight=0.5, 
+            margin=0.02, 
+            ratio=1, 
+            alphabet=DNA,
+            ...) 
 {
     plot.new()
     dim = length(PWMs)
