@@ -2,32 +2,29 @@ DiffLogo
 ========
 What is DiffLogo
 ---------------
-DiffLogo is a tool to visualize differences between two motifs. It is based on the commonly known sequence logo [1]. The only precondition that must been fulfilled in the current version is that the two input motifs must be of the same length. The current version of DiffLogo provides two different visualizations.
+The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single DiffLogo and the comparison of multiple motifs by a DiffLogo-table. DiffLogo is based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the stackHeight function computes the height of each stack. Second, the baseDistribution function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions stackHeight and baseDistribution. Default implementations are provided.
 
 Who should use DiffLogo
 -----------------------
-DiffLogo is for any researcher with any biological background. It is useful to document your findings, to share your knowledge, and to present the outcome of motif prediction pipelines. It should increase the quality of comarative publications. Not least DiffLogo should ease the communication between bioinformatics scientists and biologists.
+DiffLogo is designed for researchers with any biological background and interest in computational biology. It is useful to document findings, share knowledge, and to present the outcome of motif prediction pipelines. It aims at an increase of the quality of comparative publications. In addition, DiffLogo eases the communication between bioinformatics scientists and biologists.
 
 When should DiffLogo be used
 ----------------------------
-DiffLogo should be used, when it is needed to compare very similar sequence logos. Those sequence logos can come from e.g. 
-- different species, cell lines or, tissues
-- different motif prediction algorithms that have been run on the same dataset 
-- different wet lab experiments and different preconditions of experiments (e.g. stress)
+DiffLogo is intended for the comparison of similar motifs. These motifs can come from different sources such as
+- different treatments, species, cell lines, or tissues
+- different motif prediction algorithms and configurations
 
 Getting started
 ---------------
-Download the file <a href="diffSeqLogo.R">diffSeqLogo.R</a> to your working directory. Start R and load the file with the command <code>source</code>. Load your motifs of interest as PWMs[2] to R. Please see <a href="exampleLogos.R">exampleLogos.R</a> for some example motifs.  
+Download the R package DiffLogo available at TODO. Load your motifs of interest as PWMs [1] to R. Please find example motifs in the file 'exampleLogos.R' and in the folder 'inst/pwm' (extracted from [3]). Please find the vignette 'DiffLogoBasics.Rnw' of the DiffLogo package for example code.  
 
-Use the function <code>diffSeqLogo(PWM1, PWM2)</code> to visualize the difference between two sequence logos. 
+Use the function <code>diffLogoFromPwm(PWM1, PWM2)</code> to visualize the difference between two motifs. 
 
-Use the function <code>diffSeqLogoMulti(listOfPWMs)</code> to visualize the pairwise difference between more than two motifs.
+Use the function <code>diffLogoTable(listOfPWMs)</code> to visualize the pairwise difference between more than two motifs.
 
-Examples of usage can be found in the file <a href="compareCTCF.R">compareCTCF.R</a>. The used motifs are provided by Eggeling et al. [3]
-
-Cite this work
+References
 --------------
 
-[1] Schneider TD, Stephens RM. 1990. Sequence Logos: A New Way to Display Consensus Sequences. _Nucleic Acids Res. 18_:6097-6100<br>
-[2] http://en.wikipedia.org/wiki/Position_weight_matrix<br>
+[1] http://en.wikipedia.org/wiki/Position_weight_matrix<br>
+[2] Schneider TD, Stephens RM. 1990. Sequence Logos: A New Way to Display Consensus Sequences. _Nucleic Acids Res. 18_:6097-6100<br>
 [3] Eggeling, R., Gohr, A., Keilwagen, J., Mohr, M., Posch, S., Smith, A.D., Grosse, I.: On the value of intra-motifdependencies of human insulator protein ctcf. _PLoS ONE 9(1)_, 85629 (2014). doi:10.1371/journal.pone.0085629
