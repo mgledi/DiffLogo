@@ -16,7 +16,7 @@ DiffLogo is intended for the comparison of similar motifs. These motifs can come
 
 Getting started
 ---------------
-Download the R package DiffLogo available at TODO. Load your motifs of interest as PWMs [1] to R. Please find example motifs in the file 'exampleLogos.R' and in the folder 'inst/pwm' (extracted from [3]). Please find the vignette 'DiffLogoBasics.Rnw' of the DiffLogo package for example code.  
+Download and install the R package DiffLogo available in the folder 'built'. Load your motifs of interest as PWMs [1] to R. Please find example motifs in the file 'exampleLogos.R' and in the folder 'inst/pwm' (extracted from [3]). Please find the vignette 'DiffLogoBasics.Rnw' of the DiffLogo package for example code.  
 
 Use the function <code>diffLogoFromPwm(PWM1, PWM2)</code> to visualize the difference between two motifs. 
 
