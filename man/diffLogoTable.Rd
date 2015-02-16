@@ -34,10 +34,10 @@ if TRUE the classical sequence logos are drawn above each column of the table
 the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
 }
   \item{margin}{
-TODO
+the space reseverved for labels
 }
   \item{ratio}{
-TODO
+the ratio of the plot; this is needed to determine the margin sizes correctly
 }
   \item{alphabet}{
 of type Alphabet

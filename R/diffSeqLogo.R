@@ -1,8 +1,3 @@
-source("./R/preconditions.R"); # contains functions that check preconditions
-source("./R/alphabet.R"); # contains functions for drawing
-source("./R/seqLogo.R"); # contains functions for drawing
-source("./R/stackHeights.R"); # contains functions to calculate the stackheihts in a diffLogo
-source("./R/baseDistrs.R"); # contains functions to calculate the proportions for each base in a stack of a diffLogo
 
 ##' Creates a DiffLogo object
 ##'
@@ -169,8 +164,8 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
 ##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
-##' @param margin the space reseverved for labels.
-##' @param ratio the ratio of the plot. This is needed to determine the margin sizes correctly.
+##' @param margin the space reseverved for labels
+##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling

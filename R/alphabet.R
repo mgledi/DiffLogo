@@ -15,6 +15,7 @@ Alphabet = function(chars,cols) {
    class(obj)="Alphabet"
    return(obj);
 }
+
 #################### Letter Polygons must be created
 letterPolygons=list();
 class(letterPolygons)="LetterPolygons";
@@ -192,17 +193,19 @@ letterPolygons$Z = Letter(
   c(1.5,1.5,8.5,8.5,NA,10,10,8.5,8.5,NA,0,0,1.5,1.5) * 0.1
 )
 
-## plot the letters for testing
-#pdf("lettersTest.pdf");
-#par(mfcol=c(5,5),mar=c(0,0,0,0))
-#for(a in c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y")) {
-#  plot(NA,0,xlim=c(0,10),ylim=c(0,10),xaxt="n",yaxt="n"); 
-  #text(0,0,a,adj=c(0,0),cex=10,font=2,family="sans")
-#  polygon(letterPolygons[[a]]$x*10,letterPolygons[[a]]$y*10,col="green",border="black")
-#}
-#dev.off();
+if(FALSE){
+  ## plot the letters for testing
+  pdf("lettersTest.pdf");
+  par(mfcol=c(5,5),mar=c(0,0,0,0))
+  for(a in c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y")) {
+    plot(NA,0,xlim=c(0,10),ylim=c(0,10),xaxt="n",yaxt="n"); 
+    polygon(letterPolygons[[a]]$x*10,letterPolygons[[a]]$y*10,col="green",border="black")
+  }
+  dev.off();
+}
 
 DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"));
+RNA = Alphabet(c("A","C","G","U"),c("green4","blue","orange","red"));
 
 c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkBlue"; c7="Orange"; c8="Pink"; c9="Red";
 ASN = Alphabet(
