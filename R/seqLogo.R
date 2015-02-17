@@ -3,13 +3,13 @@
 ##' @title Draw sequence logo
 ##' @param pwm representation of a position weight matrix (PWM) of type pwm, data.frame, or matrix
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
-##' @param drawLines a vector of y-values where to draw horizontal gray lines
+##' @param drawLines distance between background lines. 
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
-seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0), stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
+seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
 
@@ -21,6 +21,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0), stackHeight
    
     wt = 1.0
     x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
+    eps = 0; # spacer between two bases in one stack
     heights = c(); ymins=c(); ymaxs=c()
     for (j in 1:npos) {
         column = pwm[, j]
@@ -32,7 +33,8 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0), stackHeight
         for (i in 1:alphabet$size) {
             ht = hts[letterOrder[i]]
             y.pos = ypos.pos;
-            ypos.pos = ypos.pos + ht + 0.0005
+            ht = ht - eps;
+            ypos.pos = ypos.pos + ht + eps
             char = alphabet$chars[letterOrder[i]]
             col = alphabet$cols[letterOrder[i]];
             letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt*0.99, col=col)
@@ -46,7 +48,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0), stackHeight
         plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=F,xlab="Position")
     }
 
-    for(y in drawLines) {
+    for(y in seq(0,log2(alphabet$size),drawLines)) {
         abline(y,0,col="gray");
     }
     

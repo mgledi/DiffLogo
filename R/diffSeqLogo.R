@@ -20,7 +20,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     # init needed variables
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm1)
-    eps = 0.0000; # spacer between two bases in one stack
+    eps = 0; # spacer between two bases in one stack
     ylim.negMax = 0;
     ylim.posMax = 0;
 
@@ -53,7 +53,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
                 ypos.pos = ypos.pos + ht + eps
 	        } else if(ht < 0 ) {
 	            y.pos = yneg.pos;
-		        yneg.pos = yneg.pos + ht - eps
+                yneg.pos = yneg.pos + ht - eps
 	        }
             char = alphabet$chars[ (letterOrder[i]-1)%%alphabet$size+1 ]
             col = alphabet$cols[ (letterOrder[i]-1)%%alphabet$size+1 ];
