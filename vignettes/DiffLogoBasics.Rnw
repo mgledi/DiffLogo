@@ -34,13 +34,13 @@ PWMs can be represented as object of type pwm, data.frame, or matrix. In the pac
 
 <<ImportPWMs>>=
 ## import PWMs
-motif_folder = "pwm";
-motif_names = c("HepG2","MCF7","HUVEC","ProgFib");
-motifs = list();
+motif_folder = "pwm"
+motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+motifs = list()
 for (name in motif_names) {
   fileName = paste(motif_folder,"/",name,".txt",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=F));
+  motifs[[name]] = as.matrix(read.delim(file,header=F))
 }
 @
 
@@ -71,7 +71,7 @@ The user is easily able to plot a DiffLogo for a pair of PWMs.
 diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 
 ## diffLogoFromPwm is a convenience function for
-diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2);
+diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 diffLogo(diffLogoObj)
 @
 
@@ -82,7 +82,7 @@ The user is easily able to plot a DiffLogo table for a set of PWMs.
 
 <<PlotDiffLogoTable>>=
 ## plot DiffLogo table
-diffLogoTable(motifs);
+diffLogoTable(motifs)
 @
 
 
