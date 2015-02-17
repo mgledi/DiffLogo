@@ -61,16 +61,16 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA
             y.pos = ypos.pos;
             ypos.pos = ypos.pos + ht + 0.0005
             char = alphabet$chars[letterOrder[i]]
-            col = alphabet$cols[[letterOrder[i]]];
+            col = alphabet$cols[letterOrder[i]];
             letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt, col=col)
         }
         x.pos = x.pos + wt
     }
     if(sparse) {
-        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,2),xaxt="n", ylab="",
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)),xaxt="n", ylab="",
         mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
     } else {
-        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,2), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
     }
 
     for(y in drawLines) {

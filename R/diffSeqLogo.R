@@ -219,22 +219,22 @@ diffLogoTable = function (
     }
     colors = matrix(palette[cut(similarities,100)],dim,dim)
     hc = hclust(dist(similarities));
-    leaveOrder = hc$order;
+    leafOrder = hc$order;
 
     # draw DiffLogos
     dimV = c(dim, dim,dim+st+treeHeight,dim+st+treeHeight);
     for ( i in 1:dim) {
-        motif_i = names[leaveOrder[i]];
+        motif_i = names[leafOrder[i]];
         for ( k in 1:dim) {
             if( i != k ) {
-                motif_k = names[leaveOrder[k]];
+                motif_k = names[leafOrder[k]];
                 subplotcoords = c(i-1,i,dim-k,dim-k+1)
                 
                 print(paste("plotting ",motif_i," and ",motif_k));
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 		
 		        plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
-        		rect(0,0,1,1,col=colors[leaveOrder[i],leaveOrder[k]],border=NA);
+        		rect(0,0,1,1,col=colors[leafOrder[i],leafOrder[k]],border=NA);
 		
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marDiffLogo)
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet); 
@@ -247,7 +247,7 @@ diffLogoTable = function (
             #plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
             #rect(0,0,1,1,col="gray",border=NA);            
             par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin*ratio,margin*ratio), new=TRUE, mar=marSeqLogo)       
-            seqLogo(PWMs[[ motif_i ]],sparse=sparse)
+            seqLogo(PWMs[[ motif_i ]],sparse=sparse, alphabet=alphabet)
         }
     }
 
@@ -263,6 +263,6 @@ diffLogoTable = function (
     par(fig=(c(0,dim,0,dim) / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio)+ c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 
     plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxs="i",xaxt="n",yaxt="n",yaxs="i", bty="n", mar=c(0,0,0,0)) 
-    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[leaveOrder]), tick = F, mgp = c(3, 0, 0), ...)
-    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[leaveOrder], tick = F, mgp = c(3, 0, 0), ...)
+    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[leafOrder]), tick = F, mgp = c(3, 0, 0), ...)
+    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[leafOrder], tick = F, mgp = c(3, 0, 0), ...)
 }
