@@ -57,7 +57,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 	        }
             char = alphabet$chars[ (letterOrder[i]-1)%%alphabet$size+1 ]
             col = alphabet$cols[ (letterOrder[i]-1)%%alphabet$size+1 ];
-            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt, col=col)
+            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt*0.99, col=col)
 	    }
 	
         x.pos = x.pos + wt

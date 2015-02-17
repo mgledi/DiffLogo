@@ -4,10 +4,12 @@
 ##' @param pwm representation of a position weight matrix (PWM) of type pwm, data.frame, or matrix
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param drawLines a vector of y-values where to draw horizontal gray lines
+##' @param stackHeight function for the height of a stack at position i
+##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
-seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA, stackHeight=informationContent, baseDistribution=probabilities) { 
+seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0), stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
 
@@ -33,7 +35,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA
             ypos.pos = ypos.pos + ht + 0.0005
             char = alphabet$chars[letterOrder[i]]
             col = alphabet$cols[letterOrder[i]];
-            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt, col=col)
+            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt*0.99, col=col)
         }
         x.pos = x.pos + wt
     }
