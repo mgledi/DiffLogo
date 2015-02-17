@@ -1,30 +1,3 @@
-# calculates the information content of the given PWM
-pwm2ic_col = function(pwm) {
-    npos = ncol(pwm)
-    ic = numeric(length = npos)
-    for (i in 1:npos) {
-        ic[i] = 2 + sum(sapply(pwm[, i], function(x) {
-            if (x > 0) {
-                x * log2(x) / log2(nrow(pwm))
-            } else {
-                0
-            }
-        }))
-    }
-    ic
-}
-
-# calculates the information content for each base in each column
-pwm2ic_base = function(pwm) {
-    ic = matrix(0,nrow(pwm),ncol(pwm))
-    for(k in 1:ncol(pwm)) {
-        for(a in 1:nrow(pwm)) {
-            ic[a,k] = pwm[a,k]*log2(pwm[a,k]) / log2(nrow(pwm))
-        }
-    }
-    return(ic);
-}
-
 ##' Draws the classic sequence logo. 
 ##'
 ##' @title Draw sequence logo
@@ -34,7 +7,7 @@ pwm2ic_base = function(pwm) {
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
-seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA) { 
+seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA, stackHeight=informationContent, baseDistribution=probabilities) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
 
@@ -43,16 +16,14 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA
 
     ylim.negMax = 0;
     ylim.posMax = 0;
-    facs = pwm2ic_col(pwm);
-    
-    ylab = "Information content [bits]"
    
     wt = 1.0
     x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
     heights = c(); ymins=c(); ymaxs=c()
     for (j in 1:npos) {
         column = pwm[, j]
-        hts = column * facs[j] 
+        sh = stackHeight(column);
+        hts = baseDistribution(column) * sh$height ;
         letterOrder = order(abs(hts)) # reorder letters
         yneg.pos = 0 
         ypos.pos = 0
@@ -70,7 +41,7 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=c(0.5,1.0,1.5,2.0),alphabet=DNA
         plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)),xaxt="n", ylab="",
         mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
     } else {
-        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=ylab, frame.plot=F,xlab="Position")
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=F,xlab="Position")
     }
 
     for(y in drawLines) {

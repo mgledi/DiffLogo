@@ -23,3 +23,7 @@ differenceOfICs = function(p1,p2) {
     diff = hts1 - hts2
     return( diff / sum(abs(diff)));
 }
+
+probabilities = function(p) {
+  return(p);
+}
