@@ -3,7 +3,7 @@
 ##' @title Draw sequence logo
 ##' @param pwm representation of a position weight matrix (PWM) of type pwm, data.frame, or matrix
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
-##' @param drawLines distance between background lines. 
+##' @param drawLines distance between background lines
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet

@@ -4,3 +4,4 @@
 .Rbuildignore
 .Rhistory
 DiffLogo.Rproj
+.RData

@@ -8,7 +8,7 @@ Draw sequence logo
 Draws the classic sequence logo. 
 }
 \usage{
-seqLogo(pwm, sparse = FALSE, drawLines = c(0.5, 1, 1.5, 2), alphabet = DNA)
+seqLogo(pwm, sparse = FALSE, drawLines = 0.5, stackHeight = informationContent, baseDistribution = probabilities, alphabet = DNA)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,7 +19,13 @@ representation of a position weight matrix (PWM) of type pwm, data.frame, or mat
 if TRUE margins are reduced and tickmarks are removed from the logo
 }
   \item{drawLines}{
-a vector of y-values where to draw horizontal gray lines
+distance between background lines
+}
+  \item{stackHeight}{
+function for the height of a stack at position i
+}
+  \item{baseDistribution}{
+function for the heights of the individual bases
 }
   \item{alphabet}{
 of type Alphabet
@@ -56,60 +62,55 @@ Martin Gleditzsch
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (pwm, sparse = FALSE, drawLines = c(0.5, 1, 1.5, 2), 
-    alphabet = DNA) 
-{
-    pwm = preconditionTransformPWM(pwm, alphabet)
-    preconditionPWM(pwm)
+function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
+    pwm = preconditionTransformPWM(pwm,alphabet);
+    preconditionPWM(pwm);
+
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm)
-    ylim.negMax = 0
-    ylim.posMax = 0
-    facs = pwm2ic_col(pwm)
-    ylab = "Information content [bits]"
-    wt = 1
-    x.pos = 0.5
-    heights = c()
-    ymins = c()
-    ymaxs = c()
+
+    ylim.negMax = 0;
+    ylim.posMax = 0;
+   
+    wt = 1.0
+    x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
+    eps = 0; # spacer between two bases in one stack
+    heights = c(); ymins=c(); ymaxs=c()
     for (j in 1:npos) {
         column = pwm[, j]
-        hts = column * facs[j]
-        letterOrder = order(abs(hts))
-        yneg.pos = 0
+        sh = stackHeight(column);
+        hts = baseDistribution(column) * sh$height ;
+        letterOrder = order(abs(hts)) # reorder letters
+        yneg.pos = 0 
         ypos.pos = 0
         for (i in 1:alphabet$size) {
             ht = hts[letterOrder[i]]
-            y.pos = ypos.pos
-            ypos.pos = ypos.pos + ht + 5e-04
+            y.pos = ypos.pos;
+            ht = ht - eps;
+            ypos.pos = ypos.pos + ht + eps
             char = alphabet$chars[letterOrder[i]]
-            col = alphabet$cols[[letterOrder[i]]]
-            letters = addLetter(letters, letterPolygons[[char]], 
-                x.pos, y.pos, ht, wt, col = col)
+            col = alphabet$cols[letterOrder[i]];
+            letters = addLetter(letters, letterPolygons[[char]], x.pos, y.pos, ht, wt*0.99, col=col)
         }
         x.pos = x.pos + wt
     }
-    if (sparse) {
-        plot(NA, xlim = c(0.5, x.pos), ylim = c(0, 2), xaxt = "n", 
-            ylab = "", mgp = c(0, 0.35, 0), tck = -0.02, cex.axis = 0.8, 
-            frame.plot = F, xlab = "")
+    if(sparse) {
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)),xaxt="n", ylab="",
+        mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
+    } else {
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=F,xlab="Position")
     }
-    else {
-        plot(NA, xlim = c(0.5, x.pos), ylim = c(0, 2), xaxt = "n", 
-            ylab = ylab, frame.plot = F, xlab = "Position")
+
+    for(y in seq(0,log2(alphabet$size),drawLines)) {
+        abline(y,0,col="gray");
     }
-    for (y in drawLines) {
-        abline(y, 0, col = "gray")
+    
+    if(sparse) {
+        axis(1,labels=c("",rep("",npos),""), at=c(0,1:npos,npos+1),tck=-0.02)
+    } else {
+        axis(1,labels=c("",1:npos,""),at=c(0,1:npos,npos+1))
     }
-    if (sparse) {
-        axis(1, labels = c("", rep("", npos), ""), at = c(0, 
-            1:npos, npos + 1), tck = -0.02)
-    }
-    else {
-        axis(1, labels = c("", 1:npos, ""), at = c(0, 1:npos, 
-            npos + 1))
-    }
-    polygon(letters, col = letters$col, border = letters$col)
+    polygon(letters, col=letters$col, border=NA)
   }
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

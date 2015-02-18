@@ -85,6 +85,33 @@ The user is easily able to plot a DiffLogo table for a set of PWMs.
 diffLogoTable(motifs)
 @
 
+\section{Export visualization}
+
+The user is able to export the generated visualizations in various formats. Please find two examples below.
+
+<<Export>>=
+## parameters
+widthToHeightRatio = 16/10;
+size = length(motifs) * 2
+resolution <- 300
+width <- size * widthToHeightRatio
+height <- size
+
+## export single DiffLogo as pdf document
+fileName <- "Comparison_of_two_motifs.pdf"
+pdf(file = fileName, width = width, height = height)
+diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
+dev.off()
+
+## export DiffLogo table as png image
+fileName <- "Comparison_of_multiple_motifs.png"
+png(
+  filename = fileName, res = resolution,
+  width = width * resolution, height = height * resolution)
+diffLogoTable(PWMs = motifs)
+dev.off()
+@
+
 
 \section*{Literature}
 
