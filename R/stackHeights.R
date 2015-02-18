@@ -19,13 +19,15 @@ sumOfAbsICDifferences = function(p1,p2) {
 # sums up the absolute differences of corresponding probability weighted ICs
 # returns an object consisting of height and a ylab
 shannonDivergence = function(p,q) {
-    m = (p + q) / 2
     obj=list();
     # if p is identical to q, set height to 0
     if(all(p==q)) {
         obj$height=0;   
     } else {
-        obj$height=0.5*sum( p * (log2(p) - log2(m))) + 0.5*sum( q * (log2(q) - log2(m)));
+        px= p[p>0];
+        qx= q[q>0];
+        mx = (px + qx) / 2
+        obj$height=0.5*sum( px * (log2(px) - log2(mx))) + 0.5*sum( qx * (log2(qx) - log2(mx)));
     }
     obj$ylab="JS divergence";
     return(obj);

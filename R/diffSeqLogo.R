@@ -79,7 +79,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
     diffObj$letters = letters;
     diffObj$pwm1 = pwm1
     diffObj$pwm2 = pwm2
-    diffObj$distance = sum(heights) # TODO as function
+    diffObj$distance = sum(abs(heights)) # TODO as function
     diffObj$alphabet = alphabet
     
     class(diffObj) = "DiffLogo"
@@ -206,7 +206,7 @@ diffLogoTable = function (
         motif_i = names[i];
         for ( k in 1:dim) {
             motif_k = names[k];
-	        similarities[i,k] = NA
+	        similarities[i,k] = 0
             if( i != k ) {
 		        diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
                 if(uniformYaxis) {
@@ -218,8 +218,9 @@ diffLogoTable = function (
         }
     }
     colors = matrix(palette[cut(similarities,100)],dim,dim)
-    hc = hclust(dist(similarities));
+    hc = hclust(dist(similarities), "average");
     leafOrder = hc$order;
+
 
     # draw DiffLogos
     dimV = c(dim, dim,dim+st+treeHeight,dim+st+treeHeight);
@@ -230,7 +231,6 @@ diffLogoTable = function (
                 motif_k = names[leafOrder[k]];
                 subplotcoords = c(i-1,i,dim-k,dim-k+1)
                 
-                print(paste("plotting ",motif_i," and ",motif_k));
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 		
 		        plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
