@@ -32,7 +32,7 @@ PWM as matrix
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Hendrik Treutler
 }
 \note{
 %%  ~~further notes~~
