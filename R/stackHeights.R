@@ -2,8 +2,8 @@
 # sums up the absolute differences of corresponding probability weighted ICs
 # returns an object consisting of height a ylab
 sumOfAbsICDifferences = function(p1,p2) {
-    H1 = pwm2ic_col(as.matrix(p1))
-    H2 = pwm2ic_col(as.matrix(p2))
+    H1 = informationContent(p1)$height
+    H2 = informationContent(p2)$height
     obj=list();
     # if p is identical to q, set height to 0
     if(all(p1==p2)) {
