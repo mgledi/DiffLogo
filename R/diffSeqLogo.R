@@ -9,6 +9,7 @@
 ##' @param alphabet of type Alphabet
 ##' @return DiffLogo object
 ##' @export
+##' @exportClass DiffLogo
 ##' @author Martin Nettling
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
@@ -167,6 +168,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
+##' @param ... TODO
 ##' @export
 ##' @author Martin Nettling
 diffLogoTable = function (

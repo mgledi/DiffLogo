@@ -1,6 +1,12 @@
-##############
-# sums up the absolute differences of corresponding probability weighted ICs
-# returns an object consisting of height a ylab
+
+##' TODO
+##'
+##' @title TODO
+##' @param p1 TODO
+##' @param p2 TODO
+##' @return an object consisting of height a ylab
+##' @export
+##' @author Martin Nettling
 sumOfAbsICDifferences = function(p1,p2) {
     H1 = pwm2ic_col(as.matrix(p1))
     H2 = pwm2ic_col(as.matrix(p2))
@@ -15,17 +21,22 @@ sumOfAbsICDifferences = function(p1,p2) {
     return(obj);
 }
 
-##############
-# sums up the absolute differences of corresponding probability weighted ICs
-# returns an object consisting of height and a ylab
-shannonDivergence = function(p,q) {
+##' TODO
+##'
+##' @title TODO
+##' @param p1 TODO
+##' @param p2 TODO
+##' @return an object consisting of height a ylab
+##' @export
+##' @author Martin Nettling
+shannonDivergence = function(p1,p2) {
     obj=list();
     # if p is identical to q, set height to 0
-    if(all(p==q)) {
+    if(all(p1==p2)) {
         obj$height=0;   
     } else {
-        px= p[p>0];
-        qx= q[q>0];
+        px= p1[p1>0];
+        qx= p2[p2>0];
         mx = (px + qx) / 2
         obj$height=0.5*sum( px * (log2(px) - log2(mx))) + 0.5*sum( qx * (log2(qx) - log2(mx)));
     }
@@ -33,7 +44,13 @@ shannonDivergence = function(p,q) {
     return(obj);
 }
 
-
+##' TODO
+##'
+##' @title TODO
+##' @param p TODO
+##' @return an object consisting of height a ylab
+##' @export
+##' @author Martin Nettling
 sumProbabilities = function (p) {
     obj=list();
     obj$height=sum(p);
@@ -41,7 +58,13 @@ sumProbabilities = function (p) {
     return(obj);
 }
 
-
+##' TODO
+##'
+##' @title TODO
+##' @param p TODO
+##' @return an object consisting of height a ylab
+##' @export
+##' @author Martin Nettling
 informationContent = function (p) {
     obj=list();
     x = p[p>0];

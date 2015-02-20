@@ -1,5 +1,12 @@
-##############
-# returns a vector of size 4
+
+##' TODO
+##'
+##' @title TODO
+##' @param p1 TODO
+##' @param p2 TODO
+##' @return TODO
+##' @export
+##' @author Martin Nettling
 normalizedDifferenceOfProbabilities = function(p1,p2) {
     # if p is identical to q, return uniform distribution
     if(all(p1==p2)) {
@@ -9,8 +16,14 @@ normalizedDifferenceOfProbabilities = function(p1,p2) {
     return( tmp / sum(abs(tmp)));
 }
 
-##############
-# returns a vector of size 4
+##' TODO
+##'
+##' @title TODO
+##' @param p1 TODO
+##' @param p2 TODO
+##' @return TODO
+##' @export
+##' @author Martin Nettling
 differenceOfICs = function(p1,p2) {
     # if p is identical to q, return uniform distribution
     if(all(p1==p2)) {
@@ -24,6 +37,13 @@ differenceOfICs = function(p1,p2) {
     return( diff / sum(abs(diff)));
 }
 
+##' TODO
+##'
+##' @title TODO
+##' @param p TODO
+##' @return TODO
+##' @export
+##' @author Martin Nettling
 probabilities = function(p) {
   return(p);
 }

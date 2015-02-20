@@ -10,6 +10,15 @@ Letter = function(x,y) {
    return(pts);
 }
 
+##' TODO
+##'
+##' @title TODO
+##' @param chars TODO
+##' @param cols TODO
+##' @return TODO
+##' @export
+##' @exportClass Alphabet
+##' @author Martin Nettling
 Alphabet = function(chars,cols) {
    obj = list(chars=chars,cols=cols,size=length(chars))
    class(obj)="Alphabet"
@@ -204,13 +213,29 @@ if(FALSE){
   dev.off();
 }
 
+
+##' TODO
+##'
+##' @title TODO
+##' @export
+##' @author Martin Nettling
 DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"));
+
+##' TODO
+##'
+##' @title TODO
+##' @export
+##' @author Martin Nettling
 RNA = Alphabet(c("A","C","G","U"),c("green4","blue","orange","red"));
 
 c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkBlue"; c7="Orange"; c8="Pink"; c9="Red";
+
+##' TODO
+##'
+##' @title TODO
+##' @export
+##' @author Martin Nettling
 ASN = Alphabet(
     c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y"),
     c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5)
 )
-
-

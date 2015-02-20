@@ -31,7 +31,7 @@ library(DiffLogo)
 
 \section{Import PWMs}
 
-PWMs can be represented as object of type pwm, data.frame, or matrix. In the package DiffLogo, there are example PWMs in file \emph{exampleLogos.R} as R objects as well as in folder \emph{pwm} as tab--delimited files (extracted from [3]). 
+PWMs can be represented as object of type pwm, data.frame, or matrix. In the package DiffLogo, there are example PWMs in folder \emph{pwm} as tab--delimited files (extracted from [3]). 
 
 <<ImportPWMs>>=
 ## import PWMs
