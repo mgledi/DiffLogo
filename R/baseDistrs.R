@@ -13,7 +13,7 @@ normalizedDifferenceOfProbabilities = function(p1,p2) {
 # returns a vector of size 4
 differenceOfICs = function(p1,p2) {
     # if p is identical to q, return uniform distribution
-    if(all(p==q)) {
+    if(all(p1==p2)) {
         return( rep(1/length(p1),length(p1)) )
     }
     H1 = informationContent(p1)$height;

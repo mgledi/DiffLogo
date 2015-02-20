@@ -1,1 +1,21 @@
-exportPattern("^[[:alpha:]]+")
+#exportPattern("^[[:alpha:]]+")
+exportClasses(
+  Alphabet, DiffLogo
+)
+export(
+  # alphabet
+  DNA, RNA, ASN,
+  # baseDistrs
+  normalizedDifferenceOfProbabilities, differenceOfICs, probabilities,
+  # diffSeqLogo
+  createDiffLogoObject, diffLogo, diffLogoFromPwm, diffLogoTable,
+  # exampleLogos
+  CTCF, GABP, SRF, STAT1, NRSFm,
+  # preconditions
+  # seqLogo
+  seqLogo, 
+  # stackHeights
+  sumOfAbsICDifferences, shannonDivergence, sumProbabilities, informationContent,
+  # utilities
+  getPwmFromAlignment
+)

@@ -1,3 +1,4 @@
+%\VignetteIndexEntry{Basics of the DiffLogo package}
 
 \documentclass[12pt]{article}
 

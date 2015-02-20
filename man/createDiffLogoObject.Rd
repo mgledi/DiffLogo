@@ -38,7 +38,7 @@ DiffLogo object
 %% ~put references to the literature/web site here ~
 }
 \author{
-Martin Gleditzsch
+Martin Nettling
 }
 \note{
 %%  ~~further notes~~

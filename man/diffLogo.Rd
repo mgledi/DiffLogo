@@ -39,7 +39,7 @@ if TRUE margins are reduced and tickmarks are removed from the logo
 %% ~put references to the literature/web site here ~
 }
 \author{
-Martin Gleditzsch
+Martin Nettling
 }
 \note{
 %%  ~~further notes~~
