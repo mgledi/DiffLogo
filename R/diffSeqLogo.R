@@ -170,6 +170,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param alphabet of type Alphabet
 ##' @param ... TODO
 ##' @export
+##' @importFrom cba order.optimal
 ##' @author Martin Nettling
 diffLogoTable = function (
 			PWMs, 

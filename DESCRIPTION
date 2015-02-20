@@ -11,7 +11,8 @@ Author: c( person("Martin", "Nettling", role = c("aut", "cre"), email =
     role = "aut")) person("Ivo", "Grosse", role = "aut") )
 Depends:
     R (>= 1.8.0),
-    stats
+    stats,
+    cba
 Suggests:
     knitr
 VignetteBuilder: knitr
