@@ -220,7 +220,11 @@ diffLogoTable = function (
         }
     }
     colors = matrix(palette[cut(similarities,100)],dim,dim)
-    hc = hclust(dist(similarities), "average");
+    distance = dist(similarities);
+    hc = hclust(distance, "average");
+    opt = order.optimal(distance,hc$merge)
+    hc$merge=opt$merge
+    hc$order=opt$order
     leafOrder = hc$order;
 
 

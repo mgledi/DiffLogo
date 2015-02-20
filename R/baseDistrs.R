@@ -29,8 +29,8 @@ differenceOfICs = function(p1,p2) {
     if(all(p1==p2)) {
         return( rep(1/length(p1),length(p1)) )
     }
-    H1 = pwm2ic_col(as.matrix(p1));
-    H2 = pwm2ic_col(as.matrix(p2))
+    H1 = informationContent(p1)$height;
+    H2 = informationContent(p1)$height;
     hts1 = H1*p1;
     hts2 = H2*p2
     diff = hts1 - hts2
