@@ -17,10 +17,11 @@ getPwmFromAlignment = function(alignment, alphabet, pseudoCount) {
   colnames(pwm) = 1:alignmentLength
   rownames(pwm) = alphabet$chars
   
-  for(charIdx in 1:alphabetSize){
-    for(posIdx in 1:alignmentLength){
-      pwm[charIdx, posIdx] = (length(which(substr(alignment, posIdx, posIdx) == alphabet$chars[[charIdx]])) + pseudoCount) / (numberOfSequences + pseudoCount * alphabetSize)
+  for(posIdx in 1:alignmentLength){
+    for(charIdx in 1:alphabetSize){
+      pwm[charIdx, posIdx] = (length(which(substr(alignment, posIdx, posIdx) == alphabet$chars[[charIdx]])) + pseudoCount); 
     }
+    pwm[ , posIdx ] = pwm[, posIdx] / (sum (pwm[, posIdx]) + pseudoCount * alphabetSize)
   }
   
   return(pwm);
