@@ -102,17 +102,19 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         stop(msg)
     }
 
-    yAbsMax=2 # this variable defines the possible maximum and the minimum of the y-axis
+    # yAbsMax=2 # this variable defines the possible maximum and the minimum of the y-axis
 
     if(ymin == 0) {
-        ymin = min(diffLogoObj$ylim.posMax*1.0,yAbsMax);
+        ymin = diffLogoObj$ylim.posMax*1.0
+        #ymin = min(diffLogoObj$ylim.posMax*1.0,yAbsMax);
     }	    
     if(ymax == 0) {
-        ymax = max(diffLogoObj$ylim.negMax*1.0,-yAbsMax);
+        ymax = diffLogoObj$ylim.negMax*1.0
+        #ymax = max(diffLogoObj$ylim.negMax*1.0,-yAbsMax);
     }
 
     # set ylab
-     ylab = diffLogoObj$ylab
+    ylab = diffLogoObj$ylab
 
     if(sparse) {
         # the sparse plot has small ticks, small y-labels, no x-labels, no xlab, no ylab
@@ -122,7 +124,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     }
 
     yLabs = c("","","");
-    yAt = c(-yAbsMax,0,yAbsMax);
+    yAt = c(-ymin,0,ymax);
 
 
     if(sparse) {
@@ -130,7 +132,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         axis(2,labels=yLabs,at=yAt,mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8)
     } else {
         axis(1,labels=c(1:diffLogoObj$npos),at=(1:diffLogoObj$npos))
-        axis(2,labels=c("",""),at=c(-yAbsMax,yAbsMax))
+        axis(2,labels=c("",""),at=c(-ymin,ymax))
     }
     
     polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=F)
