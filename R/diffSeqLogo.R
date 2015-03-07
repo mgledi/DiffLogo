@@ -102,15 +102,11 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         stop(msg)
     }
 
-    # yAbsMax=2 # this variable defines the possible maximum and the minimum of the y-axis
-
     if(ymin == 0) {
         ymin = diffLogoObj$ylim.posMax*1.0
-        #ymin = min(diffLogoObj$ylim.posMax*1.0,yAbsMax);
     }	    
     if(ymax == 0) {
         ymax = diffLogoObj$ylim.negMax*1.0
-        #ymax = max(diffLogoObj$ylim.negMax*1.0,-yAbsMax);
     }
 
     # set ylab
@@ -129,10 +125,11 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 
     if(sparse) {
         axis(1,labels=c(rep("",diffLogoObj$npos)), at=(1:diffLogoObj$npos),tck=-0.02)
+        axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
         axis(2,labels=yLabs,at=yAt,mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8)
     } else {
         axis(1,labels=c(1:diffLogoObj$npos),at=(1:diffLogoObj$npos))
-        axis(2,labels=c("",""),at=c(-ymin,ymax))
+        axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
     }
     
     polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=F)
