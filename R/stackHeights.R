@@ -65,7 +65,7 @@ sumProbabilities = function (p) {
 ##' @author Martin Nettling
 informationContent = function (p) {
     obj=list();
-    ic = log2(length(p)) + sum(x * log2(x),na.rm=T);
+    ic = log2(length(p)) + sum(p * log2(p),na.rm=T);
     obj$height=ic;
     obj$ylab="Information Content [bits]";
     return(obj);
