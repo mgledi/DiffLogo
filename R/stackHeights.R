@@ -24,21 +24,19 @@ sumOfAbsICDifferences = function(p1,p2) {
 ##' TODO
 ##'
 ##' @title TODO
-##' @param p1 TODO
-##' @param p2 TODO
+##' @param p TODO
+##' @param q TODO
 ##' @return an object consisting of height a ylab
 ##' @export
 ##' @author Martin Nettling
-shannonDivergence = function(p1,p2) {
+shannonDivergence = function(p,q) {
     obj=list();
     # if p is identical to q, set height to 0
-    if(all(p1==p2)) {
+    if(all(p==q)) {
         obj$height=0;   
     } else {
-        px= p1[p1>0];
-        qx= p2[p2>0];
-        mx = (px + qx) / 2
-        obj$height=0.5*sum( px * (log2(px) - log2(mx))) + 0.5*sum( qx * (log2(qx) - log2(mx)));
+        m = (p + q) / 2
+        obj$height=0.5*sum( p * (log2(p) - log2(m)),na.rm=T) + 0.5*sum( q * (log2(q) - log2(m)),na.rm=T);
     }
     obj$ylab="JS divergence";
     return(obj);
@@ -67,8 +65,7 @@ sumProbabilities = function (p) {
 ##' @author Martin Nettling
 informationContent = function (p) {
     obj=list();
-    x = p[p>0];
-    ic = log2(length(p)) + sum(x * log2(x));
+    ic = log2(length(p)) + sum(x * log2(x),na.rm=T);
     obj$height=ic;
     obj$ylab="Information Content [bits]";
     return(obj);
