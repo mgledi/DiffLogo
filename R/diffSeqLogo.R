@@ -188,7 +188,7 @@ diffLogoTable = function (
     if ( showSequenceLogosTop ) {
         st = 0.5;
     }
-    if( enableClustering ) {
+    if( !enableClustering ) {
         treeHeight=0;
     }
 
