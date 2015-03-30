@@ -119,14 +119,9 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=F, )
     }
 
-    yLabs = c("","","");
-    yAt = c(-ymin,0,ymax);
-
-
     if(sparse) {
         axis(1,labels=c(rep("",diffLogoObj$npos)), at=(1:diffLogoObj$npos),tck=-0.02)
         axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
-        axis(2,labels=yLabs,at=yAt,mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8)
     } else {
         axis(1,labels=c(1:diffLogoObj$npos),at=(1:diffLogoObj$npos))
         axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
@@ -164,6 +159,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
 ##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
+##' @param enableClustering if TRUE the motifs are reordered, so that similar motifs have a small vertical and horizontal distance in the table
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
@@ -178,6 +174,7 @@ diffLogoTable = function (
             uniformYaxis=TRUE, 
             sparse=TRUE, 
             showSequenceLogosTop=TRUE, 
+            enableClustering=TRUE,
             treeHeight=0.5, 
             margin=0.02, 
             ratio=1, 
@@ -190,6 +187,9 @@ diffLogoTable = function (
     st = 0;
     if ( showSequenceLogosTop ) {
         st = 0.5;
+    }
+    if( enableClustering ) {
+        treeHeight=0;
     }
 
     marDiffLogo = marSeqLogo = c(1,1.5,0.1,0.1);
@@ -220,13 +220,15 @@ diffLogoTable = function (
         }
     }
     colors = matrix(palette[cut(similarities,100)],dim,dim)
-    distance = dist(similarities);
-    hc = hclust(distance, "average");
-    opt = order.optimal(distance,hc$merge)
-    hc$merge=opt$merge
-    hc$order=opt$order
-    leafOrder = hc$order;
-
+    leafOrder=1:dim;
+    if(enableClustering) {
+        distance = dist(similarities);
+        hc = hclust(distance, "average");
+        opt = order.optimal(distance,hc$merge)
+        hc$merge=opt$merge
+        hc$order=opt$order
+        leafOrder = hc$order;
+    }
 
     # draw DiffLogos
     dimV = c(dim, dim,dim+st+treeHeight,dim+st+treeHeight);
