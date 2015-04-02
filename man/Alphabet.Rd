@@ -1,19 +1,20 @@
 \name{Alphabet}
 \alias{Alphabet}
-\title{TODO}
+\title{built alphabet}
 \usage{
   Alphabet(chars, cols)
 }
 \arguments{
-  \item{chars}{TODO}
+  \item{chars}{set of symbols}
 
-  \item{cols}{TODO}
+  \item{cols}{set of colors; one for each symbol}
 }
 \value{
-  TODO
+  the Alphabet object
 }
 \description{
-  TODO
+  builts an object of class Alphabet from the given set of
+  symbols and colors
 }
 \author{
   Martin Nettling

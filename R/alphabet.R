@@ -10,12 +10,12 @@ Letter = function(x,y) {
    return(pts);
 }
 
-##' TODO
+##' builts an object of class Alphabet from the given set of symbols and colors
 ##'
-##' @title TODO
-##' @param chars TODO
-##' @param cols TODO
-##' @return TODO
+##' @title built alphabet
+##' @param chars set of symbols
+##' @param cols set of colors; one for each symbol
+##' @return the Alphabet object
 ##' @export
 ##' @exportClass Alphabet
 ##' @author Martin Nettling
@@ -214,25 +214,25 @@ if(FALSE){
 }
 
 
-##' TODO
+##' the DNA alphabet, i.e. A, C, G, T
 ##'
-##' @title TODO
+##' @title DNA alphabet
 ##' @export
 ##' @author Martin Nettling
 DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"));
 
-##' TODO
+##' the RNA alphabet, i.e. A, C, G, U
 ##'
-##' @title TODO
+##' @title RNA alphabet
 ##' @export
 ##' @author Martin Nettling
 RNA = Alphabet(c("A","C","G","U"),c("green4","blue","orange","red"));
 
 c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkBlue"; c7="Orange"; c8="Pink"; c9="Red";
 
-##' TODO
+##' the amino acid alphabet (20 symbols), i.e. A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y
 ##'
-##' @title TODO
+##' @title ASN alphabet
 ##' @export
 ##' @author Martin Nettling
 ASN = Alphabet(

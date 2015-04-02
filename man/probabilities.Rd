@@ -1,17 +1,18 @@
 \name{probabilities}
 \alias{probabilities}
-\title{TODO}
+\title{probabilities}
 \usage{
   probabilities(p)
 }
 \arguments{
-  \item{p}{TODO}
+  \item{p}{probability vector representing the symbol
+  distribution}
 }
 \value{
-  TODO
+  the given vector
 }
 \description{
-  TODO
+  the given probabilities
 }
 \author{
   Martin Nettling

@@ -1,19 +1,22 @@
 \name{sumOfAbsICDifferences}
 \alias{sumOfAbsICDifferences}
-\title{TODO}
+\title{sum of absolute information content differences}
 \usage{
   sumOfAbsICDifferences(p1, p2)
 }
 \arguments{
-  \item{p1}{TODO}
+  \item{p1}{probability vector representing the first
+  symbol distribution}
 
-  \item{p2}{TODO}
+  \item{p2}{probability vector representing the second
+  symbol distribution}
 }
 \value{
-  an object consisting of height a ylab
+  an object consisting of height and ylab
 }
 \description{
-  TODO
+  the sum of absolute information content differences for
+  the given pair of probability vectors
 }
 \author{
   Martin Nettling

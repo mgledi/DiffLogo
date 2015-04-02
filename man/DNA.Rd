@@ -1,7 +1,7 @@
 \docType{data}
 \name{DNA}
 \alias{DNA}
-\title{TODO}
+\title{DNA alphabet}
 \format{List of 3
  $ chars: chr [1:4] "A" "C" "G" "T"
  $ cols : chr [1:4] "green4" "blue" "orange" "red"
@@ -11,7 +11,7 @@
   DNA
 }
 \description{
-  TODO
+  the DNA alphabet, i.e. A, C, G, T
 }
 \author{
   Martin Nettling

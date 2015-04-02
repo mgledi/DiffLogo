@@ -1,17 +1,18 @@
 \name{informationContent}
 \alias{informationContent}
-\title{TODO}
+\title{information content}
 \usage{
   informationContent(p)
 }
 \arguments{
-  \item{p}{TODO}
+  \item{p}{probability vector representing the symbol
+  distribution}
 }
 \value{
   an object consisting of height a ylab
 }
 \description{
-  TODO
+  the information content for the given probability vector
 }
 \author{
   Martin Nettling

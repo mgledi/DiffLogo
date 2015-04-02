@@ -1,19 +1,23 @@
 \name{differenceOfICs}
 \alias{differenceOfICs}
-\title{TODO}
+\title{normalized information content differences}
 \usage{
   differenceOfICs(p1, p2)
 }
 \arguments{
-  \item{p1}{TODO}
+  \item{p1}{probability vector representing the first
+  symbol distribution}
 
-  \item{p2}{TODO}
+  \item{p2}{probability vector representing the second
+  symbol distribution}
 }
 \value{
-  TODO
+  a vector with one result for each symbol
 }
 \description{
-  TODO
+  information content differences normalized by the sum of
+  absolute information content differences for the given
+  pair of probability vectors
 }
 \author{
   Martin Nettling

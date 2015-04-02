@@ -1,7 +1,7 @@
 \docType{data}
 \name{ASN}
 \alias{ASN}
-\title{TODO}
+\title{ASN alphabet}
 \format{List of 3
  $ chars: chr [1:20] "A" "C" "D" "E" ...
  $ cols : chr [1:20] "Light green" "Green" "Dark green" "Dark green" ...
@@ -11,7 +11,8 @@
   ASN
 }
 \description{
-  TODO
+  the amino acid alphabet (20 symbols), i.e. A, C, D, E, F,
+  G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y
 }
 \author{
   Martin Nettling

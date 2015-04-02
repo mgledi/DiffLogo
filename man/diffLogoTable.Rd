@@ -43,7 +43,8 @@
 
   \item{alphabet}{of type Alphabet}
 
-  \item{...}{TODO}
+  \item{...}{set of parameters passed to the function
+  'axis' for plotting}
 }
 \description{
   Draws a table of DiffLogos.

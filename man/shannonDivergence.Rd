@@ -1,19 +1,22 @@
 \name{shannonDivergence}
 \alias{shannonDivergence}
-\title{TODO}
+\title{shannon divergence}
 \usage{
-  shannonDivergence(p, q)
+  shannonDivergence(p1, p2)
 }
 \arguments{
-  \item{p}{TODO}
+  \item{p1}{probability vector representing the first
+  symbol distribution}
 
-  \item{q}{TODO}
+  \item{p2}{probability vector representing the second
+  symbol distribution}
 }
 \value{
-  an object consisting of height a ylab
+  an object consisting of height and ylab
 }
 \description{
-  TODO
+  the shannon divergence for the given pair of probability
+  vectors
 }
 \author{
   Martin Nettling
