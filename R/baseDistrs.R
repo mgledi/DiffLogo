@@ -1,10 +1,10 @@
 
-##' TODO
+##' probability differences normalized by the sum of absolute probability differences for the given pair of probability vectors
 ##'
-##' @title TODO
-##' @param p1 TODO
-##' @param p2 TODO
-##' @return TODO
+##' @title normalized probability differences
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return a vector with one result for each symbol
 ##' @export
 ##' @author Martin Nettling
 normalizedDifferenceOfProbabilities = function(p1,p2) {
@@ -16,12 +16,12 @@ normalizedDifferenceOfProbabilities = function(p1,p2) {
     return( tmp / sum(abs(tmp)));
 }
 
-##' TODO
+##' information content differences normalized by the sum of absolute information content differences for the given pair of probability vectors
 ##'
-##' @title TODO
-##' @param p1 TODO
-##' @param p2 TODO
-##' @return TODO
+##' @title normalized information content differences
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return a vector with one result for each symbol
 ##' @export
 ##' @author Martin Nettling
 differenceOfICs = function(p1,p2) {
@@ -37,11 +37,11 @@ differenceOfICs = function(p1,p2) {
     return( diff / sum(abs(diff)));
 }
 
-##' TODO
+##' the given probabilities
 ##'
-##' @title TODO
-##' @param p TODO
-##' @return TODO
+##' @title probabilities
+##' @param p probability vector representing the symbol distribution
+##' @return the given vector
 ##' @export
 ##' @author Martin Nettling
 probabilities = function(p) {

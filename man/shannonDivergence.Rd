@@ -2,12 +2,12 @@
 \alias{shannonDivergence}
 \title{TODO}
 \usage{
-  shannonDivergence(p1, p2)
+  shannonDivergence(p, q)
 }
 \arguments{
-  \item{p1}{TODO}
+  \item{p}{TODO}
 
-  \item{p2}{TODO}
+  \item{q}{TODO}
 }
 \value{
   an object consisting of height a ylab

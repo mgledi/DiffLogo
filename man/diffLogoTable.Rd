@@ -5,8 +5,9 @@
   diffLogoTable(PWMs, stackHeight = shannonDivergence,
     baseDistribution = normalizedDifferenceOfProbabilities,
     uniformYaxis = TRUE, sparse = TRUE,
-    showSequenceLogosTop = TRUE, treeHeight = 0.5,
-    margin = 0.02, ratio = 1, alphabet = DNA, ...)
+    showSequenceLogosTop = TRUE, enableClustering = TRUE,
+    treeHeight = 0.5, margin = 0.02, ratio = 1,
+    alphabet = DNA, ...)
 }
 \arguments{
   \item{PWMs}{a list/vector of position weight matrices
@@ -30,6 +31,10 @@
   \item{treeHeight}{the height of the plotted cluster tree
   above the columns of the table; set equal to zero to omit
   the cluster tree}
+
+  \item{enableClustering}{if TRUE the motifs are reordered,
+  so that similar motifs have a small vertical and
+  horizontal distance in the table}
 
   \item{margin}{the space reseverved for labels}
 

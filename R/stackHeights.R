@@ -1,10 +1,10 @@
 
-##' TODO
+##' the sum of absolute information content differences for the given pair of probability vectors
 ##'
-##' @title TODO
-##' @param p1 TODO
-##' @param p2 TODO
-##' @return an object consisting of height a ylab
+##' @title sum of absolute information content differences
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
 sumOfAbsICDifferences = function(p1,p2) {
@@ -21,32 +21,32 @@ sumOfAbsICDifferences = function(p1,p2) {
     return(obj);
 }
 
-##' TODO
+##' the shannon divergence for the given pair of probability vectors
 ##'
-##' @title TODO
-##' @param p TODO
-##' @param q TODO
-##' @return an object consisting of height a ylab
+##' @title shannon divergence
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
-shannonDivergence = function(p,q) {
+shannonDivergence = function(p1,p2) {
     obj=list();
     # if p is identical to q, set height to 0
-    if(all(p==q)) {
+    if(all(p1==p2)) {
         obj$height=0;   
     } else {
-        m = (p + q) / 2
-        obj$height=0.5*sum( p * (log2(p) - log2(m)),na.rm=T) + 0.5*sum( q * (log2(q) - log2(m)),na.rm=T);
+        m = (p1 + p2) / 2
+        obj$height=0.5*sum( p1 * (log2(p1) - log2(m)),na.rm=T) + 0.5*sum( p2 * (log2(p2) - log2(m)),na.rm=T);
     }
     obj$ylab="JS divergence";
     return(obj);
 }
 
-##' TODO
+##' the sum of probabilities for the given probability vector, i.e. 1.0
 ##'
-##' @title TODO
-##' @param p TODO
-##' @return an object consisting of height a ylab
+##' @title sum of probabilities, i.e. 1.0
+##' @param p probability vector representing the symbol distribution
+##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
 sumProbabilities = function (p) {
@@ -56,10 +56,10 @@ sumProbabilities = function (p) {
     return(obj);
 }
 
-##' TODO
+##' the information content for the given probability vector
 ##'
-##' @title TODO
-##' @param p TODO
+##' @title information content
+##' @param p probability vector representing the symbol distribution
 ##' @return an object consisting of height a ylab
 ##' @export
 ##' @author Martin Nettling
