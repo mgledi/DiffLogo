@@ -30,7 +30,7 @@ differenceOfICs = function(p1,p2) {
         return( rep(1/length(p1),length(p1)) )
     }
     H1 = informationContent(p1)$height;
-    H2 = informationContent(p1)$height;
+    H2 = informationContent(p2)$height;
     hts1 = H1*p1;
     hts2 = H2*p2
     diff = hts1 - hts2

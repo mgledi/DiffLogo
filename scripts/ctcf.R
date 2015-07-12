@@ -55,3 +55,69 @@ diffLogoFromPwm(m1,m2,stackHeight= sumOfAbsProbabilityDifferences , baseDistribu
 title("sumOfAbsProbabilityDifferences | differenceOfICs");
 
 dev.off();
+
+
+e1a = c(1,0,0,0)
+e1b = c(0,0,0,1)
+e2a = c(0.5,0,0,0.5)
+e2b = c(0,0.5,0.5,0)
+e3a = c(0.5,0,0,0.5)
+e3b = c(0.5,0.0,0.5,0)
+e4a = c(0.8,0,0,0.2)
+e4b = c(0.2,0,0,0.8)
+
+pdf("tab1.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= shannonDivergence , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-0.5, ymax=0.5  )
+diffLogoFromPwm(e2a,e2b,stackHeight= shannonDivergence , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-0.5, ymax=0.5  )
+diffLogoFromPwm(e3a,e3b,stackHeight= shannonDivergence , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-0.5, ymax=0.5  )
+diffLogoFromPwm(e4a,e4b,stackHeight= shannonDivergence , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-0.5, ymax=0.5  )
+dev.off();
+
+pdf("tab2.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= sumOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-2, ymax=2  )
+diffLogoFromPwm(e2a,e2b,stackHeight= sumOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-2, ymax=2  )
+diffLogoFromPwm(e3a,e3b,stackHeight= sumOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-2, ymax=2  )
+diffLogoFromPwm(e4a,e4b,stackHeight= sumOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-2, ymax=2  )
+dev.off();
+
+pdf("tab3.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= lossOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-100, ymax=100 )
+diffLogoFromPwm(e2a,e2b,stackHeight= lossOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-100, ymax=100 )
+diffLogoFromPwm(e3a,e3b,stackHeight= lossOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-100, ymax=100 )
+diffLogoFromPwm(e4a,e4b,stackHeight= lossOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-100, ymax=100 )
+dev.off();
+
+pdf("tab4.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-1, ymax=1  )
+diffLogoFromPwm(e2a,e2b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-1, ymax=1  )
+diffLogoFromPwm(e3a,e3b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-1, ymax=1  )
+diffLogoFromPwm(e4a,e4b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=normalizedDifferenceOfProbabilities,ymin=-1, ymax=1  )
+dev.off();
+
+pdf("tab5.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= shannonDivergence , baseDistribution=differenceOfICs,ymin=-.5, ymax=.5 )
+diffLogoFromPwm(e2a,e2b,stackHeight= shannonDivergence , baseDistribution=differenceOfICs,ymin=-.5, ymax=.5 )
+diffLogoFromPwm(e3a,e3b,stackHeight= shannonDivergence , baseDistribution=differenceOfICs,ymin=-.5, ymax=.5 )
+diffLogoFromPwm(e4a,e4b,stackHeight= shannonDivergence , baseDistribution=differenceOfICs,ymin=-.5, ymax=.5 )
+dev.off();
+
+pdf("tab6.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= sumOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-2, ymax=2  )
+diffLogoFromPwm(e2a,e2b,stackHeight= sumOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-2, ymax=2  )
+diffLogoFromPwm(e3a,e3b,stackHeight= sumOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-2, ymax=2  )
+diffLogoFromPwm(e4a,e4b,stackHeight= sumOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-2, ymax=2  )
+dev.off();
+
+pdf("tab7.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= lossOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-100, ymax=100 )
+diffLogoFromPwm(e2a,e2b,stackHeight= lossOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-100, ymax=100 )
+diffLogoFromPwm(e3a,e3b,stackHeight= lossOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-100, ymax=100 )
+diffLogoFromPwm(e4a,e4b,stackHeight= lossOfAbsICDifferences , baseDistribution=differenceOfICs,ymin=-100, ymax=100 )
+dev.off();
+
+pdf("tab8.pdf",width=3,height=3,compress=T);
+diffLogoFromPwm(e1a,e1b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=differenceOfICs,ymin=-1, ymax=1  )
+diffLogoFromPwm(e2a,e2b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=differenceOfICs,ymin=-1, ymax=1  )
+diffLogoFromPwm(e3a,e3b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=differenceOfICs,ymin=-1, ymax=1  )
+diffLogoFromPwm(e4a,e4b,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=differenceOfICs,ymin=-1, ymax=1  )
+dev.off();
