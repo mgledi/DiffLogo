@@ -1,4 +1,25 @@
 
+
+##' the sum of absolute probability differences for the given pair of probability vectors
+##'
+##' @title sum of absolute probability differences
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return an object consisting of height and ylab
+##' @export
+##' @author Martin Nettling
+sumOfAbsProbabilityDifferences = function(p1,p2) {
+    obj=list();
+    # if p is identical to q, set height to 0
+    if(all(p1==p2)) {
+        obj$height=0;   
+    } else {
+        obj$height=sum( abs(p1 - p2));
+    }
+    obj$ylab="Probability";
+    return(obj);
+}
+
 ##' the sum of absolute information content differences for the given pair of probability vectors
 ##'
 ##' @title sum of absolute information content differences
@@ -18,6 +39,20 @@ sumOfAbsICDifferences = function(p1,p2) {
         obj$height=sum( abs(H1*p1 - H2*p2));
     }
     obj$ylab="Information Content [bits]";
+    return(obj);
+}
+
+lossOfAbsICDifferences = function(p1,p2) {
+    H1 = informationContent(p1)$height
+    H2 = informationContent(p2)$height
+    obj=list();
+    # if p is identical to q, set height to 0
+    if(all(p1==p2)) {
+        obj$height=0;   
+    } else {
+        obj$height=sum( abs(H1*p1 - H2*p2)) / (H1/2 + H2/2) * 100;
+    }
+    obj$ylab="Loss of Information Content [%]";
     return(obj);
 }
 

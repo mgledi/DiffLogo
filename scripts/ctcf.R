@@ -26,3 +26,32 @@ dev.off();
 png("CTCF_5_absDiff.png",width=1600,height=1000);
 	diffLogoTable(motifs[motif_optimal_order[c(1,2,3,8,9)]],ratio=16/10,stackHeight=sumOfAbsICDifferences);
 dev.off();
+
+png("CTCF_all.png",width=1600,height=1000);
+	diffLogoTable(motifs,ratio=16/10);
+dev.off()
+
+m1 = motifs[["HUVEC"]]
+m2 = motifs[["H1-hESC"]]
+
+pdf("configurations.pdf",height=4,width=6);
+diffLogoFromPwm(m1,m2,stackHeight= shannonDivergence , baseDistribution=normalizedDifferenceOfProbabilities )
+title("shannonDivergence | normalizedDifferenceOfProbabilities");
+diffLogoFromPwm(m1,m2,stackHeight= sumOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities )
+title("sumOfAbsICDifferences | normalizedDifferenceOfProbabilities");
+diffLogoFromPwm(m1,m2,stackHeight= lossOfAbsICDifferences , baseDistribution=normalizedDifferenceOfProbabilities )
+title("lossOfAbsICDifferences | normalizedDifferenceOfProbabilities");
+diffLogoFromPwm(m1,m2,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=normalizedDifferenceOfProbabilities )
+title("sumOfAbsProbabilityDifferences | normalizedDifferenceOfProbabilities");
+
+
+diffLogoFromPwm(m1,m2,stackHeight= shannonDivergence , baseDistribution=differenceOfICs )
+title("shannonDivergence | differenceOfICs");
+diffLogoFromPwm(m1,m2,stackHeight= sumOfAbsICDifferences , baseDistribution=differenceOfICs )
+title("sumOfAbsICDifferences | differenceOfICs");
+diffLogoFromPwm(m1,m2,stackHeight= lossOfAbsICDifferences , baseDistribution=differenceOfICs )
+title("lossOfAbsICDifferences | differenceOfICs");
+diffLogoFromPwm(m1,m2,stackHeight= sumOfAbsProbabilityDifferences , baseDistribution=differenceOfICs )
+title("sumOfAbsProbabilityDifferences | differenceOfICs");
+
+dev.off();
