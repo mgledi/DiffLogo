@@ -8,6 +8,20 @@
 ##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = sumOfAbsProbabilityDifferences)
 sumOfAbsProbabilityDifferences = function(p1,p2) {
     obj=list();
     # if p is identical to q, set height to 0
@@ -28,6 +42,20 @@ sumOfAbsProbabilityDifferences = function(p1,p2) {
 ##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = sumOfAbsICDifferences)
 sumOfAbsICDifferences = function(p1,p2) {
     H1 = informationContent(p1)$height
     H2 = informationContent(p2)$height
@@ -42,6 +70,28 @@ sumOfAbsICDifferences = function(p1,p2) {
     return(obj);
 }
 
+##' the change of information content for the given probability vectors
+##'
+##' @title the change of information content
+##' @param p1 probability vector representing the first symbol distribution
+##' @param p2 probability vector representing the second symbol distribution
+##' @return an object consisting of height and ylab
+##' @export
+##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = lossOfAbsICDifferences)
 lossOfAbsICDifferences = function(p1,p2) {
     H1 = informationContent(p1)$height
     H2 = informationContent(p2)$height
@@ -64,6 +114,20 @@ lossOfAbsICDifferences = function(p1,p2) {
 ##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = shannonDivergence)
 shannonDivergence = function(p1,p2) {
     obj=list();
     # if p is identical to q, set height to 0
@@ -71,7 +135,7 @@ shannonDivergence = function(p1,p2) {
         obj$height=0;   
     } else {
         m = (p1 + p2) / 2
-        obj$height=0.5*sum( p1 * (log2(p1) - log2(m)),na.rm=T) + 0.5*sum( p2 * (log2(p2) - log2(m)),na.rm=T);
+        obj$height=0.5*sum( p1 * (log2(p1) - log2(m)),na.rm=TRUE) + 0.5*sum( p2 * (log2(p2) - log2(m)),na.rm=TRUE);
     }
     obj$ylab="JS divergence";
     return(obj);
@@ -84,6 +148,20 @@ shannonDivergence = function(p1,p2) {
 ##' @return an object consisting of height and ylab
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = sumProbabilities)
 sumProbabilities = function (p) {
     obj=list();
     obj$height=sum(p);
@@ -98,9 +176,23 @@ sumProbabilities = function (p) {
 ##' @return an object consisting of height a ylab
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = informationContent)
 informationContent = function (p) {
     obj=list();
-    ic = log2(length(p)) + sum(p * log2(p),na.rm=T);
+    ic = log2(length(p)) + sum(p * log2(p),na.rm=TRUE);
     obj$height=ic;
     obj$ylab="Information Content [bits]";
     return(obj);

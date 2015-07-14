@@ -9,6 +9,13 @@
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_name = "HepG2"
+##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+##' file = system.file(fileName, package = "DiffLogo")
+##' motif = as.matrix(read.delim(file,header=FALSE))
+##' seqLogo(pwm = motif)
 seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
@@ -43,9 +50,9 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationCon
     }
     if(sparse) {
         plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)),xaxt="n", ylab="",
-        mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
+        mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=FALSE,xlab="")
     } else {
-        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=F,xlab="Position")
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=FALSE,xlab="Position")
     }
 
     for(y in seq(0,log2(alphabet$size),drawLines)) {

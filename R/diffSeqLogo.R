@@ -11,6 +11,21 @@
 ##' @export
 ##' @exportClass DiffLogo
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
+##' diffLogo(diffLogoObj)
 createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
@@ -96,6 +111,21 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
+##' diffLogo(diffLogoObj)
 diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if(class(diffLogoObj) != "DiffLogo") {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
@@ -114,9 +144,9 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 
     if(sparse) {
         # the sparse plot has small ticks, small y-labels, no x-labels, no xlab, no ylab
-        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab="", mgp=c(0, .35, 0), tck=-0.02, cex.axis=0.8, frame.plot=F,xlab="")
+        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab="", mgp=c(0, .35, 0), tck=-0.02, cex.axis=0.8, frame.plot=FALSE,xlab="")
     } else {
-        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=F, )
+        plot(NA, xlim=c(0.5,diffLogoObj$npos + 0.5), ylim=c(ymin,ymax), xaxt="n", ylab=ylab, xlab="Position", frame.plot=FALSE, )
     }
 
     if(sparse) {
@@ -127,7 +157,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
     }
     
-    polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=F)
+    polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=FALSE)
     lines(c(0,diffLogoObj$npos), c(0,0) ) # the line at y = 0
 }
 
@@ -144,6 +174,20 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' @param alphabet of type Alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE, alphabet=DNA) {
     diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
@@ -167,6 +211,17 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @export
 ##' @importFrom cba order.optimal
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' diffLogoTable(motifs)
 diffLogoTable = function (
 			PWMs, 
 			stackHeight=shannonDivergence, 
@@ -271,6 +326,6 @@ diffLogoTable = function (
     par(fig=(c(0,dim,0,dim) / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio)+ c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 
     plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxs="i",xaxt="n",yaxt="n",yaxs="i", bty="n", mar=c(0,0,0,0)) 
-    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[leafOrder]), tick = F, mgp = c(3, 0, 0), ...)
-    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[leafOrder], tick = F, mgp = c(3, 0, 0), ...)
+    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[leafOrder]), tick = FALSE, mgp = c(3, 0, 0), ...)
+    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[leafOrder], tick = FALSE, mgp = c(3, 0, 0), ...)
 }

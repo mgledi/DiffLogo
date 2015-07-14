@@ -41,7 +41,7 @@ motifs = list()
 for (name in motif_names) {
   fileName = paste(motif_folder,"/",name,".txt",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=F))
+  motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
 }
 @
 

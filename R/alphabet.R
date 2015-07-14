@@ -19,6 +19,8 @@ Letter = function(x,y) {
 ##' @export
 ##' @exportClass Alphabet
 ##' @author Martin Nettling
+##' @examples
+##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"))
 Alphabet = function(chars,cols) {
    obj = list(chars=chars,cols=cols,size=length(chars))
    class(obj)="Alphabet"
@@ -219,6 +221,13 @@ if(FALSE){
 ##' @title DNA alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_name = "HepG2"
+##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+##' file = system.file(fileName, package = "DiffLogo")
+##' motif = as.matrix(read.delim(file,header=FALSE))
+##' seqLogo(pwm = motif, alphabet=DNA)
 DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"));
 
 ##' the RNA alphabet, i.e. A, C, G, U
@@ -235,6 +244,13 @@ c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkB
 ##' @title ASN alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "alignments"
+##' motif_name = "calamodulin_1"
+##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+##' file = system.file(fileName, package = "DiffLogo")
+##' motif = getPwmFromAlignment(readLines(file), ASN, 1)
+##' seqLogo(pwm = motif, alphabet=ASN)
 ASN = Alphabet(
     c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y"),
     c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5)

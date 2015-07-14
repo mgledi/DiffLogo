@@ -7,6 +7,20 @@
 ##' @return a vector with one result for each symbol
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, baseDistribution = normalizedDifferenceOfProbabilities)
 normalizedDifferenceOfProbabilities = function(p1,p2) {
     # if p is identical to q, return uniform distribution
     if(all(p1==p2)) {
@@ -24,6 +38,20 @@ normalizedDifferenceOfProbabilities = function(p1,p2) {
 ##' @return a vector with one result for each symbol
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, baseDistribution = differenceOfICs)
 differenceOfICs = function(p1,p2) {
     # if p is identical to q, return uniform distribution
     if(all(p1==p2)) {
@@ -44,6 +72,20 @@ differenceOfICs = function(p1,p2) {
 ##' @return the given vector
 ##' @export
 ##' @author Martin Nettling
+##' @examples
+##' motif_folder = "pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' 
+##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, baseDistribution = probabilities)
 probabilities = function(p) {
   return(p);
 }
