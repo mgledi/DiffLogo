@@ -17,18 +17,11 @@ the information content for the given probability vector
 }
 \examples{
 motif_folder = "pwm"
-motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
-motifs = list()
-for (name in motif_names) {
-  fileName = paste(motif_folder,"/",name,".txt",sep="")
-  file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
-}
-
-pwm1 = motifs[[motif_names[[1]]]]
-pwm2 = motifs[[motif_names[[2]]]]
-
-diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = informationContent)
+motif_name = "HepG2"
+fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+file = system.file(fileName, package = "DiffLogo")
+motif = as.matrix(read.delim(file,header=FALSE))
+seqLogo(pwm = motif, stackHeight = informationContent)
 }
 \author{
 Martin Nettling

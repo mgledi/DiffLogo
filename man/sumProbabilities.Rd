@@ -17,18 +17,11 @@ the sum of probabilities for the given probability vector, i.e. 1.0
 }
 \examples{
 motif_folder = "pwm"
-motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
-motifs = list()
-for (name in motif_names) {
-  fileName = paste(motif_folder,"/",name,".txt",sep="")
-  file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
-}
-
-pwm1 = motifs[[motif_names[[1]]]]
-pwm2 = motifs[[motif_names[[2]]]]
-
-diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = sumProbabilities)
+motif_name = "HepG2"
+fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+file = system.file(fileName, package = "DiffLogo")
+motif = as.matrix(read.delim(file,header=FALSE))
+seqLogo(pwm = motif, stackHeight = sumProbabilities)
 }
 \author{
 Martin Nettling
