@@ -102,7 +102,7 @@ lossOfAbsICDifferences = function(p1,p2) {
     } else {
         obj$height=sum( abs(H1*p1 - H2*p2)) / (H1/2 + H2/2) * 100;
     }
-    obj$ylab="Loss of Information Content [%]";
+    obj$ylab="Change of Information Content [%]";
     return(obj);
 }
 

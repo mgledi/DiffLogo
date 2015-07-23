@@ -27,8 +27,8 @@ png("CTCF_5_absDiff.png",width=1600,height=1000);
 	diffLogoTable(motifs[motif_optimal_order[c(1,2,3,8,9)]],ratio=16/10,stackHeight=sumOfAbsICDifferences);
 dev.off();
 
-png("CTCF_all.png",width=1600,height=1000);
-	diffLogoTable(motifs,ratio=16/10);
+png("CTCF_all_suboptimal_leafordering.png",width=1600,height=1000);
+	diffLogoTable(rev(motifs),ratio=16/10);
 dev.off()
 
 m1 = motifs[["HUVEC"]]
