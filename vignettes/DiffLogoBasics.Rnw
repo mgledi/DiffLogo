@@ -48,7 +48,7 @@ Here, we import two motifs from the transcription factor CTCF from package \emph
 Alternatively, there are example PWMs in folder \emph{extdata/pwm} as tab--delimited files shipped with the package DiffLogo. (extracted from [4]). 
 
 <<ImportMotifsFromDiffLogoPackage>>=
-## import five DNA motifs
+## import five DNA motifs from matrix
 motif_folder = "extdata/pwm"
 motif_names_dna = c("H1-hESC", "MCF7", "HeLa-S3", "HepG2", "HUVEC")
 motifs_dna = list()
@@ -57,7 +57,19 @@ for (name in motif_names_dna) {
   file = system.file(fileName, package = "DiffLogo")
   motifs_dna[[name]] = as.matrix(read.delim(file,header=FALSE))
 }
-## import three ASN motifs
+## import three DNA motifs from table
+motif_folder = "extdata/alignments"
+motif_names_dna2 = c("Mad", "Max", "Myc")
+motifs_dna2 = list()
+for (name in motif_names_dna2) {
+  fileName = paste(motif_folder,"/",name,".txt",sep="")
+  file = system.file(fileName, package = "DiffLogo")
+  fileContent <- readLines(file)
+  fileContent <- unlist(lapply(X = fileContent, FUN = function(x){ strsplit(x = x, split = "\t")[[1]][[1]] }))
+  #fileContent <- fileContent[seq(from = 2, by = 2, length.out = floor(length(fileContent)/2))]
+  motifs_dna2[[name]] = getPwmFromAlignment(fileContent, DNA, 1)
+}
+## import three ASN motifs from fasta files
 motif_folder = "extdata/alignments"
 motif_names_asn = c("F-box_fungi.seq", "F-box_metazoa.seq", "F-box_viridiplantae.seq")
 motifs_asn = list()
@@ -113,10 +125,11 @@ diffLogo(diffLogoObj)
 The user is easily able to plot a table of difference logos for a set of motifs.
 
 <<PlotDiffLogoTable>>=
-## plot table of difference logos for DNA
+## plot table of difference logos for CTFC motifs (DNA)
 diffLogoTable(PWMs = motifs_dna)
-
-## plot table of difference logos for ASN
+## plot table of difference logos for E-Box motifs (DNA)
+diffLogoTable(PWMs = motifs_dna2)
+## plot table of difference logos for F-Box motifs (ASN)
 diffLogoTable(PWMs = motifs_asn, alphabet = ASN)
 @
 
