@@ -10,7 +10,7 @@
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_name = "HepG2"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")

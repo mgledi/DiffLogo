@@ -15,6 +15,7 @@ Depends:
     cba
 Suggests:
     knitr
+    testthat
 VignetteBuilder: knitr
 Maintainer: Martin Nettling<martin.nettling@informatik.uni-halle.de>
 Description: DiffLogo is an easy-to-use tool to visualize motif differences.

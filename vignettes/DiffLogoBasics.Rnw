@@ -35,7 +35,7 @@ PWMs can be represented as object of type pwm, data.frame, or matrix. In the pac
 
 <<ImportPWMs>>=
 ## import PWMs
-motif_folder = "pwm"
+motif_folder = "extdata/pwm"
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 motifs = list()
 for (name in motif_names) {

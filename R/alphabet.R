@@ -222,7 +222,7 @@ if(FALSE){
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_name = "HepG2"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")
@@ -245,7 +245,7 @@ c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkB
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "alignments"
+##' motif_folder= "extdata/alignments"
 ##' motif_name = "calamodulin_1"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")

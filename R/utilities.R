@@ -9,7 +9,7 @@
 ##' @export
 ##' @author Hendrik Treutler
 ##' @examples
-##' motif_folder = "alignments"
+##' motif_folder= "extdata/alignments"
 ##' motif_name = "calamodulin_1"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")

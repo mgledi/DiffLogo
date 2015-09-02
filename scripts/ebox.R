@@ -7,8 +7,6 @@ source("R/utilities.R");
 source("R/seqLogo.R");
 source("R/diffSeqLogo.R");
 
-setwd("c:/workspace/java/DiffLogo/")
-
 get.pwm<-function(file,N){
 	x<-read.table(file,stringsAsFactors=F)
 	
@@ -27,9 +25,9 @@ get.pwm<-function(file,N){
 	pwm
 }
 
-pwm.mad<-get.pwm("inst/alignments/Mad.txt",1000)
-pwm.max<-get.pwm("inst/alignments/Max.txt",1000)
-pwm.myc<-get.pwm("inst/alignments/Myc.txt",1000)
+pwm.mad<-get.pwm("inst/extdata/alignments/Mad.txt",1000)
+pwm.max<-get.pwm("inst/extdata/alignments/Max.txt",1000)
+pwm.myc<-get.pwm("inst/extdata/alignments/Myc.txt",1000)
 
 
 pdf("ebox.pdf",width=16/1.5, height=10/1.5,compress=T);

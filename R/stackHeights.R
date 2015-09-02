@@ -9,7 +9,7 @@
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -43,7 +43,7 @@ sumOfAbsProbabilityDifferences = function(p1,p2) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -79,7 +79,7 @@ sumOfAbsICDifferences = function(p1,p2) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -115,7 +115,7 @@ lossOfAbsICDifferences = function(p1,p2) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -149,7 +149,7 @@ shannonDivergence = function(p1,p2) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_name = "HepG2"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")
@@ -170,7 +170,7 @@ sumProbabilities = function (p) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_name = "HepG2"
 ##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")

@@ -12,7 +12,7 @@
 ##' @exportClass DiffLogo
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -112,7 +112,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, base
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -175,7 +175,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -212,7 +212,7 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' @importFrom cba order.optimal
 ##' @author Martin Nettling
 ##' @examples
-##' motif_folder = "pwm"
+##' motif_folder= "extdata/pwm"
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
@@ -223,7 +223,8 @@ diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDiverg
 ##' 
 ##' diffLogoTable(motifs)
 diffLogoTable = function (
-			PWMs, 
+			PWMs,
+            names2,
 			stackHeight=shannonDivergence, 
             baseDistribution=normalizedDifferenceOfProbabilities, 
             uniformYaxis=TRUE, 
@@ -257,6 +258,7 @@ diffLogoTable = function (
     diffLogos = list();
     palette = colorRampPalette(c(rgb(0.9,1,0.9),rgb(1,0.9,0.9)))(100)
     names = names(PWMs);
+
     ymin = 0;
     ymax = 0;
     for ( i in 1:dim) {
@@ -326,6 +328,6 @@ diffLogoTable = function (
     par(fig=(c(0,dim,0,dim) / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio)+ c(margin,margin,0,0), new=TRUE, mar=c(0,0,0,0))
 
     plot(NA,ylim=c(0,dim),xlim=c(0,dim),xaxs="i",xaxt="n",yaxt="n",yaxs="i", bty="n", mar=c(0,0,0,0)) 
-    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names[leafOrder]), tick = FALSE, mgp = c(3, 0, 0), ...)
-    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names[leafOrder], tick = FALSE, mgp = c(3, 0, 0), ...)
+    axis(2, pos=0, at= (1:dim) - 0.5, labels = rev(names2[leafOrder]), tick = FALSE, mgp = c(3, 0, 0), ...)
+    axis(3, pos=dim, at= (1:dim) - 0.5, labels = names2[leafOrder], tick = FALSE, mgp = c(3, 0, 0), ...)
 }

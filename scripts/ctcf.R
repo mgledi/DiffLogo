@@ -8,7 +8,7 @@ source("R/seqLogo.R");
 source("R/diffSeqLogo.R");
 
 ## import PWMs
-motif_folder = "inst/pwm"
+motif_folder = "inst/extdata/pwm"
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib","NHEK","K562","HeLa-S3","H1-hESC","GM12878")
 motif_optimal_order=c(3,1,7,9,6,5,4,2,8);
 motifs = list()
@@ -29,6 +29,11 @@ dev.off();
 
 png("CTCF_all_suboptimal_leafordering.png",width=1600,height=1000);
 	diffLogoTable(rev(motifs),ratio=16/10);
+dev.off()
+
+
+pdf("CTCF_all.pdf",width=8*16/10,height=8,compress=T); 
+	diffLogoTable(motifs,ratio=16/10);
 dev.off()
 
 m1 = motifs[["HUVEC"]]
