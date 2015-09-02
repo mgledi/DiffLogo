@@ -14,7 +14,7 @@ Depends:
     stats,
     cba
 Suggests:
-    knitr
+    knitr,
     testthat
 VignetteBuilder: knitr
 Maintainer: Martin Nettling<martin.nettling@informatik.uni-halle.de>
@@ -22,7 +22,8 @@ Description: DiffLogo is an easy-to-use tool to visualize motif differences.
 License: GPL (>= 2)
 URL: https://github.com/mgledi/DiffLogo/
 BugReports: https://github.com/mgledi/DiffLogo/issues
-biocViews: Software, SequenceMatching, MultipleComparison, MotifAnnotation, Visualization
+biocViews: Software, SequenceMatching, MultipleComparison, MotifAnnotation,
+    Visualization
 Collate:
     'alphabet.R'
     'baseDistrs.R'
