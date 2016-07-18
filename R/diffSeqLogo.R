@@ -358,7 +358,7 @@ divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
     if (unaligned_at_left > 0) {
        shift_divergence = shift_divergence+
                           pwmDivergence(matrix(
-                              pwm[,1:unaligned_at_left], nrow=4),
+                              pwm[,1:unaligned_at_left], nrow=nrow(pwm)),
                               uniformPwm(unaligned_at_left,
                                          nrow(pwm)),
                               divergence)
@@ -368,7 +368,7 @@ divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
        shift_divergence = shift_divergence+
                           pwmDivergence(
                               matrix(pwm[,(aligned_length+1):ncol(pwm)],
-                                     nrow=4),
+                                     nrow=nrow(pwm)),
                               uniformPwm(ncol(pwm)-aligned_length,
                                   nrow(pwm)), divergence)
     }
@@ -385,10 +385,10 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
                                matrix(
                                    static_pwm[,
                                        (shift+1):(shift+intersection_length)],
-                                                nrow=4),
+                                                nrow=nrow(static_pwm)),
                                     matrix(
                                         shifted_pwm[,1:intersection_length],
-                                        nrow=4),
+                                        nrow=nrow(shifted_pwm))),
                                     divergence=divergence)
         shift_divergence = shift_divergence+unaligned_penalty(
                                       static_pwm,
