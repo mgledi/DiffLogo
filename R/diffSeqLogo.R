@@ -388,7 +388,7 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
                                                 nrow=nrow(static_pwm)),
                                     matrix(
                                         shifted_pwm[,1:intersection_length],
-                                        nrow=nrow(shifted_pwm))),
+                                        nrow=nrow(shifted_pwm)),
                                     divergence=divergence)
         shift_divergence = shift_divergence+unaligned_penalty(
                                       static_pwm,
