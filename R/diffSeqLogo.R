@@ -6,6 +6,9 @@
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet
+##' @param align_pwms if True, will aling and extend pwms.
+##' @param unaligned_penalty is a function for localPwmAlignment.
+##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @return DiffLogo object
 ##' @export
 ##' @exportClass DiffLogo
@@ -25,11 +28,25 @@
 ##'
 ##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 ##' diffLogo(diffLogoObj)
-createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities,alphabet=DNA) {
+createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
+                                 baseDistribution=
+                                     normalizedDifferenceOfProbabilities,
+                                 alphabet=DNA, align_pwms=F,
+                                 unaligned_penalty=divergencePenaltyForUnaligned,
+                                 try_reverse_complement=T) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
     preconditionPWM(pwm1);
     preconditionPWM(pwm2);
+    if (align_pwms) {
+        aligned_extended_pwm = alignExtendPwms(pwm1, pwm2,
+                                               divergence=stackHeight,
+                                               unaligned_penalty=
+                                                   divergencePenaltyForUnaligned,
+                                               try_reverse_complement=T)
+        pwm1 = aligned_extended_pwm[[1]]
+        pwm2 = aligned_extended_pwm[[2]]
+    }
     preconditionPWMSameSize(pwm1,pwm2);
 
     # init needed variables
@@ -171,6 +188,9 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param alphabet of type Alphabet
+##' @param align_pwms if true, DiffLogo will align pwms before plotting
+##' @param unaligned_penalty is a function for localPwmAlignment.
+##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -187,8 +207,20 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' pwm2 = motifs[[motif_names[[2]]]]
 ##'
 ##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
-diffLogoFromPwm = function (pwm1, pwm2, ymin=0, ymax=0,stackHeight=shannonDivergence, baseDistribution=normalizedDifferenceOfProbabilities, sparse=FALSE, alphabet=DNA) {
-    diffLogoObj = createDiffLogoObject(pwm1,pwm2,stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
+diffLogoFromPwm = function (
+                      pwm1, pwm2, ymin=0, ymax=0,
+                      stackHeight=shannonDivergence,
+                      baseDistribution=normalizedDifferenceOfProbabilities,
+                      sparse=FALSE, alphabet=DNA, align_pwms=F,
+                      unaligned_penalty=divergencePenaltyForUnaligned,
+                      try_reverse_complement=T) {
+    diffLogoObj = createDiffLogoObject(
+                      pwm1,pwm2,stackHeight=stackHeight,
+                      baseDistribution=baseDistribution,
+                      alphabet=alphabet,
+                      align_pwms=align_pwms,
+                      unaligned_penalty=unaligned_penalty,
+                      try_reverse_complement=try_reverse_complement);
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
@@ -388,7 +420,7 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
                                                 nrow=nrow(static_pwm)),
                                     matrix(
                                         shifted_pwm[,1:intersection_length],
-                                        nrow=nrow(shifted_pwm))),
+                                        nrow=nrow(shifted_pwm)),
                                     divergence=divergence)
         shift_divergence = shift_divergence+unaligned_penalty(
                                       static_pwm,
@@ -406,8 +438,8 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
                                          max(0, ncol(shifted_pwm)
                                                    -intersection_length),
                                       divergence)
-        shift_divergence = shift_divergence / max(ncol(static_pwm),
-                                                  shift + ncol(shifted_pwm))
+        shift_divergence = shift_divergence #/ max(ncol(static_pwm),
+                                            #      shift + ncol(shifted_pwm))
         if (shift_divergence < best_divergence) {
            best_divergence = shift_divergence
            best_shift = shift
@@ -481,4 +513,46 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
         }
     }
     return(result)
+}
+
+addBefore = function (matrix, to_add_length) {
+    return(cbind(uniformPwm(to_add_length, nrow(matrix)), matrix))
+}
+
+addAfter = function (matrix, to_add_length) {
+    return(cbind(matrix, uniformPwm(to_add_length, nrow(matrix))))
+}
+
+##' Finds best local alignment for PWMs and extends them from both sides to equal length
+##'
+##' @title Align pwms and extend them
+##' @param PWM is a matrix of type matrix
+##' @param
+##' @param divergence is a measure of difference between two pwm columns. Smaller is more similar. If you want to use non-uniform background distribution, provide your own function.
+##' @param distance for unaligned columns at edges of matrixes. See divergencePenaltyForUnaligned as an example for providing your own function
+##' @param If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG.
+##' @export
+##' @author Lando Andrey
+alignExtendPwms = function(left_pwm, right_pwm, divergence=shannonDivergence,
+                           unaligned_penalty=divergencePenaltyForUnaligned,
+                           try_reverse_complement=T) {
+    alignment = localPwmAlignment(left_pwm, right_pwm, divergence=divergence,
+                           unaligned_penalty=unaligned_penalty,
+                           try_reverse_complement=try_reverse_complement)
+    print(alignment)
+    if (alignment[[1]]$direction == 'reverse') {
+        left_pwm = revCompPwm(left_pwm)
+    }
+    left_pwm = addBefore(left_pwm, alignment[[1]]$shift)
+    if (alignment[[2]]$direction == 'reverse') {
+        right_pwm = revCompPwm(right_pwm)
+    }
+    right_pwm = addBefore(right_pwm, alignment[[2]]$shift)
+    if (ncol(right_pwm) > ncol(left_pwm)) {
+       left_pwm = addAfter(left_pwm, ncol(right_pwm)-ncol(left_pwm))
+    }
+    if (ncol(right_pwm) < ncol(left_pwm)) {
+       right_pwm = addAfter(right_pwm, ncol(left_pwm)-ncol(right_pwm))
+    }
+    return(list(left_pwm, right_pwm))
 }
