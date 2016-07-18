@@ -377,7 +377,7 @@ divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
 
 findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
                                 unaligned_penalty) {
-    best_divergence = 1/0 # +Inf
+    best_divergence = Inf
     best_shift = 0
     for (shift in 0:(ncol(static_pwm)-1)){
         intersection_length = min(ncol(static_pwm) - shift, ncol(shifted_pwm))
@@ -427,7 +427,7 @@ revCompPwm = function (pwm) {
 
 ##' Finds best local alignment for PWMs.
 ##'
-##' @title Aligh pwms
+##' @title Align pwms
 ##' @param PWM is a matrix of type matrix
 ##' @param
 ##' @param divergence is a measure of difference between two pwm columns. Smaller is more similar. If you want to use non-uniform background distribution, provide your own function.
