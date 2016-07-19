@@ -93,3 +93,11 @@ test_that("DifferentLengthMatrixesAlign", {
     expect_equal(alignment[[2]]$direction, 'reverse')
     expect_gte(alignment$divergence, 0)
 })
+
+test_that("createDiffLogoObjRespectsAlignPwmObj", {
+    diffLogoObj = createDiffLogoObject(pwm1, pwm1_revcomp)
+    expect_gt(diffLogoObj$distance, 0)
+
+    diffLogoObj = createDiffLogoObject(pwm1, pwm1_revcomp, align_pwms=T)
+    expect_eq(diffLogoObj$distance, 0)
+});

@@ -238,6 +238,9 @@ diffLogoFromPwm = function (
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
+##' @param align_pwms if True, will aling and extend pwms.
+##' @param unaligned_penalty is a function for localPwmAlignment.
+##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param ... set of parameters passed to the function 'axis' for plotting
 ##' @export
 ##' @importFrom cba order.optimal
@@ -266,6 +269,9 @@ diffLogoTable = function (
             margin=0.02,
             ratio=1,
             alphabet=DNA,
+            align_pwms=F,
+            unaligned_penalty=divergencePenaltyForUnaligned,
+            try_reverse_complement=T,
             ...
 ) {
     plot.new();
@@ -298,7 +304,12 @@ diffLogoTable = function (
             motif_k = names[k];
             similarities[i,k] = 0
             if( i != k ) {
-                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
+                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]], PWMs[[ motif_k ]],
+                                                   stackHeight=stackHeight,
+                                                   baseDistribution=baseDistribution,
+                                                   alphabet=alphabet, align_pwms=align_pwms,
+                                                   unaligned_penalty=unaligned_penalty,
+                                                   try_reverse_complement=try_reverse_complement);
                 if(uniformYaxis) {
                     ymin = min(diffLogoObj$ylim.negMax,ymin)
                     ymax = max(diffLogoObj$ylim.posMax,ymax)
@@ -333,7 +344,13 @@ diffLogoTable = function (
                 rect(0,0,1,1,col=colors[leafOrder[i],leafOrder[k]],border=NA);
 
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marDiffLogo)
-                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],stackHeight=stackHeight, baseDistribution=baseDistribution, alphabet=alphabet);
+                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],
+                                                   stackHeight=stackHeight,
+                                                   baseDistribution=baseDistribution,
+                                                   alphabet=alphabet,
+                                                   align_pwms=align_pwms,
+                                                   unaligned_penalty=unaligned_penalty,
+                                                   try_reverse_complement=try_reverse_complement);
                 diffLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
             }
         }
@@ -539,7 +556,6 @@ alignExtendPwms = function(left_pwm, right_pwm, divergence=shannonDivergence,
     alignment = localPwmAlignment(left_pwm, right_pwm, divergence=divergence,
                            unaligned_penalty=unaligned_penalty,
                            try_reverse_complement=try_reverse_complement)
-    print(alignment)
     if (alignment[[1]]$direction == 'reverse') {
         left_pwm = revCompPwm(left_pwm)
     }
