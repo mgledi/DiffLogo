@@ -99,5 +99,5 @@ test_that("createDiffLogoObjRespectsAlignPwmObj", {
     expect_gt(diffLogoObj$distance, 0)
 
     diffLogoObj = createDiffLogoObject(pwm1, pwm1_revcomp, align_pwms=T)
-    expect_eq(diffLogoObj$distance, 0)
+    expect_equal(diffLogoObj$distance, 0, tolerance=1e-5)
 });
