@@ -13,6 +13,14 @@ rownames(pwm1_revcomp) = c("A", "C", "G", "T")
 pwm1_revcomp_shifted = cbind(cbind(pwm1_revcomp[,3:6], pwm1_revcomp[,1:1]),
                                                        pwm1_revcomp[,1:1])
 
+ACTG_pwm = matrix( c(1 ,0 ,0, 0,
+                     0 ,1 ,0, 0,
+                     0, 0 ,0 ,1,
+                     0, 0, 1, 0), 4, 4)
+TGAC_pwm =  cbind(matrix(c(0.25,0.25,0.25,0.25), 4, 1),
+                  ACTG_pwm[4:1, 4:1],
+                  matrix(c(0.25,0.25,0.25,0.25), 4, 1) )
+
 test_that("SameLengthMatrixesAlign", {
     alignment = localPwmAlignment(pwm1, pwm1)
     expect_equal(alignment[[1]]$shift, 0)
@@ -90,6 +98,13 @@ test_that("DifferentLengthMatrixesAlign", {
     expect_equal(alignment[[1]]$shift, 0)
     expect_equal(alignment[[1]]$direction, 'forward')
     expect_equal(alignment[[2]]$shift, 1)
+    expect_equal(alignment[[2]]$direction, 'reverse')
+    expect_gte(alignment$divergence, 0)
+
+    alignment = localPwmAlignment(ACTG_pwm, TGAC_pwm)
+    expect_equal(alignment[[1]]$shift, 1)
+    expect_equal(alignment[[1]]$direction, 'forward')
+    expect_equal(alignment[[2]]$shift, 0)
     expect_equal(alignment[[2]]$direction, 'reverse')
     expect_gte(alignment$divergence, 0)
 })
