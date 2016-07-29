@@ -539,8 +539,8 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                          unaligned_penalty=unaligned_penalty,
                                          base_distribution=base_distribution)
         if (alignment$divergence < best_divergence) {
-           result[[1]] = list("shift" = alignment$shift, "direction"="reverse")
-           result[[2]] = no_change
+           result[[1]] = list("shift" = alignment$shift, "direction"="forward")
+           result[[2]] = list("shift" = 0, "direction"="reverse")
            result$divergence = alignment$divergence
            best_divergence = alignment$divergence
         }
