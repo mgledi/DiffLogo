@@ -565,13 +565,13 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
     return(result)
 }
 
-addBefore = function (matrix, to_add_length, base_distribution) {
+addBefore = function (matrix, to_add_length, base_distribution=NULL) {
     return(cbind(baseDistributionPwm(to_add_length,
                                      nrow(matrix),
                                      base_distribution), matrix))
 }
 
-addAfter = function (matrix, to_add_length, base_distribution) {
+addAfter = function (matrix, to_add_length, base_distribution=NULL) {
     return(cbind(matrix,
         baseDistributionPwm(to_add_length, nrow(matrix),
                             base_distribution)))
