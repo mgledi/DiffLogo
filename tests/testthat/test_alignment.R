@@ -116,3 +116,112 @@ test_that("createDiffLogoObjRespectsAlignPwmObj", {
     diffLogoObj = createDiffLogoObject(pwm1, pwm1_revcomp, align_pwms=T)
     expect_equal(diffLogoObj$distance, 0, tolerance=1e-5)
 });
+
+test_that("AlignExtendPwmsWorks", {
+    alignment = localPwmAlignment(pwm1, short_pwm_shifted)
+    extended_pwms_alignment = extendPwmsFromAlignment(list(pwm1,
+                                                           short_pwm_shifted),
+                                                      alignment)
+    expect_equal(alignment$divergence,
+                 localPwmAlignment(pwm1, short_pwm_shifted)$divergence,
+                 tolerance=1e-5)
+    expect_equal(ncol(extended_pwms_alignment$pwms[[1]]),
+                 ncol(extended_pwms_alignment$pwms[[2]]))
+});
+
+test_that("pwmDistanceMatrixForTwoPwms", {
+    two_pwms_distance_matrix = pwmsDistanceMatrix(list(pwm1, short_pwm_shifted),
+                                                  diagonal_default_value=999,
+                                                  bottom_default_value=-1)
+    expect_equal(ncol(two_pwms_distance_matrix), 2)
+    expect_equal(nrow(two_pwms_distance_matrix), 2)
+
+    expect_equal(two_pwms_distance_matrix[[1, 2]],
+                 localPwmAlignment(pwm1, short_pwm_shifted)$divergence)
+    expect_equal(two_pwms_distance_matrix[[2, 1]],
+                 -1)
+    expect_equal(two_pwms_distance_matrix[[1, 1]], 999)
+    expect_equal(two_pwms_distance_matrix[[2, 2]], 999)
+});
+
+test_that("pwmDistanceMatrixForTreePwms", {
+    three_pwms_distance_matrix = pwmsDistanceMatrix(list(pwm1,
+                                                         short_pwm_shifted,
+                                                         ACTG_pwm))
+    expect_equal(ncol(three_pwms_distance_matrix), 3)
+    expect_equal(nrow(three_pwms_distance_matrix), 3)
+    expect_equal(three_pwms_distance_matrix[[1, 2]],
+                 localPwmAlignment(pwm1, short_pwm_shifted)$divergence)
+    expect_equal(three_pwms_distance_matrix[[1, 3]],
+                 localPwmAlignment(pwm1, ACTG_pwm)$divergence)
+    expect_equal(three_pwms_distance_matrix[[2, 3]],
+                 localPwmAlignment(short_pwm_shifted, ACTG_pwm)$divergence)
+
+    expect_equal(three_pwms_distance_matrix[[2, 1]], Inf)
+    expect_equal(three_pwms_distance_matrix[[3, 1]], Inf)
+    expect_equal(three_pwms_distance_matrix[[3, 2]], Inf)
+
+    expect_equal(three_pwms_distance_matrix[[1, 1]], Inf)
+    expect_equal(three_pwms_distance_matrix[[2, 2]], Inf)
+    expect_equal(three_pwms_distance_matrix[[3, 3]], Inf)
+});
+
+test_that("minimumMatrixRowCol", {
+    mat = matrix(c(5,3,2,
+                   2,2,0,
+                   3,1,2), ncol=3, byrow=T)
+    min_row_col = minimumMatrixElementIndexes(mat)
+    expect_equal(min_row_col[[1]], 2)
+    expect_equal(min_row_col[[2]], 3)
+
+    mat = matrix(c(5,7,0,
+                   1,2,4,
+                   3,4,2), ncol=3, byrow=T)
+    min_row_col = minimumMatrixElementIndexes(mat)
+    expect_equal(min_row_col[[1]], 1)
+    expect_equal(min_row_col[[2]], 3)
+});
+
+test_that("addLastTreeNodeToDistanceMatrix", {
+    mat = matrix(c(0,0,
+                   0,0), ncol=2, byrow=T)
+    tree_nodes = list(list("pwms"=list(pwm1)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward"))
+                            ,"divergence"=2))
+                     ,list("pwms"=list(pwm1, ACTG_pwm)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward")
+                                             ,list("shift"=1, "direction"="reverse"))
+                            ,"divergence"=3))
+                     ,list("pwms"=list(pwm1_revcomp_shifted)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward"))
+                            ,"divergence"=4)))
+    new_distance_matrix = addLastTreeNodeToDistanceMatrix(mat, tree_nodes)
+    expect_equal(new_distance_matrix[[3, 1]], Inf) 
+    expect_equal(new_distance_matrix[[1, 3]], localPwmAlignment(pwm1, pwm1_revcomp_shifted)$divergence)
+});
+
+test_that("joinTwoNodesInAlignmentTree", {
+    mat = matrix(c(Inf, 2,1,
+                   Inf,Inf,2,
+                   Inf,Inf,Inf), ncol=3, byrow=T)
+    tree_nodes = list(list("pwms"=list(pwm1)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward"))
+                            ,"divergence"=2))
+                     ,list("pwms"=list(pwm1, ACTG_pwm)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward")
+                                             ,list("shift"=1, "direction"="reverse"))
+                            ,"divergence"=3))
+                     ,list("pwms"=list(pwm1_revcomp_shifted)
+                          ,"pwms_alignment"=list(
+                             "alignment"=list(list("shift"=0, "direction"="forward"))
+                            ,"divergence"=4)))
+    joined = joinTwoNodesInAlignmentTree(mat, tree_nodes, 3)
+    expect_equal(length(joined), 2)
+});
+
+
