@@ -117,11 +117,11 @@ test_that("createDiffLogoObjRespectsAlignPwmObj", {
     expect_equal(diffLogoObj$distance, 0, tolerance=1e-5)
 });
 
-test_that("AlignExtendPwmsWorks", {
+test_that("extendPwmsFromAlignmentVector", {
     alignment = localPwmAlignment(pwm1, short_pwm_shifted)
-    extended_pwms_alignment = extendPwmsFromAlignment(list(pwm1,
-                                                           short_pwm_shifted),
-                                                      alignment)
+    extended_pwms_alignment = extendPwmsFromAlignmentVector(list(pwm1,
+                                                                 short_pwm_shifted),
+                                                            alignment$alignment)
     expect_equal(alignment$divergence,
                  localPwmAlignment(pwm1, short_pwm_shifted)$divergence,
                  tolerance=1e-5)
@@ -225,3 +225,10 @@ test_that("joinTwoNodesInAlignmentTree", {
 });
 
 
+test_that("multipleLocalPwmsAlignment", {
+    alignment = multipleLocalPwmsAlignment(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm))
+
+    pwms_list = list(pwm1, pwm1_revcomp_shifted, ACTG_pwm)
+    names(pwms_list) = sapply(1:length(pwms_list), paste)
+    alignment = multipleLocalPwmsAlignment(pwms_list)
+});
