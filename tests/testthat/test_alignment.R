@@ -117,6 +117,19 @@ test_that("createDiffLogoObjRespectsAlignPwmObj", {
     expect_equal(diffLogoObj$distance, 0, tolerance=1e-5)
 });
 
+test_that("createDiffLogoObjAcceptsExtendedPwms", {
+    pwm_list = list(pwm1, pwm1_revcomp_shifted)
+    alignment = multipleLocalPwmsAlignment(pwm_list)
+    extended_pwms = extendPwmsFromAlignmentVector(pwm_list, alignment$alignment$alignment)
+#    names(extended_pwms) = sapply(1:length(extended_pwms), paste)
+#    for (i in 1:length(extended_pwms)) {
+#        colnames(extended_pwms[[i]]) = sapply(1:ncol(extended_pwms[[i]]), paste)
+#    }
+#    print(extended_pwms)
+    diffLogoObj = createDiffLogoObject(extended_pwms[[1]], extended_pwms[[2]], align_pwms=T)
+    expect_equal(is.null(diffLogoObj), F)
+});
+
 test_that("extendPwmsFromAlignmentVector", {
     alignment = localPwmAlignment(pwm1, short_pwm_shifted)
     extended_pwms_alignment = extendPwmsFromAlignmentVector(list(pwm1,
@@ -231,4 +244,14 @@ test_that("multipleLocalPwmsAlignment", {
     pwms_list = list(pwm1, pwm1_revcomp_shifted, ACTG_pwm)
     names(pwms_list) = sapply(1:length(pwms_list), paste)
     alignment = multipleLocalPwmsAlignment(pwms_list)
+});
+
+
+test_that("diffLogoTablePlotsWithoutAligning", {
+    pwm_list = list(pwm1, pwm1_revcomp_shifted, ACTG_pwm)
+    alignment = multipleLocalPwmsAlignment(pwm_list)
+    extended_pwms = extendPwmsFromAlignmentVector(pwm_list, alignment$alignment$alignment)
+    diffLogoTable(extended_pwms, list("", "", ""))
+    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3, multiple_align_pwms=T)
+    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3, multiple_align_pwms=T, enableClustering=T)
 });

@@ -310,12 +310,18 @@ diffLogoTable = function (
     diffLogos = list();
     palette = colorRampPalette(c(rgb(0.9,1,0.9),rgb(1,0.9,0.9)))(100)
     names = names(PWMs);
+    if (is.null(names)) {
+        names = 1:length(PWMs)
+    }
 
     ymin = 0;
     ymax = 0;
     if (multiple_align_pwms) {
         multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs)
-        PWMs = extendPwmsFromAlignmentVector(PWMs, multiple_pwms_alignment$alignment)
+        PWMs = extendPwmsFromAlignmentVector(
+                   PWMs,
+                   multiple_pwms_alignment$alignment$alignment)
+        stopifnot(dim==length(PWMs))
     }
     for ( i in 1:dim) {
         motif_i = names[i];
@@ -323,13 +329,20 @@ diffLogoTable = function (
             motif_k = names[k];
             similarities[i,k] = 0
             if( i != k ) {
-                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]], PWMs[[ motif_k ]],
+                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
+                                                   PWMs[[ motif_k ]],
                                                    stackHeight=stackHeight,
-                                                   baseDistribution=baseDistribution,
-                                                   alphabet=alphabet, align_pwms=align_pwms,
-                                                   unaligned_penalty=unaligned_penalty,
-                                                   try_reverse_complement=try_reverse_complement,
-                                                   length_normalization = length_normalization);
+                                                   baseDistribution=
+                                                       baseDistribution,
+                                                   alphabet=alphabet,
+                                                   align_pwms=align_pwms,
+                                                   unaligned_penalty=
+                                                       unaligned_penalty,
+                                                   try_reverse_complement=
+                                                       try_reverse_complement,
+                                                   length_normalization =
+                                                       length_normalization);
+
                 if(uniformYaxis) {
                     ymin = min(diffLogoObj$ylim.negMax,ymin)
                     ymax = max(diffLogoObj$ylim.posMax,ymax)
@@ -341,12 +354,32 @@ diffLogoTable = function (
     colors = matrix(palette[cut(similarities,100)],dim,dim)
     leafOrder=1:dim;
     if(enableClustering) {
-        distance = dist(similarities);
-        hc = hclust(distance, "average");
-        opt = order.optimal(distance,hc$merge)
-        hc$merge=opt$merge
-        hc$order=opt$order
-        leafOrder = hc$order;
+        if (multiple_align_pwms) {
+            hc = list()
+            distance_matrix = multiple_pwms_alignment$distance_matrix
+            for (i in 1:ncol(distance_matrix)) {
+                distance_matrix[[i,i]] = 0
+                for (j in 1:i) {
+                    distance_matrix[[i, j]] = distance_matrix[[j, i]]
+                }
+            }
+            opt = order.optimal(as.dist(distance_matrix),
+                                multiple_pwms_alignment$merge)
+            hc$merge = opt$merge
+            leafOrder = opt = hc$order = opt$order
+
+            hc$merge = multiple_pwms_alignment$merge
+            hc$height = multiple_pwms_alignment$height
+            hc$labels = names(PWMs)
+            class(hc) = 'hclust'
+        } else {
+            distance = dist(similarities);
+            hc = hclust(distance, "average");
+            opt = order.optimal(distance,hc$merge)
+            hc$merge=opt$merge
+            hc$order=opt$order
+            leafOrder = hc$order;
+        }
     }
 
     # draw DiffLogos
@@ -863,7 +896,7 @@ alignmentTree = function(pwms, distance_matrix) {
     return(tree_nodes[[1]])
 }
 
-alignmentTreeLeftRightTriversal = function(node){
+alignmentTreeLeftRightTriversal = function(node) {
     merge = list()
     order = list()
     height = list()
@@ -906,5 +939,11 @@ multipleLocalPwmsAlignment = function(
                                                 sort.list(
                                                     unlist(
                                                         traversal_result$order))]
-    return(alignment_tree_nodes$pwms_alignment)
+    return(list("alignment"=alignment_tree_nodes$pwms_alignment,
+                "order"=unlist(traversal_result$order),
+                "merge"=t(matrix(unlist(traversal_result$merge), 2, byrow=F)),
+                "height"=unlist(traversal_result$height),
+                "raw_tree"=list(alignment_tree_nodes),
+                "distance_matrix"=distance_matrix
+                ))
 }
