@@ -34,20 +34,21 @@ test_that("SameLengthMatrixesAlign", {
     expect_equal(alignment$alignment[[1]]$direction, 'forward')
     expect_equal(alignment$alignment[[2]]$shift, 1)
     expect_equal(alignment$alignment[[2]]$direction, 'forward')
-    #expect_gte(alignment$divergence, 0)
+    expect_gte(alignment$divergence, 0)
 
     alignment = localPwmAlignment(pwm1_shifted, pwm1)
     expect_equal(alignment$alignment[[1]]$shift, 1)
     expect_equal(alignment$alignment[[1]]$direction, 'forward')
     expect_equal(alignment$alignment[[2]]$shift, 0)
     expect_equal(alignment$alignment[[2]]$direction, 'forward')
-    #expect_gte(alignment$divergence, 0)
+    expect_gte(alignment$divergence, 0)
 
     alignment = localPwmAlignment(pwm1, pwm1_revcomp)
     expect_equal(alignment$alignment[[1]]$shift, 0)
     expect_equal(alignment$alignment[[1]]$direction, 'forward')
     expect_equal(alignment$alignment[[2]]$shift, 0)
     expect_equal(alignment$alignment[[2]]$direction, 'reverse')
+    expect_equal(alignment$divergence, 0)
 
     alignment = localPwmAlignment(pwm1_revcomp, pwm1)
     expect_equal(alignment$alignment[[1]]$shift, 0)
@@ -121,11 +122,6 @@ test_that("createDiffLogoObjAcceptsExtendedPwms", {
     pwm_list = list(pwm1, pwm1_revcomp_shifted)
     alignment = multipleLocalPwmsAlignment(pwm_list)
     extended_pwms = extendPwmsFromAlignmentVector(pwm_list, alignment$alignment$alignment)
-#    names(extended_pwms) = sapply(1:length(extended_pwms), paste)
-#    for (i in 1:length(extended_pwms)) {
-#        colnames(extended_pwms[[i]]) = sapply(1:ncol(extended_pwms[[i]]), paste)
-#    }
-#    print(extended_pwms)
     diffLogoObj = createDiffLogoObject(extended_pwms[[1]], extended_pwms[[2]], align_pwms=T)
     expect_equal(is.null(diffLogoObj), F)
 });
