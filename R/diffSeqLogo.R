@@ -51,7 +51,7 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
             base_distribution=base_distribution,
             length_normalization = length_normalization)
         aligned_extended_pwms = extendPwmsFromAlignmentVector(list(pwm1, pwm2),
-                                                              alignment$alignment,
+                                                              alignment$vector,
                                                               base_distribution)
         pwm1 = aligned_extended_pwms[[1]]
         pwm2 = aligned_extended_pwms[[2]]
@@ -320,7 +320,7 @@ diffLogoTable = function (
         multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs)
         PWMs = extendPwmsFromAlignmentVector(
                    PWMs,
-                   multiple_pwms_alignment$alignment$alignment)
+                   multiple_pwms_alignment$alignment$vector)
         stopifnot(dim==length(PWMs))
     }
     for ( i in 1:dim) {
@@ -555,7 +555,7 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                              try_reverse_complement=T, base_distribution=NULL,
                              length_normalization = F) {
     no_change = list("shift"=0, "direction"="forward")
-    result_alignment = list()
+    result_alignment_vector = list()
     best_divergence = Inf
 
     alignment = findBestShiftForPwms(pwm_left, pwm_right, divergence=divergence,
@@ -563,8 +563,8 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                      base_distribution,
                                      length_normalization=length_normalization)
     if (alignment$divergence < best_divergence) {
-       result_alignment[[1]] = no_change
-       result_alignment[[2]] = list("shift" = alignment$shift, "direction"="forward")
+       result_alignment_vector[[1]] = no_change
+       result_alignment_vector[[2]] = list("shift" = alignment$shift, "direction"="forward")
        result_divergence = alignment$divergence
        best_divergence = alignment$divergence
     }
@@ -574,8 +574,8 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                      base_distribution=base_distribution,
                                      length_normalization=length_normalization)
     if (alignment$divergence < best_divergence) {
-       result_alignment[[1]] = list("shift" = alignment$shift, "direction"="forward")
-       result_alignment[[2]] = no_change
+       result_alignment_vector[[1]] = list("shift" = alignment$shift, "direction"="forward")
+       result_alignment_vector[[2]] = no_change
        result_divergence = alignment$divergence
        best_divergence = alignment$divergence
     }
@@ -586,8 +586,8 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                          base_distribution=base_distribution,
                                          length_normalization=length_normalization)
         if (alignment$divergence < best_divergence) {
-           result_alignment[[1]] = no_change
-           result_alignment[[2]] = list("shift" = alignment$shift, "direction"="reverse")
+           result_alignment_vector[[1]] = no_change
+           result_alignment_vector[[2]] = list("shift" = alignment$shift, "direction"="reverse")
            result_divergence = alignment$divergence
            best_divergence = alignment$divergence
         }
@@ -598,13 +598,13 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                          base_distribution=base_distribution,
                                          length_normalization=length_normalization)
         if (alignment$divergence < best_divergence) {
-           result_alignment[[1]] = list("shift" = alignment$shift, "direction"="forward")
-           result_alignment[[2]] = list("shift" = 0, "direction"="reverse")
+           result_alignment_vector[[1]] = list("shift" = alignment$shift, "direction"="forward")
+           result_alignment_vector[[2]] = list("shift" = 0, "direction"="reverse")
            result_divergence = alignment$divergence
            best_divergence = alignment$divergence
         }
     }
-    return(list("alignment"=result_alignment,
+    return(list("vector"=result_alignment_vector,
                 "divergence"=result_divergence))
 }
 
@@ -624,7 +624,7 @@ addAfter = function (matrix, to_add_length, base_distribution=NULL) {
 ##'
 ##' @title Extend pwms with respect to alignment
 ##' @param pwms is a list of matrixes
-##' @param alignment is a list. alignment$alignment is a list of shifts ($shift) and orientations ($direction)
+##' @param alignment_vector is a list of shifts ($shift) and orientations ($direction)
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
 ##' @export
 ##' @author Lando Andrey
@@ -677,8 +677,8 @@ findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
                                    divergence=shannonDivergence,
                                    unaligned_penalty=
                                        divergencePenaltyForUnaligned) {
-    stopifnot(length(static_pwms_list)==length(static_pwms_alignment$alignment))
-    stopifnot(length(shifted_pwms_list)==length(shifted_pwms_alignment$alignment))
+    stopifnot(length(static_pwms_list)==length(static_pwms_alignment$vector))
+    stopifnot(length(shifted_pwms_list)==length(shifted_pwms_alignment$vector))
     best_divergence = Inf
     best_shift = 0
     max_possible_shift = 0
@@ -686,22 +686,22 @@ findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
     for (i in 1:length(static_pwms_list)) {
         max_possible_shift = max(max_possible_shift,
                                  ncol(static_pwms_list[[i]])
-                                     +static_pwms_alignment$alignment[[i]]$shift)
+                                     +static_pwms_alignment$vector[[i]]$shift)
     }
     for (shift in 0:max_possible_shift) {
         divergence_for_shift = twoSetsAveragePwmDivergenceFromAlignmentVector(
-            static_pwms_list, static_pwms_alignment$alignment,
-            shifted_pwms_list, shifted_pwms_alignment$alignment,
+            static_pwms_list, static_pwms_alignment$vector,
+            shifted_pwms_list, shifted_pwms_alignment$vector,
             divergence=divergence)
         if (divergence_for_shift < best_divergence) {
             best_divergence = divergence_for_shift
-            result = list("alignment" = c(static_pwms_alignment$alignment,
-                                          shifted_pwms_alignment$alignment),
+            result = list("vector" = c(static_pwms_alignment$vector,
+                                       shifted_pwms_alignment$vector),
                           "divergence"=best_divergence)
         }
-        for (i in 1:length(shifted_pwms_alignment$alignment)) {
-            shifted_pwms_alignment$alignment[[i]]$shift =
-                shifted_pwms_alignment$alignment[[i]]$shift+1
+        for (i in 1:length(shifted_pwms_alignment$vector)) {
+            shifted_pwms_alignment$vector[[i]]$shift =
+                shifted_pwms_alignment$vector[[i]]$shift+1
         }
     }
     return(result)
@@ -742,8 +742,8 @@ reverseAlignmentVector = function(alignment_vector, pwms) {
 
 alignPwmSets = function(left_pwms_set, left_alignment,
                         right_pwms_set, right_alignment) {
-    stopifnot(length(left_pwms_set)==length(left_alignment$alignment))
-    stopifnot(length(right_pwms_set)==length(right_alignment$alignment))
+    stopifnot(length(left_pwms_set)==length(left_alignment$vector))
+    stopifnot(length(right_pwms_set)==length(right_alignment$vector))
     result = list()
     best_divergence = Inf
     alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment,
@@ -757,11 +757,11 @@ alignPwmSets = function(left_pwms_set, left_alignment,
                                         left_pwms_set, left_alignment)
     if (alignment$divergence < best_divergence) {
        best_divergence = alignment$divergence
-       result$alignment = c(alignment$alignment[(length(right_pwms_set)+1):(length(alignment$alignment))],
-                            alignment$alignment[1:length(right_pwms_set)])
+       result$vector = c(alignment$vector[(length(right_pwms_set)+1):(length(alignment$vector))],
+                            alignment$vector[1:length(right_pwms_set)])
        result$divergence = best_divergence
     }
-    right_alignment$alignment = reverseAlignmentVector(right_alignment$alignment,
+    right_alignment$vector = reverseAlignmentVector(right_alignment$vector,
                                                        right_pwms_set)
     alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment,
                                         right_pwms_set, right_alignment)
@@ -774,8 +774,8 @@ alignPwmSets = function(left_pwms_set, left_alignment,
                                         left_pwms_set, left_alignment)
     if (alignment$divergence < best_divergence) {
        best_divergence = alignment$divergence
-       result$alignment = c(alignment$alignment[(length(right_pwms_set)+1):(length(alignment$alignment))],
-                            alignment$alignment[1:length(right_pwms_set)])
+       result$vector = c(alignment$vector[(length(right_pwms_set)+1):(length(alignment$vector))],
+                            alignment$vector[1:length(right_pwms_set)])
        result$divergence = best_divergence
     }
     return(result)
@@ -846,7 +846,7 @@ joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter
                                   tree_nodes[[second_pwm_index]]$pwms,
                                   tree_nodes[[second_pwm_index]]$pwms_alignment)
     stopifnot(length(c(tree_nodes[[first_pwm_index]]$pwms,
-                       tree_nodes[[second_pwm_index]]$pwms)) == length(pwms_alignment$alignment))
+                       tree_nodes[[second_pwm_index]]$pwms)) == length(pwms_alignment$vector))
     tree_nodes = c(tree_nodes,
                    list(
                        list("pwms"=c(tree_nodes[[first_pwm_index]]$pwms,
@@ -883,7 +883,7 @@ alignmentTree = function(pwms, distance_matrix) {
                                 "num_leafs"=1,
                                 "pwm_index"=i,
                                 "pwms_alignment"=list(
-                                    "alignment"=list(list("direction"="forward",
+                                    "vector"=list(list("direction"="forward",
                                                           "shift"=0))))))
     }
     join_counter = 1
@@ -934,8 +934,8 @@ multipleLocalPwmsAlignment = function(
         length_normalization = length_normalization)
     alignment_tree_nodes = alignmentTree(pwms, distance_matrix)
     traversal_result = alignmentTreeLeftRightTriversal(alignment_tree_nodes)
-    alignment_tree_nodes$pwms_alignment$alignment =
-        alignment_tree_nodes$pwms_alignment$alignment[
+    alignment_tree_nodes$pwms_alignment$vector =
+        alignment_tree_nodes$pwms_alignment$vector[
                                                 sort.list(
                                                     unlist(
                                                         traversal_result$order))]
