@@ -121,16 +121,18 @@ test_that("createDiffLogoObjRespectsAlignPwmObj", {
 test_that("createDiffLogoObjAcceptsExtendedPwms", {
     pwm_list = list(pwm1, pwm1_revcomp_shifted)
     alignment = multipleLocalPwmsAlignment(pwm_list)
-    extended_pwms = extendPwmsFromAlignmentVector(pwm_list, alignment$alignment$vector)
-    diffLogoObj = createDiffLogoObject(extended_pwms[[1]], extended_pwms[[2]], align_pwms=T)
+    extended_pwms = extendPwmsFromAlignmentVector(pwm_list,
+                                                  alignment$alignment$vector)
+    diffLogoObj = createDiffLogoObject(extended_pwms[[1]],
+                                       extended_pwms[[2]], align_pwms=T)
     expect_equal(is.null(diffLogoObj), F)
 });
 
 test_that("extendPwmsFromAlignmentVector", {
     alignment = localPwmAlignment(pwm1, short_pwm_shifted)
-    extended_pwms_alignment = extendPwmsFromAlignmentVector(list(pwm1,
-                                                                 short_pwm_shifted),
-                                                            alignment$vector)
+    extended_pwms_alignment = extendPwmsFromAlignmentVector(
+        list(pwm1, short_pwm_shifted),
+        alignment$vector)
     expect_equal(alignment$divergence,
                  localPwmAlignment(pwm1, short_pwm_shifted)$divergence,
                  tolerance=1e-5)
@@ -196,20 +198,26 @@ test_that("addLastTreeNodeToDistanceMatrix", {
                    0,0), ncol=2, byrow=T)
     tree_nodes = list(list("pwms"=list(pwm1)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward"))
                             ,"divergence"=2))
                      ,list("pwms"=list(pwm1, ACTG_pwm)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward")
-                                             ,list("shift"=1, "direction"="reverse"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward")
+                                          ,list("shift"=1,
+                                                "direction"="reverse"))
                             ,"divergence"=3))
                      ,list("pwms"=list(pwm1_revcomp_shifted)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward"))
                             ,"divergence"=4)))
     new_distance_matrix = addLastTreeNodeToDistanceMatrix(mat, tree_nodes)
     expect_equal(new_distance_matrix[[3, 1]], Inf) 
-    expect_equal(new_distance_matrix[[1, 3]], localPwmAlignment(pwm1, pwm1_revcomp_shifted)$divergence)
+    expect_equal(new_distance_matrix[[1, 3]], localPwmAlignment(
+                                                pwm1,
+                                                pwm1_revcomp_shifted)$divergence)
 });
 
 test_that("joinTwoNodesInAlignmentTree", {
@@ -218,16 +226,20 @@ test_that("joinTwoNodesInAlignmentTree", {
                    Inf,Inf,Inf), ncol=3, byrow=T)
     tree_nodes = list(list("pwms"=list(pwm1)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward"))
                             ,"divergence"=2))
                      ,list("pwms"=list(pwm1, ACTG_pwm)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward")
-                                             ,list("shift"=1, "direction"="reverse"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward")
+                                          ,list("shift"=1,
+                                                "direction"="reverse"))
                             ,"divergence"=3))
                      ,list("pwms"=list(pwm1_revcomp_shifted)
                           ,"pwms_alignment"=list(
-                             "vector"=list(list("shift"=0, "direction"="forward"))
+                             "vector"=list(list("shift"=0,
+                                                "direction"="forward"))
                             ,"divergence"=4)))
     joined = joinTwoNodesInAlignmentTree(mat, tree_nodes, 3)
     expect_equal(length(joined), 2)
@@ -235,7 +247,9 @@ test_that("joinTwoNodesInAlignmentTree", {
 
 
 test_that("multipleLocalPwmsAlignment", {
-    alignment = multipleLocalPwmsAlignment(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm))
+    alignment = multipleLocalPwmsAlignment(list(pwm1,
+                                                pwm1_revcomp_shifted,
+                                                ACTG_pwm))
 
     pwms_list = list(pwm1, pwm1_revcomp_shifted, ACTG_pwm)
     names(pwms_list) = sapply(1:length(pwms_list), paste)
@@ -246,8 +260,11 @@ test_that("multipleLocalPwmsAlignment", {
 test_that("diffLogoTablePlotsWithoutAligning", {
     pwm_list = list(pwm1, pwm1_revcomp_shifted, ACTG_pwm)
     alignment = multipleLocalPwmsAlignment(pwm_list)
-    extended_pwms = extendPwmsFromAlignmentVector(pwm_list, alignment$alignment$vector)
+    extended_pwms = extendPwmsFromAlignmentVector(pwm_list,
+                                                  alignment$alignment$vector)
     diffLogoTable(extended_pwms, list("", "", ""))
-    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3, multiple_align_pwms=T)
-    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3, multiple_align_pwms=T, enableClustering=T)
+    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3,
+                  multiple_align_pwms=T)
+    diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3,
+                  multiple_align_pwms=T, enableClustering=T)
 });
