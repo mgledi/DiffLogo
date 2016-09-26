@@ -35,7 +35,8 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
                                      normalizedDifferenceOfProbabilities,
                                  alphabet=DNA, align_pwms=F,
                                  unaligned_penalty=divergencePenaltyForUnaligned,
-                                 try_reverse_complement=T, base_distribution=NULL,
+                                 try_reverse_complement=T,
+                                 base_distribution=NULL,
                                  length_normalization = F) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
@@ -397,15 +398,20 @@ diffLogoTable = function (
                 rect(0,0,1,1,col=colors[leafOrder[i],leafOrder[k]],border=NA);
 
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marDiffLogo)
-                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],PWMs[[ motif_k ]],
+                diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
+                                                   PWMs[[ motif_k ]],
                                                    stackHeight=stackHeight,
-                                                   baseDistribution=baseDistribution,
+                                                   baseDistribution =
+                                                       baseDistribution,
                                                    alphabet=alphabet,
                                                    align_pwms=align_pwms,
-                                                   unaligned_penalty=unaligned_penalty,
-                                                   try_reverse_complement=try_reverse_complement,
-                                                   length_normalization = length_normalization);
-                diffLogo(diffLogoObj,sparse=sparse,ymin=ymin,ymax=ymax)
+                                                   unaligned_penalty=
+                                                       unaligned_penalty,
+                                                   try_reverse_complement=
+                                                       try_reverse_complement,
+                                                   length_normalization=
+                                                       length_normalization);
+                diffLogo(diffLogoObj, sparse=sparse, ymin=ymin, ymax=ymax)
             }
         }
         if(showSequenceLogosTop) {
@@ -459,7 +465,8 @@ baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NU
 
 divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
                                          aligned_length,
-                                         unaligned_at_right, divergence, base_distribution) {
+                                         unaligned_at_right, divergence,
+                                         base_distribution) {
     shift_divergence = 0
     if (unaligned_at_left > 0) {
        shift_divergence = shift_divergence+
@@ -467,7 +474,8 @@ divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
                               pwm[,1:unaligned_at_left], nrow=nrow(pwm)),
                               baseDistributionPwm(unaligned_at_left,
                                                   nrow(pwm),
-                                                  base_distribution=base_distribution),
+                                                  base_distribution=
+                                                      base_distribution),
                               divergence)
     }
     if (unaligned_at_right > 0) {
@@ -478,7 +486,8 @@ divergencePenaltyForUnaligned = function(pwm, unaligned_at_left,
                                      nrow=nrow(pwm)),
                               baseDistributionPwm(ncol(pwm)-aligned_length,
                                                   nrow(pwm),
-                                                  base_distribution=base_distribution),
+                                                  base_distribution=
+                                                      base_distribution),
                               divergence)
     }
     return(shift_divergence)
@@ -533,6 +542,18 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,
     return(result)
 }
 
+
+##' Finds best local alignment for PWMs.
+##'
+##' @title Align pwms
+##' @param PWM is a matrix of type matrix
+##' @param
+##' @param divergence is a measure of difference between two pwm columns. Smaller is more similar. If you want to use non-uniform background distribution, provide your own function.
+##' @param distance for unaligned columns at edges of matrixes. See divergencePenaltyForUnaligned as an example for providing your own function
+##' @param If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG.
+##' @param If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @export
+##' @author Lando Andrey
 revCompPwm = function (pwm) {
     result = pwm[nrow(pwm):1, ncol(pwm):1]
     rownames(result) = rownames(pwm)
@@ -564,7 +585,8 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                      length_normalization=length_normalization)
     if (alignment$divergence < best_divergence) {
        result_alignment_vector[[1]] = no_change
-       result_alignment_vector[[2]] = list("shift" = alignment$shift, "direction"="forward")
+       result_alignment_vector[[2]] = list("shift" = alignment$shift,
+                                           "direction"="forward")
        result_divergence = alignment$divergence
        best_divergence = alignment$divergence
     }
@@ -574,10 +596,11 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                      base_distribution=base_distribution,
                                      length_normalization=length_normalization)
     if (alignment$divergence < best_divergence) {
-       result_alignment_vector[[1]] = list("shift" = alignment$shift, "direction"="forward")
-       result_alignment_vector[[2]] = no_change
-       result_divergence = alignment$divergence
-       best_divergence = alignment$divergence
+        result_alignment_vector[[1]] = list("shift" = alignment$shift,
+                                            "direction"="forward")
+        result_alignment_vector[[2]] = no_change
+        result_divergence = alignment$divergence
+        best_divergence = alignment$divergence
     }
     if (try_reverse_complement) {
         alignment = findBestShiftForPwms(pwm_left, revCompPwm(pwm_right),
@@ -586,10 +609,11 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                          base_distribution=base_distribution,
                                          length_normalization=length_normalization)
         if (alignment$divergence < best_divergence) {
-           result_alignment_vector[[1]] = no_change
-           result_alignment_vector[[2]] = list("shift" = alignment$shift, "direction"="reverse")
-           result_divergence = alignment$divergence
-           best_divergence = alignment$divergence
+            result_alignment_vector[[1]] = no_change
+            result_alignment_vector[[2]] = list("shift" = alignment$shift,
+                                                "direction"="reverse")
+            result_divergence = alignment$divergence
+            best_divergence = alignment$divergence
         }
 
         alignment = findBestShiftForPwms(revCompPwm(pwm_right), pwm_left,
@@ -598,10 +622,12 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence,
                                          base_distribution=base_distribution,
                                          length_normalization=length_normalization)
         if (alignment$divergence < best_divergence) {
-           result_alignment_vector[[1]] = list("shift" = alignment$shift, "direction"="forward")
-           result_alignment_vector[[2]] = list("shift" = 0, "direction"="reverse")
-           result_divergence = alignment$divergence
-           best_divergence = alignment$divergence
+            result_alignment_vector[[1]] = list("shift" = alignment$shift,
+                                                "direction"="forward")
+            result_alignment_vector[[2]] = list("shift" = 0,
+                                                "direction"="reverse")
+            result_divergence = alignment$divergence
+            best_divergence = alignment$divergence
         }
     }
     return(list("vector"=result_alignment_vector,
@@ -620,7 +646,7 @@ addAfter = function (matrix, to_add_length, base_distribution=NULL) {
                             base_distribution)))
 }
 
-##' Adds base_distribution to both sides of all pwms so they are equal length.
+##' Extends pwms by adding base_distribution to both sides, so that they keep aligned, but have equal length.
 ##'
 ##' @title Extend pwms with respect to alignment
 ##' @param pwms is a list of matrixes
@@ -628,27 +654,42 @@ addAfter = function (matrix, to_add_length, base_distribution=NULL) {
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
 ##' @export
 ##' @author Lando Andrey
-extendPwmsFromAlignmentVector = function(pwms, alignment_vector, base_distribution=NULL) {
+extendPwmsFromAlignmentVector = function(pwms, alignment_vector,
+                                         base_distribution=NULL) {
     stopifnot(length(pwms)==length(alignment_vector))
     max_length = 0
     for (i in 1:length(pwms)) {
         if (alignment_vector[[i]]$direction == 'reverse') {
             pwms[[i]] = revCompPwm(pwms[[i]])
         }
-        pwms[[i]] = addBefore(pwms[[i]], alignment_vector[[i]]$shift, base_distribution)
+        pwms[[i]] = addBefore(pwms[[i]], alignment_vector[[i]]$shift,
+                              base_distribution)
         max_length = max(max_length, ncol(pwms[[i]]))
     }
     for (i in 1:length(pwms)) {
-       pwms[[i]] = addAfter(pwms[[i]], max_length-ncol(pwms[[i]]), base_distribution)
+        pwms[[i]] = addAfter(pwms[[i]], max_length-ncol(pwms[[i]]),
+                             base_distribution)
     }
     return(pwms)
 }
 
+##' Computes average pwm divergence from alignment vector for two datasets. This equals to average divergence between all pairs where one pwm comes from left set, and other comes from right
+##'
+##' @title Average divergence between two sets.
+##' @param left_pwms_list is a list of matrixes
+##' @param left_pwms_alignment is a list of shifts ($shift) and orientations ($direction)
+##' @param right_pwms_list is a list of matrixes
+##' @param right_pwms_alignment is a list of shifts ($shift) and orientations ($direction)
+##' @param divergence divergence measure.
+##' @export
+##' @return float
+##' @author Lando Andrey
 twoSetsAveragePwmDivergenceFromAlignmentVector = function(left_pwms_list,
                                                           left_pwms_alignment,
                                                           right_pwms_list,
                                                           right_pwms_alignment,
-                                                          divergence=shannonDivergence) {
+                                                          divergence=
+                                                              shannonDivergence){
     stopifnot(length(left_pwms_list)==length(left_pwms_alignment))
     stopifnot(length(right_pwms_list)==length(right_pwms_alignment))
     pwms_divergences = c()
@@ -670,7 +711,6 @@ twoSetsAveragePwmDivergenceFromAlignmentVector = function(left_pwms_list,
     }
     return(mean(pwms_divergences))
 }
-
 
 findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
                                    shifted_pwms_list, shifted_pwms_alignment,
@@ -707,6 +747,8 @@ findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
     return(result)
 }
 
+##' If 'forward' return 'reverse'
+##' If 'reverse' return 'forward'
 switchDirection = function(direction) {
     if (direction=='forward') {
        return('reverse')
@@ -717,6 +759,14 @@ switchDirection = function(direction) {
     stopifnot(F);
 }
 
+##' Returns alignment vector as if all pwm were reverted.
+##'
+##' @title Reverse for alignment vector
+##' @param alignment_vector list of list which $shift and $orientation
+##' @param pwms list of matrixes.
+##' @export
+##' @return list - reversed alignment vector
+##' @author Lando Andrey
 reverseAlignmentVector = function(alignment_vector, pwms) {
     stopifnot(length(alignment_vector)==length(pwms))
     alignment_length = 0
@@ -740,6 +790,18 @@ reverseAlignmentVector = function(alignment_vector, pwms) {
 }
 
 
+##' Align two sets of pwms
+##'
+##' @title Multiple PWMs alignment
+##' @param left_pwms_set list of pwms(matrixes)
+##' @param left_aligment alignment of left_pwms_set. 
+##' @param right_pwms_set list of pwms;
+##' @param right_alignment alignment of right_pwms_set.
+##' @param try_reverse_complement if true(default), also try reverse complement.
+##' @return list - alignment of concatination of left_pwms_set and right_pwms_set
+##' @export
+##' @exportClass DiffLogo
+##' @author Lando Andrey
 alignPwmSets = function(left_pwms_set, left_alignment,
                         right_pwms_set, right_alignment) {
     stopifnot(length(left_pwms_set)==length(left_alignment$vector))
