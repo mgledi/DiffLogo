@@ -142,7 +142,7 @@ test_that("extendPwmsFromAlignmentVector", {
 
 test_that("pwmDistanceMatrixForTwoPwms", {
     two_pwms_distance_matrix = pwmsDistanceMatrix(list(pwm1, short_pwm_shifted),
-                                                  diagonal_default_value=999,
+                                                  diagonal_value=999,
                                                   bottom_default_value=-1)
     expect_equal(ncol(two_pwms_distance_matrix), 2)
     expect_equal(nrow(two_pwms_distance_matrix), 2)
@@ -158,7 +158,9 @@ test_that("pwmDistanceMatrixForTwoPwms", {
 test_that("pwmDistanceMatrixForTreePwms", {
     three_pwms_distance_matrix = pwmsDistanceMatrix(list(pwm1,
                                                          short_pwm_shifted,
-                                                         ACTG_pwm))
+                                                         ACTG_pwm),
+                                                    diagonal_value = Inf,
+                                                    bottom_default_value = Inf)
     expect_equal(ncol(three_pwms_distance_matrix), 3)
     expect_equal(nrow(three_pwms_distance_matrix), 3)
     expect_equal(three_pwms_distance_matrix[[1, 2]],

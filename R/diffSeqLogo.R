@@ -781,17 +781,31 @@ alignPwmSets = function(left_pwms_set, left_alignment,
     return(result)
 }
 
-
+##' Creates a distance matrix for pwms
+##'
+##' @title Multiple PWMs alignment
+##' @param pwms list of pwms
+##' @param diagonal_value value to put on diagonal.
+##' @param bottom_default_value value to put on bottom triangle. Set to NULL to get symmetric distance matrix.
+##' @param divergence divergence measure.
+##' @param unaligned_penalty is a function for localPwmAlignment.
+##' @param try_reverse_complement if True, alignment will try reverse complement pwms
+##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
+##' @param length_normalization is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
+##' @return list
+##' @export
+##' @exportClass DiffLogo
+##' @author Lando Andrey
 pwmsDistanceMatrix = function(pwms,
-                              diagonal_default_value = Inf,
-                              bottom_default_value = Inf,
+                              diagonal_value = 0,
+                              bottom_default_value = NULL,
                               divergence=shannonDivergence,
                               unaligned_penalty=divergencePenaltyForUnaligned,
                               try_reverse_complement=T, base_distribution=NULL,
                               length_normalization = F){
     distance_matrix = matrix(0, ncol=length(pwms), nrow=length(pwms))
     for (i in 1:(length(pwms)-1)) {
-        distance_matrix[[i, i]] = diagonal_default_value
+        distance_matrix[[i, i]] = diagonal_value
         for (j in (i+1):length(pwms)) {
             distance_matrix[[i, j]] = localPwmAlignment(
                 pwms[[i]], pwms[[j]],
@@ -807,7 +821,7 @@ pwmsDistanceMatrix = function(pwms,
             }
         }
     }
-    distance_matrix[[length(pwms), length(pwms)]] = diagonal_default_value
+    distance_matrix[[length(pwms), length(pwms)]] = diagonal_value
     return(distance_matrix)
 }
 
@@ -917,6 +931,20 @@ alignmentTreeLeftRightTriversal = function(node) {
     return(list("merge"=merge, "order"=unlist(order), "height"=height))
 }
 
+
+##' Creates a multiple alignment of pwms
+##'
+##' @title Multiple PWMs alignment
+##' @param pwms list of pwms
+##' @param divergence Divergence measure.
+##' @param unaligned_penalty is a function for localPwmAlignment.
+##' @param try_reverse_complement if True, alignment will try reverse complement pwms
+##' @param stackHeight function for the height of a stack at position i
+##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
+##' @return list
+##' @export
+##' @exportClass DiffLogo
+##' @author Lando Andrey
 multipleLocalPwmsAlignment = function(
   pwms,
   divergence=shannonDivergence,
@@ -927,6 +955,8 @@ multipleLocalPwmsAlignment = function(
 {
     distance_matrix = pwmsDistanceMatrix(
         pwms,
+        bottom_default_value = Inf,
+        diagonal_value = Inf,
         divergence=divergence,
         unaligned_penalty=unaligned_penalty,
         try_reverse_complement=try_reverse_complement,
