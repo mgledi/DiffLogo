@@ -266,7 +266,7 @@ test_that("diffLogoTablePlotsWithoutAligning", {
                                                   alignment$alignment$vector)
     diffLogoTable(extended_pwms, list("", "", ""))
     diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3,
-                  alignmentConfiguration=list(multiple_align_pwms=T))
+                  configuration=list("multiple_align_pwms"=T))
     diffLogoTable(list(pwm1, pwm1_revcomp_shifted, ACTG_pwm), names=1:3,
-                  alignmentConfiguration=list(enableClustering=T, multiple_align_pwms=T))
+                  configuration=list(enableClustering=T, multiple_align_pwms=T))
 });

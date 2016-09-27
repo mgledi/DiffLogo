@@ -238,31 +238,9 @@ diffLogoFromPwm = function (
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
-defaultDiffLogoTablePlotConfiguration = function() {
-     return(list(
-         uniformYaxis=TRUE,
-         sparse=TRUE,
-         showSequenceLogosTop=TRUE,
-         treeHeight=0.5,
-         margin=0.02,
-         ratio=1))
-}
-
-defaultDiffLogoTableAlignmentConfiguration = function() {
-     return(list(
-            stackHeight=shannonDivergence,
-            baseDistribution=normalizedDifferenceOfProbabilities,
-            multiple_align_pwms=T,
-            align_pwms=F,
-            unaligned_penalty=divergencePenaltyForUnaligned,
-            try_reverse_complement=T,
-            length_normalization=F))
-}
-
-##' Draws a table of DiffLogos.
+##' Default configuration list for diffLogoTable
 ##'
-##' @title Draw DiffLogo-table
-##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
+##' @title Configuration object for diffLogoTable
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param uniformYaxis if TRUE each DiffLogo is plotted with the same scaling of the y-axis
@@ -273,9 +251,51 @@ defaultDiffLogoTableAlignmentConfiguration = function() {
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
-##' @param align_pwms if True, will aling and extend pwms.
+##' @param align_pwms if True, will align and extend pwms in each sell of diffLogoTable indipendently.
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
+##' @param length_normalization if True, divergence between pwms is divided by length of pwms.
+##' @param ... set of parameters passed to the function 'axis' for plotting
+##' @export
+##' @author Lando Andrey
+##' @examples
+diffLogoTableConfiguration = function(
+         stackHeight=shannonDivergence,
+         baseDistribution=normalizedDifferenceOfProbabilities,
+         uniformYaxis=TRUE,
+         sparse=TRUE,
+         showSequenceLogosTop=TRUE,
+         enableClustering=TRUE,
+         treeHeight=0.5,
+         margin=0.02,
+         ratio=1,
+         align_pwms=F,
+         multiple_align_pwms=T,
+         unaligned_penalty=divergencePenaltyForUnaligned,
+         try_reverse_complement=T,
+         length_normalization=F) {
+     return(list(
+         uniformYaxis=uniformYaxis,
+         sparse=sparse,
+         showSequenceLogosTop=showSequenceLogosTop,
+         enableClustering=enableClustering,
+         treeHeight=treeHeight,
+         margin=margin,
+         ratio=ratio,
+         stackHeight=stackHeight,
+         baseDistribution=baseDistribution,
+         multiple_align_pwms=multiple_align_pwms,
+         align_pwms=align_pwms,
+         unaligned_penalty=unaligned_penalty,
+         try_reverse_complement=try_reverse_complement,
+         length_normalization=length_normalization))
+}
+
+##' Draws a table of DiffLogos.
+##'
+##' @title Draw DiffLogo-table
+##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
+##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
 ##' @param ... set of parameters passed to the function 'axis' for plotting
 ##' @export
 ##' @importFrom cba order.optimal
@@ -294,36 +314,35 @@ defaultDiffLogoTableAlignmentConfiguration = function() {
 diffLogoTable = function (
             PWMs,
             names2,
-            enableClustering=TRUE,
             alphabet=DNA,
-            plotConfiguration=list(),
-            alignmentConfiguration=list(),
+            configuration=list(),
             ...
 ) {
-    stopifnot(sum(
-        names(plotConfiguration) %in% defaultDiffLogoTablePlotConfiguration()) ==
-        length(plotConfiguration))
-    plotConfiguration    = modifyList(defaultDiffLogoTablePlotConfiguration(),
-                                      plotConfiguration)
-    uniformYaxis         = plotConfiguration$uniformYaxis
-    sparse               = plotConfiguration$sparse
-    showSequenceLogosTop = plotConfiguration$showSequenceLogosTop
-    treeHeight           = plotConfiguration$treeHeight
-    margin               = plotConfiguration$margin
-    ratio                = plotConfiguration$raito
+    if(sum(names(configuration) %in% names(diffLogoTableConfiguration())) !=
+       length(configuration))
+    {
+        stop(paste("Unknown arguments to diffLogoTable:",
+                   paste(names(configuration[
+                       !(names(configuration) %in%
+                         names(diffLogoTableConfiguration()))]), sep=",")))
+    }
+    configuration        = modifyList(diffLogoTableConfiguration(),
+                                      configuration)
+    uniformYaxis         = configuration$uniformYaxis
+    sparse               = configuration$sparse
+    showSequenceLogosTop = configuration$showSequenceLogosTop
+    treeHeight           = configuration$treeHeight
+    margin               = configuration$margin
+    ratio                = configuration$raito
+    enableClustering     = configuration$enableClustering
 
-    stopifnot(sum(
-        names(alignmentConfiguration) %in% defaultDiffLogoTableAlignmentConfiguration()) ==
-        length(alignmentConfiguration))
-    alignmentConfiguration = modifyList(defaultDiffLogoTableAlignmentConfiguration(),
-                                        alignmentConfiguration)
-    stackHeight            = alignmentConfiguration$stackHeight
-    baseDistribution       = alignmentConfiguration$baseDistribution
-    multiple_align_pwms    = alignmentConfiguration$multiple_align_pwms
-    align_pwms             = alignmentConfiguration$align_pwms
-    unaligned_penalty      = alignmentConfiguration$unaligned_penalty
-    try_reverse_complement = alignmentConfiguration$try_reverse_complement
-    length_normalization   = alignmentConfiguration$length_normalization
+    stackHeight            = configuration$stackHeight
+    baseDistribution       = configuration$baseDistribution
+    multiple_align_pwms    = configuration$multiple_align_pwms
+    align_pwms             = configuration$align_pwms
+    unaligned_penalty      = configuration$unaligned_penalty
+    try_reverse_complement = configuration$try_reverse_complement
+    length_normalization   = configuration$length_normalization
     
     plot.new();
     dim = length(PWMs);
