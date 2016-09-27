@@ -238,6 +238,27 @@ diffLogoFromPwm = function (
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
+defaultDiffLogoTablePlotConfiguration = function() {
+     return(list(
+         uniformYaxis=TRUE,
+         sparse=TRUE,
+         showSequenceLogosTop=TRUE,
+         treeHeight=0.5,
+         margin=0.02,
+         ratio=1))
+}
+
+defaultDiffLogoTableAlignmentConfiguration = function() {
+     return(list(
+            stackHeight=shannonDivergence,
+            baseDistribution=normalizedDifferenceOfProbabilities,
+            multiple_align_pwms=T,
+            align_pwms=F,
+            unaligned_penalty=divergencePenaltyForUnaligned,
+            try_reverse_complement=T,
+            length_normalization=F))
+}
+
 ##' Draws a table of DiffLogos.
 ##'
 ##' @title Draw DiffLogo-table
@@ -273,23 +294,37 @@ diffLogoFromPwm = function (
 diffLogoTable = function (
             PWMs,
             names2,
-            stackHeight=shannonDivergence,
-            baseDistribution=normalizedDifferenceOfProbabilities,
-            uniformYaxis=TRUE,
-            sparse=TRUE,
-            showSequenceLogosTop=TRUE,
             enableClustering=TRUE,
-            treeHeight=0.5,
-            margin=0.02,
-            ratio=1,
             alphabet=DNA,
-            multiple_align_pwms=F,
-            align_pwms=F,
-            unaligned_penalty=divergencePenaltyForUnaligned,
-            try_reverse_complement=T,
-            length_normalization = F,
+            plotConfiguration=list(),
+            alignmentConfiguration=list(),
             ...
 ) {
+    stopifnot(sum(
+        names(plotConfiguration) %in% defaultDiffLogoTablePlotConfiguration()) ==
+        length(plotConfiguration))
+    plotConfiguration    = modifyList(defaultDiffLogoTablePlotConfiguration(),
+                                      plotConfiguration)
+    uniformYaxis         = plotConfiguration$uniformYaxis
+    sparse               = plotConfiguration$sparse
+    showSequenceLogosTop = plotConfiguration$showSequenceLogosTop
+    treeHeight           = plotConfiguration$treeHeight
+    margin               = plotConfiguration$margin
+    ratio                = plotConfiguration$raito
+
+    stopifnot(sum(
+        names(alignmentConfiguration) %in% defaultDiffLogoTableAlignmentConfiguration()) ==
+        length(alignmentConfiguration))
+    alignmentConfiguration = modifyList(defaultDiffLogoTableAlignmentConfiguration(),
+                                        alignmentConfiguration)
+    stackHeight            = alignmentConfiguration$stackHeight
+    baseDistribution       = alignmentConfiguration$baseDistribution
+    multiple_align_pwms    = alignmentConfiguration$multiple_align_pwms
+    align_pwms             = alignmentConfiguration$align_pwms
+    unaligned_penalty      = alignmentConfiguration$unaligned_penalty
+    try_reverse_complement = alignmentConfiguration$try_reverse_complement
+    length_normalization   = alignmentConfiguration$length_normalization
+    
     plot.new();
     dim = length(PWMs);
 
