@@ -377,6 +377,7 @@ diffLogoTable = function (
                    PWMs,
                    multiple_pwms_alignment$alignment$vector)
         stopifnot(dim==length(PWMs))
+        align_pwms = FALSE
     }
     for ( i in 1:dim) {
         motif_i = names[i];
