@@ -37,7 +37,9 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
                                  unaligned_penalty=divergencePenaltyForUnaligned,
                                  try_reverse_complement=T,
                                  base_distribution=NULL,
-                                 length_normalization = F) {
+                                 length_normalization = F,
+                                 unaligned_from_left = NULL,
+                                 unaligned_from_right = NULL) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
     preconditionPWM(pwm1);
@@ -54,6 +56,15 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
         aligned_extended_pwms = extendPwmsFromAlignmentVector(list(pwm1, pwm2),
                                                               alignment$vector,
                                                               base_distribution)
+        
+        unaligned_from_left = max(alignment$vector[[1]]$shift,
+                                  alignment$vector[[2]]$shift)
+        alignment_length = max(alignment$vector[[1]]$shift+ncol(pwm1),
+                               alignment$vector[[2]]$shift+ncol(pwm2))
+        unaligned_from_right = max(
+            alignment_length-ncol(pwm1)-alignment$vector[[1]]$shift,
+            alignment_length-ncol(pwm2)-alignment$vector[[2]]$shift)
+
         pwm1 = aligned_extended_pwms[[1]]
         pwm2 = aligned_extended_pwms[[2]]
     }
@@ -123,7 +134,8 @@ createDiffLogoObject = function (pwm1, pwm2, stackHeight=shannonDivergence,
     diffObj$pwm2 = pwm2
     diffObj$distance = sum(abs(heights)) # TODO as function
     diffObj$alphabet = alphabet
-
+    diffObj$unaligned_from_left = unaligned_from_left
+    diffObj$unaligned_from_right = unaligned_from_right
     class(diffObj) = "DiffLogo"
     return(diffObj);
 }
@@ -182,8 +194,17 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
         axis(1,labels=c(1:diffLogoObj$npos),at=(1:diffLogoObj$npos))
         axis(1,labels=c("",""), at=c(0,(diffLogoObj$npos+1)),tck=-0.00)
     }
-
     polygon(diffLogoObj$letters, col=diffLogoObj$letters$col, border=FALSE)
+    if (!is.null(diffLogoObj$unaligned_from_left) && diffLogoObj$unaligned_from_left>0) {
+        rect(0.5, -ymin, diffLogoObj$unaligned_from_left+0.5,
+             -ymax, col="gray", border="gray")
+    }
+
+    if (!is.null(diffLogoObj$unaligned_from_right) && diffLogoObj$unaligned_from_right>0) {
+        rect(diffLogoObj$npos-diffLogoObj$unaligned_from_right+0.5,
+             -ymin, diffLogoObj$npos+0.5,
+             -ymax, col="gray", border="gray")
+    }
     lines(c(0,diffLogoObj$npos), c(0,0) ) # the line at y = 0
 }
 
@@ -373,6 +394,7 @@ diffLogoTable = function (
     ymax = 0;
     if (multiple_align_pwms) {
         multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs)
+        not_extended_PWMs = PWMs
         PWMs = extendPwmsFromAlignmentVector(
                    PWMs,
                    multiple_pwms_alignment$alignment$vector)
@@ -453,6 +475,20 @@ diffLogoTable = function (
                 rect(0,0,1,1,col=colors[leafOrder[i],leafOrder[k]],border=NA);
 
                 par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,0,0), new=TRUE, mar=marDiffLogo)
+
+                unaligned_from_left = NULL
+                unaligned_from_right = NULL
+                if (multiple_align_pwms) {
+                    unaligned_from_left = max(
+                        multiple_pwms_alignment$alignment$vector[[i]]$shift,
+                        multiple_pwms_alignment$alignment$vector[[k]]$shift)
+                    alignment_length = max(
+                        multiple_pwms_alignment$alignment$vector[[i]]$shift+ncol(not_extended_PWMs[[ motif_i ]]),
+                        multiple_pwms_alignment$alignment$vector[[k]]$shift+ncol(not_extended_PWMs[[ motif_k ]]))
+                    unaligned_from_right = max(
+                        alignment_length-ncol(not_extended_PWMs[[ motif_i ]])-multiple_pwms_alignment$alignment$vector[[i]]$shift,
+                        alignment_length-ncol(not_extended_PWMs[[ motif_k ]])-multiple_pwms_alignment$alignment$vector[[k]]$shift)
+                }
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
                                                    PWMs[[ motif_k ]],
                                                    stackHeight=stackHeight,
@@ -465,7 +501,11 @@ diffLogoTable = function (
                                                    try_reverse_complement=
                                                        try_reverse_complement,
                                                    length_normalization=
-                                                       length_normalization);
+                                                       length_normalization,
+                                                   unaligned_from_left =
+                                                       unaligned_from_left,
+                                                   unaligned_from_right =
+                                                       unaligned_from_right);
                 diffLogo(diffLogoObj, sparse=sparse, ymin=ymin, ymax=ymax)
             }
         }
@@ -1086,11 +1126,18 @@ multipleLocalPwmsAlignment = function(
                                                 sort.list(
                                                     unlist(
                                                         traversal_result$order))]
+    alignment_length = 0
+    for (i in 1:length(pwms)) {
+        alignment_length = max(
+            alignment_length,
+            ncol(pwms[[i]]) + alignment_tree_nodes$pwms_alignment$vector[[i]]$shift)
+    }
     return(list("alignment"=alignment_tree_nodes$pwms_alignment,
                 "order"=unlist(traversal_result$order),
                 "merge"=t(matrix(unlist(traversal_result$merge), 2, byrow=F)),
                 "height"=unlist(traversal_result$height),
                 "raw_tree"=list(alignment_tree_nodes),
-                "distance_matrix"=distance_matrix
+                "distance_matrix"=distance_matrix,
+                "alignment_length"=alignment_length
                 ))
 }
