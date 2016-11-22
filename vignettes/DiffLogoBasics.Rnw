@@ -17,7 +17,7 @@
 
 \section{Introduction}
 
-The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single difference logo and the comparison of multiple motifs by a table of difference logos. Difference logos are based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the \emph{stackHeight} function computes the height of each stack. Second, the \emph{baseDistribution} function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions \emph{stackHeight} and \emph{baseDistribution}. Default implementations of both functions are provided.
+The DiffLogo tool is a R package for the visualization of differences between multiple motifs for different alphabets. The user supplies a set of motifs each represented as position weight matrices (PWMs) [1]. The DiffLogo package supports the comparison of two motifs by a single difference logo and the comparison of multiple motifs by a table of difference logos. Difference logos are based on the idea behind the well-known sequence logo [2], i.e. motifs are visualized position-wise based on two functions. First, the \emph{stackHeight} function computes the height of each stack. Second, the \emph{baseDistribution} function breaks down the stack height on the individual characters. The user is able to parametrise the individual functions with arbitrary functions \emph{stackHeight} and \emph{baseDistribution}. Default implementations of both functions are provided. DiffLogo supports alignment of input PWMs for both pairwise and multiple comparison cases.
 
 
 \section{Download and import library}
@@ -42,6 +42,10 @@ list    <- as.list(MotifDb[hitIndeces])
 
 pwm1 <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1, 18:2] ## trim and reverse complement
 pwm2 <- list$"Hsapiens-jolma2013-CTCF"
+
+## DiffLogo can also handle motifs of different length
+pwm_long <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1] ## reverse complement
+pwm_short <- list$"Hsapiens-jolma2013-CTCF"
 @
 
 Here, we import two motifs from the transcription factor CTCF from package \emph{MotifDb} [3]. 
@@ -117,12 +121,16 @@ diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 ## diffLogoFromPwm is a convenience function for
 diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 diffLogo(diffLogoObj)
+
+## plot DiffLogo for PWMs of different length
+diffLogoFromPwm(pwm1 = pwm_long, pwm2 = pwm_short, align_pwms=T)
 @
 
 
 \section{Plot table of difference logos}
 
 The user is easily able to plot a table of difference logos for a set of motifs.
+By default, before drawing diffLogo, motifs will multiply aligned.
 
 <<PlotDiffLogoTable>>=
 ## plot table of difference logos for CTFC motifs (DNA)
@@ -161,6 +169,14 @@ diffLogoTable(PWMs = motifs)
 dev.off()
 @
 
+\section{PWMs alignment}
+User is able to get aligned PWMs:
+
+## align pwms and than plot seqLogo of them
+pwms = list(pwm1_long, pwm1, pwm2)
+multiple_pwms_alignment = multipleLocalPwmsAlignment(pwms)
+aligned_pwms = extendPwmsFromAlignmentVector(multiple_pwms_alignment$alignment$vector, pwms)
+seqLogo(aligned_pwms[[2]]) ## seqLogo of aligned pwm1
 
 \section*{Literature}
 
