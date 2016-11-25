@@ -259,58 +259,7 @@ diffLogoFromPwm = function (
     diffLogo(diffLogoObj,ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
-##' Default configuration list for diffLogoTable
-##'
-##' @title Configuration object for diffLogoTable
-##' @param stackHeight function for the height of a stack at position i
-##' @param baseDistribution function for the heights of the individual bases
-##' @param uniformYaxis if TRUE each DiffLogo is plotted with the same scaling of the y-axis
-##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
-##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
-##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
-##' @param enableClustering if TRUE the motifs are reordered, so that similar motifs have a small vertical and horizontal distance in the table
-##' @param margin the space reseverved for labels
-##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
-##' @param alphabet of type Alphabet
-##' @param align_pwms if True, will align and extend pwms in each sell of diffLogoTable indipendently.
-##' @param unaligned_penalty is a function for localPwmAlignment.
-##' @param try_reverse_complement if True, alignment will try reverse complement pwms
-##' @param length_normalization if True, divergence between pwms is divided by length of pwms.
-##' @param ... set of parameters passed to the function 'axis' for plotting
-##' @export
-##' @author Lando Andrey
-##' @examples
-diffLogoTableConfiguration = function(
-         stackHeight=shannonDivergence,
-         baseDistribution=normalizedDifferenceOfProbabilities,
-         uniformYaxis=TRUE,
-         sparse=TRUE,
-         showSequenceLogosTop=TRUE,
-         enableClustering=TRUE,
-         treeHeight=0.5,
-         margin=0.02,
-         ratio=1,
-         align_pwms=F,
-         multiple_align_pwms=T,
-         unaligned_penalty=divergencePenaltyForUnaligned,
-         try_reverse_complement=T,
-         length_normalization=F) {
-     return(list(
-         uniformYaxis=uniformYaxis,
-         sparse=sparse,
-         showSequenceLogosTop=showSequenceLogosTop,
-         enableClustering=enableClustering,
-         treeHeight=treeHeight,
-         margin=margin,
-         ratio=ratio,
-         stackHeight=stackHeight,
-         baseDistribution=baseDistribution,
-         multiple_align_pwms=multiple_align_pwms,
-         align_pwms=align_pwms,
-         unaligned_penalty=unaligned_penalty,
-         try_reverse_complement=try_reverse_complement,
-         length_normalization=length_normalization))
-}
+
 
 ##' Draws a table of DiffLogos.
 ##'
@@ -339,12 +288,10 @@ diffLogoTable = function (
             configuration=list(),
             ...
 ) {
-    if(sum(names(configuration) %in% names(diffLogoTableConfiguration())) != length(configuration))
-    {
-        stop(paste("Unknown arguments passed to diffLogoTable:", 
-                   paste(names(configuration[ !(names(configuration) %in% names(diffLogoTableConfiguration()))]), sep=",")))
+    if(sum(names(configuration) %in% names(diffLogoTableConfiguration(alphabet))) != length(configuration)) {
+        stop(paste("Unknown arguments passed to diffLogoTable:",  paste(names(configuration[ !(names(configuration) %in% names(diffLogoTableConfiguration(alphabet)))]), sep=",")))
     }
-    configuration        = modifyList(diffLogoTableConfiguration(), configuration)
+    configuration        = modifyList(diffLogoTableConfiguration(alphabet), configuration)
     uniformYaxis         = configuration$uniformYaxis
     sparse               = configuration$sparse
     showSequenceLogosTop = configuration$showSequenceLogosTop
@@ -372,31 +319,23 @@ diffLogoTable = function (
         treeHeight=0;
     }
 
-    marDiffLogo = marSeqLogo = c(1,1.5,0.1,0.1);
-    if(sparse) {
-        marDiffLogo = c(0.3,1.2,0.1,0.1);
-        marSeqLogo = c(0.3,1.2,0.0,0.1);
-    }
-
+    marDiffLogo = getMarginsSeqLogo(sparse);
+    marSeqLogo = getMarginsSeqLogo(sparse);
+    
     similarities = matrix(0,dim,dim);
     diffLogos = list();
     palette = colorRampPalette(c(rgb(0.9,1,0.9),rgb(1,0.9,0.9)))(100)
-    names = names(PWMs);
-    if (is.null(names)) {
-        names = 1:length(PWMs)
-    }
+    names = extractNames(PWMs);
 
-    ymin = 0;
-    ymax = 0;
+    ymin = 0; ymax = 0;
     if (multiple_align_pwms) {
-        multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs)
-        not_extended_PWMs = PWMs
-        PWMs = extendPwmsFromAlignmentVector(
-                   PWMs,
-                   multiple_pwms_alignment$alignment$vector)
+        multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs);
+        not_extended_PWMs = PWMs;
+        PWMs = extendPwmsFromAlignmentVector( PWMs, multiple_pwms_alignment$alignment$vector);
         stopifnot(dim==length(PWMs))
         align_pwms = FALSE
     }
+
     for ( i in 1:dim) {
         motif_i = names[i];
         for ( k in 1:dim) {
@@ -405,17 +344,13 @@ diffLogoTable = function (
             if( i != k ) {
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
                                                    PWMs[[ motif_k ]],
-                                                   stackHeight=stackHeight,
-                                                   baseDistribution=
-                                                       baseDistribution,
-                                                   alphabet=alphabet,
-                                                   align_pwms=align_pwms,
-                                                   unaligned_penalty=
-                                                       unaligned_penalty,
-                                                   try_reverse_complement=
-                                                       try_reverse_complement,
-                                                   length_normalization =
-                                                       length_normalization);
+                                                   stackHeight = stackHeight,
+                                                   baseDistribution = baseDistribution,
+                                                   alphabet = alphabet,
+                                                   align_pwms = align_pwms,
+                                                   unaligned_penalty = unaligned_penalty,
+                                                   try_reverse_complement = try_reverse_complement,
+                                                   length_normalization = length_normalization);
 
                 if(uniformYaxis) {
                     ymin = min(diffLogoObj$ylim.negMax,ymin)
@@ -425,6 +360,7 @@ diffLogoTable = function (
             }
         }
     }
+    # it seems that the colors are not correctly calculated if multiple_align_pwms is enabled
     colors = matrix(palette[cut(similarities,100)],dim,dim)
     leafOrder=1:dim;
     if(enableClustering) {
@@ -434,18 +370,17 @@ diffLogoTable = function (
             for (i in 1:ncol(distance_matrix)) {
                 distance_matrix[[i,i]] = 0
                 for (j in 1:i) {
-                    distance_matrix[[i, j]] = distance_matrix[[j, i]]
+                    distance_matrix[[i, j]] = distance_matrix[[j, i]];
                 }
             }
-            opt = order.optimal(as.dist(distance_matrix),
-                                multiple_pwms_alignment$merge)
-            hc$merge = opt$merge
-            leafOrder = opt = hc$order = opt$order
+            opt = order.optimal( as.dist(distance_matrix), multiple_pwms_alignment$merge);
+            hc$merge = opt$merge;
+            leafOrder = opt = hc$order = opt$order;
 
-            hc$merge = multiple_pwms_alignment$merge
-            hc$height = multiple_pwms_alignment$height
-            hc$labels = names(PWMs)
-            class(hc) = 'hclust'
+            hc$merge = multiple_pwms_alignment$merge;
+            hc$height = multiple_pwms_alignment$height;
+            hc$labels = names(PWMs);
+            class(hc) = 'hclust';
         } else {
             distance = dist(similarities);
             hc = hclust(distance, "average");
@@ -488,39 +423,28 @@ diffLogoTable = function (
                 diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
                                                    PWMs[[ motif_k ]],
                                                    stackHeight=stackHeight,
-                                                   baseDistribution =
-                                                       baseDistribution,
+                                                   baseDistribution = baseDistribution,
                                                    alphabet=alphabet,
                                                    align_pwms=align_pwms,
-                                                   unaligned_penalty=
-                                                       unaligned_penalty,
-                                                   try_reverse_complement=
-                                                       try_reverse_complement,
-                                                   length_normalization=
-                                                       length_normalization,
-                                                   unaligned_from_left =
-                                                       unaligned_from_left,
-                                                   unaligned_from_right =
-                                                       unaligned_from_right);
-                diffLogo(diffLogoObj, sparse=sparse, ymin=ymin, ymax=ymax)
+                                                   unaligned_penalty= unaligned_penalty,
+                                                   try_reverse_complement= try_reverse_complement,
+                                                   length_normalization= length_normalization,
+                                                   unaligned_from_left = unaligned_from_left,
+                                                   unaligned_from_right = unaligned_from_right);
+
+                diffLogo(diffLogoObj, sparse=sparse, ymin=ymin, ymax=ymax);
             }
         }
         if(showSequenceLogosTop) {
             subplotcoords = c(i-1, i, dim, dim + st)
-            #par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin*ratio,margin*ratio), new=TRUE, mar=c(0,0,0,0))
-            #plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
-            #rect(0,0,1,1,col="gray",border=NA);
             par(fig=(subplotcoords / dimV) * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin*ratio,margin*ratio), new=TRUE, mar=marSeqLogo)
             seqLogo(PWMs[[ motif_i ]],sparse=sparse, alphabet=alphabet)
         }
     }
 
-
     if(treeHeight > 0) {
         par(fig=c(0 + 0.5, dim - 0.5, dim + st, dim + st + treeHeight) / dimV * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin*ratio,margin*ratio), new=TRUE, mar=c(.0,.0,.1,.0))
         plot(hc, xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n", labels=rep("",dim), main="" )
-        #plot(NA,ylim=c(0,1),xlim=c(0,1),xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n")
-        #rect(0,0,1,1,col="gray",border=NA);
     }
 
     # add names

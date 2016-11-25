@@ -20,10 +20,10 @@ Letter = function(x,y) {
 ##' @exportClass Alphabet
 ##' @author Martin Nettling
 ##' @examples
-##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"))
-Alphabet = function(chars,cols) {
-   obj = list(chars=chars,cols=cols,size=length(chars))
-   class(obj)="Alphabet"
+##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),supportReverseComplement)
+Alphabet = function(chars, cols, supportReverseComplement) {
+   obj = list(chars=chars,cols=cols,size=length(chars),supportReverseComplement = supportReverseComplement);
+   class(obj)="Alphabet";
    return(obj);
 }
 
@@ -221,21 +221,14 @@ if(FALSE){
 ##' @title DNA alphabet
 ##' @export
 ##' @author Martin Nettling
-##' @examples
-##' motif_folder= "extdata/pwm"
-##' motif_name = "HepG2"
-##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
-##' file = system.file(fileName, package = "DiffLogo")
-##' motif = as.matrix(read.delim(file,header=FALSE))
-##' seqLogo(pwm = motif, alphabet=DNA)
-DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"));
+DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),TRUE);
 
 ##' the RNA alphabet, i.e. A, C, G, U
 ##'
 ##' @title RNA alphabet
 ##' @export
 ##' @author Martin Nettling
-RNA = Alphabet(c("A","C","G","U"),c("green4","blue","orange","red"));
+RNA = Alphabet(c("A","C","G","U"),c("green4","blue","orange","red"),TRUE);
 
 c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkBlue"; c7="Orange"; c8="Pink"; c9="Red";
 
@@ -244,14 +237,8 @@ c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkB
 ##' @title ASN alphabet
 ##' @export
 ##' @author Martin Nettling
-##' @examples
-##' motif_folder= "extdata/alignments"
-##' motif_name = "calamodulin_1"
-##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
-##' file = system.file(fileName, package = "DiffLogo")
-##' motif = getPwmFromAlignment(readLines(file), ASN, 1)
-##' seqLogo(pwm = motif, alphabet=ASN)
 ASN = Alphabet(
     c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y"),
-    c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5)
+    c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5),
+    FALSE
 )
