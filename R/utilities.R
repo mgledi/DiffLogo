@@ -16,21 +16,27 @@
 ##' motif = getPwmFromAlignment(readLines(file), ASN, 1)
 ##' seqLogo(pwm = motif, alphabet=ASN)
 getPwmFromAlignment = function(alignment, alphabet, pseudoCount) {
-  alphabetSize = alphabet$size
-  alignmentLength = nchar(alignment[[1]])
-  numberOfSequences = length(alignment)
-  
-  pwm = matrix(nrow = alphabetSize, ncol = alignmentLength)
-  colnames(pwm) = 1:alignmentLength
-  rownames(pwm) = alphabet$chars
-  
+    alphabetSize = alphabet$size
+    alignmentLength = nchar(alignment[[1]])
+    numberOfSequences = length(alignment)
 
-  for(posIdx in 1:alignmentLength){
-    for(charIdx in 1:alphabetSize){
-      pwm[charIdx, posIdx] = (length(which(substr(alignment, posIdx, posIdx) == alphabet$chars[[charIdx]])) + pseudoCount) / (numberOfSequences + pseudoCount * alphabetSize)
+    pwm = matrix(nrow = alphabetSize, ncol = alignmentLength)
+    colnames(pwm) = 1:alignmentLength
+    rownames(pwm) = alphabet$chars
+
+
+    for(posIdx in 1:alignmentLength){
+        for(charIdx in 1:alphabetSize){
+            pwm[charIdx, posIdx] = (length(which(substr(alignment, posIdx, posIdx) == alphabet$chars[[charIdx]])) + pseudoCount) / (numberOfSequences + pseudoCount * alphabetSize)
+        }
+        if(sum(pwm[, posIdx]) == 0) {
+            # nothing was observed and no pseudoCount was set
+            pwm[, posIdx] = rep(1/alphabetSize,alphabetSize);
+        } else {
+            # normalize pwm
+            pwm[, posIdx] = pwm[, posIdx] / sum(pwm[, posIdx]);            
+        }
     }
-    pwm[, posIdx] = pwm[, posIdx] / sum(pwm[, posIdx]);
-  }
-  
-  return(pwm);
+
+    return(pwm);
 }

@@ -339,16 +339,12 @@ diffLogoTable = function (
             configuration=list(),
             ...
 ) {
-    if(sum(names(configuration) %in% names(diffLogoTableConfiguration())) !=
-       length(configuration))
+    if(sum(names(configuration) %in% names(diffLogoTableConfiguration())) != length(configuration))
     {
-        stop(paste("Unknown arguments to diffLogoTable:",
-                   paste(names(configuration[
-                       !(names(configuration) %in%
-                         names(diffLogoTableConfiguration()))]), sep=",")))
+        stop(paste("Unknown arguments passed to diffLogoTable:", 
+                   paste(names(configuration[ !(names(configuration) %in% names(diffLogoTableConfiguration()))]), sep=",")))
     }
-    configuration        = modifyList(diffLogoTableConfiguration(),
-                                      configuration)
+    configuration        = modifyList(diffLogoTableConfiguration(), configuration)
     uniformYaxis         = configuration$uniformYaxis
     sparse               = configuration$sparse
     showSequenceLogosTop = configuration$showSequenceLogosTop
@@ -847,8 +843,7 @@ findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
 switchDirection = function(direction) {
     if (direction=='forward') {
        return('reverse')
-    }
-    if (direction=='reverse') {
+    } else if (direction=='reverse') {
        return('forward')
     }
     stopifnot(F);
@@ -993,10 +988,8 @@ minimumMatrixElementIndexes = function(matrix) {
 }
 
 addLastTreeNodeToDistanceMatrix = function(distance_matrix, tree_nodes) {
-    distance_matrix = cbind(distance_matrix, rep(Inf,
-                                                 ncol(distance_matrix)))
-    distance_matrix = rbind(distance_matrix, rep(Inf,
-                                                 ncol(distance_matrix)))
+    distance_matrix = cbind(distance_matrix, rep(Inf, ncol(distance_matrix)))
+    distance_matrix = rbind(distance_matrix, rep(Inf, ncol(distance_matrix)))
     last = ncol(distance_matrix)
     if (last > 0) {
         for (i in 1:(last-1)) {
@@ -1016,16 +1009,13 @@ joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter
                                   tree_nodes[[first_pwm_index]]$pwms_alignment,
                                   tree_nodes[[second_pwm_index]]$pwms,
                                   tree_nodes[[second_pwm_index]]$pwms_alignment)
-    stopifnot(length(c(tree_nodes[[first_pwm_index]]$pwms,
-                       tree_nodes[[second_pwm_index]]$pwms)) == length(pwms_alignment$vector))
+    stopifnot(length(c(tree_nodes[[first_pwm_index]]$pwms, tree_nodes[[second_pwm_index]]$pwms)) == length(pwms_alignment$vector))
     tree_nodes = c(tree_nodes,
                    list(
-                       list("pwms"=c(tree_nodes[[first_pwm_index]]$pwms,
-                                     tree_nodes[[second_pwm_index]]$pwms),
+                       list("pwms"=c(tree_nodes[[first_pwm_index]]$pwms, tree_nodes[[second_pwm_index]]$pwms),
                             "left_child"=tree_nodes[[first_pwm_index]],
                             "right_child"=tree_nodes[[second_pwm_index]],
-                            "num_leafs"=tree_nodes[[first_pwm_index]]$num_leaf+
-                                tree_nodes[[second_pwm_index]]$num_leaf,
+                            "num_leafs"=tree_nodes[[first_pwm_index]]$num_leaf + tree_nodes[[second_pwm_index]]$num_leaf,
                             "node_number"=join_counter,
                             "pwms_alignment" = pwms_alignment
                           )))
@@ -1033,14 +1023,12 @@ joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter
     tree_nodes[[first_pwm_index]] = NULL
     tree_nodes[[second_pwm_index-1]] = NULL
     distance_matrix = matrix(
-        distance_matrix[-c(first_pwm_index, second_pwm_index),
-                        -c(first_pwm_index, second_pwm_index)],
+        distance_matrix[-c(first_pwm_index, second_pwm_index), -c(first_pwm_index, second_pwm_index)],
         nrow = nrow(distance_matrix)-2, ncol = ncol(distance_matrix)-2)
     if (ncol(distance_matrix) != 0) {
         distance_matrix = addLastTreeNodeToDistanceMatrix(distance_matrix, tree_nodes)
     }
-    return(list("distance_matrix"=distance_matrix,
-                "tree_nodes"=tree_nodes))
+    return(list("distance_matrix"=distance_matrix, "tree_nodes"=tree_nodes))
 }
 
 alignmentTree = function(pwms, distance_matrix) {
