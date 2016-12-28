@@ -363,9 +363,10 @@ prepareDiffLogoTable = function (
                                                length_normalization = length_normalization,
                                                unaligned_from_left = unaligned_from_left,
                                                unaligned_from_right = unaligned_from_right);
-            } else {
-                diffLogoObjMatrix[[motif_i]][[motif_k]] = NULL;
-            }
+            } 
+            # else {
+            #    diffLogoObjMatrix[[motif_i]][[motif_k]] = NULL;
+            #}
         }
     }
     diffLogoTable$diffLogoObjMatrix = diffLogoObjMatrix;
