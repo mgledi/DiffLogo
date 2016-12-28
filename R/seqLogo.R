@@ -69,13 +69,12 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationCon
 
 
 # appends the letter which to the object letters
-addLetter = function (letters, letterPolygon, x.pos, y.pos, ht, wt, col="black") 
-{
+addLetter = function (letters, letterPolygon, x.pos, y.pos, ht, wt, col="black") {
     x = x.pos + wt * letterPolygon$x
     y = y.pos + ht * letterPolygon$y
     polygons = sum(is.na(x))+1  # a letter can consist of more then one polygon
     letters$x = c(letters$x, NA, x)
     letters$y = c(letters$y, NA, y)
-    letters$col = c(letters$col, rep(col,polygons))
+    letters$col = c(letters$col, rep(col, polygons))
     letters
 }

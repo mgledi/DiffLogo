@@ -75,3 +75,34 @@ extractNames = function(PWMs) {
     }
     return (names);
 }
+
+
+revCompPwm = function (pwm) {
+    result = pwm[nrow(pwm):1, ncol(pwm):1]
+    rownames(result) = rownames(pwm)
+    return(result)
+}
+
+
+##' Counts PWM divergence as sum of divergencies of their columns.
+##'
+##' @title PWM divergence
+##' @param pwm_left is a PWM representation in type of matrix
+##' @param pwm_right is a PWM representation in type of matrix. The result is symmetric on pwm_left and pwm_right
+##' @param divergence is a Divergence function on columns.
+##' @return float - sum of divergences
+##' @export
+pwmDivergence = function(pwm_left, pwm_right, divergence=shannonDivergence) {
+    stopifnot(ncol(pwm_left) == ncol(pwm_right));
+    return(sum(sapply(1:ncol(pwm_left), function(i) {
+        divergence(pwm_left[,i], pwm_right[,i])$height
+    })));
+}
+
+##' Generates a PWM consisting of only the uniform distribtuion or the given base_distribution (if defined).
+baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NULL) {
+    if (is.null(base_distribution)) {
+       base_distribution = rep(1.0/alphabet_length, each=alphabet_length)
+    }
+    return(matrix(rep(base_distribution, each=length, pwm_length), nrow=alphabet_length))
+}
