@@ -370,6 +370,7 @@ prepareDiffLogoTable = function (
         }
     }
     diffLogoTable$diffLogoObjMatrix = diffLogoObjMatrix;
+    diffLogoTable$PWMs = PWMs;
     return (diffLogoTable);
 }
 
@@ -503,7 +504,7 @@ diffLogoTable = function (
     diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration,...);
     diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
     hc = diffLogoTable[['hc']]
-    drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration, ... );
+    drawDiffLogoTable(diffLogoTable[['PWMs']], diffLogoObjMatrix, hc, alphabet, configuration, ... );
 }
 
 
