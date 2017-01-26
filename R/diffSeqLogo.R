@@ -272,6 +272,9 @@ prepareDiffLogoTable = function (
     similarities = matrix(0,dim,dim);
     names = extractNames(PWMs);
     diffLogoTable = list();
+    for ( i in 1:dim) {
+        PWMs[[names[i]]] = preconditionTransformPWM(PWMs[[names[i]]],alphabet);
+    }
 
     if (multiple_align_pwms) {
         multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs);
