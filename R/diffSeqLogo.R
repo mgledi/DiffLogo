@@ -38,8 +38,8 @@ createDiffLogoObject = function (pwm1, pwm2,
                                  try_reverse_complement=T,
                                  base_distribution=NULL,
                                  length_normalization = F,
-                                 unaligned_from_left = NULL,
-                                 unaligned_from_right = NULL) {
+                                 unaligned_from_left = 0,
+                                 unaligned_from_right = 0) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
     pwm2 = preconditionTransformPWM(pwm2,alphabet);
     preconditionPWM(pwm1);
@@ -62,21 +62,21 @@ createDiffLogoObject = function (pwm1, pwm2,
     }
     preconditionPWMSameSize(pwm1,pwm2);
 
+
     # init needed variables
     letters = list(x = NULL, y = NULL, id = NULL, fill = NULL)
     npos = ncol(pwm1)
-    eps = 0; # spacer between two bases in one stack
     ylim.negMax = 0;
     ylim.posMax = 0;
 
     npos = ncol(pwm1)
     wt = 1.0 # the width of one letter
-    x.pos = 0.5 # initial position on x axis is 0.5; Letter is one right from this point
-    heights = c(); ymins=c(); ymaxs=c()
+    x.pos = 0.5 + unaligned_from_left # initial position on x axis is 0.5; Letter is one right from this point
+    heights = rep(0,npos); ymins=rep(0,npos); ymaxs=rep(0,npos); 
 
-    # determine intermediate values
-    for (j in 1:npos) {
+    for (j in (unaligned_from_left+1):(npos - unaligned_from_right)) {
         heightObj = stackHeight(pwm1[,j],pwm2[,j]);
+
         preconditionStackHeight(heightObj); # check for correctness
         heights[j] = heightObj$height;
         ylab = heightObj$ylab;
@@ -86,20 +86,20 @@ createDiffLogoObject = function (pwm1, pwm2,
 
         hts = distr*heights[j];
         letterOrder = order(abs(hts)) # reorder letters
-
+        
         yneg.pos = 0
         ypos.pos = 0
+        
         # adds all letters as polygons to the list of letters
-
         for (i in 1:length(hts)) {
             ht = hts[letterOrder[i]]
             ht_total = sum(hts);
             if (ht >= 0){
                 y.pos = ypos.pos;
-                ypos.pos = ypos.pos + ht + eps
+                ypos.pos = ypos.pos + ht
             } else if(ht < 0 ) {
                 y.pos = yneg.pos;
-                yneg.pos = yneg.pos + ht - eps
+                yneg.pos = yneg.pos + ht
             }
             char = alphabet$chars[ (letterOrder[i]-1)%%alphabet$size+1 ]
             col = alphabet$cols[ (letterOrder[i]-1)%%alphabet$size+1 ];
@@ -164,10 +164,10 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     }
 
     if(ymin == 0) {
-        ymin = diffLogoObj$ylim.posMax*1.0
+        ymin = diffLogoObj$ylim.posMax
     }
     if(ymax == 0) {
-        ymax = diffLogoObj$ylim.negMax*1.0
+        ymax = diffLogoObj$ylim.negMax
     }
 
     # set ylab
