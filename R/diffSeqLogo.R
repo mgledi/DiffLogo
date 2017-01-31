@@ -31,7 +31,7 @@
 ##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 ##' diffLogo(diffLogoObj)
 createDiffLogoObject = function (pwm1, pwm2, 
-                                stackHeight=shannonDivergence,
+                                 stackHeight=shannonDivergence,
                                  baseDistribution= normalizedDifferenceOfProbabilities,
                                  alphabet=DNA, align_pwms=F,
                                  unaligned_penalty=divergencePenaltyForUnaligned,
@@ -283,26 +283,6 @@ prepareDiffLogoTable = function (
         stopifnot(dim==length(PWMs))
         align_pwms = FALSE
     }
-
-    #for ( i in 1:dim) {
-    #    motif_i = names[i];
-    #    for ( k in 1:dim) {
-    #        motif_k = names[k];
-    #        similarities[i,k] = 0
-    #        if( i != k ) {
-    #            diffLogoObj = createDiffLogoObject(PWMs[[ motif_i ]],
-    #                                               PWMs[[ motif_k ]],
-    #                                               stackHeight = stackHeight,
-    #                                               baseDistribution = baseDistribution,
-    #                                               alphabet = alphabet,
-    #                                               align_pwms = align_pwms,
-    #                                               unaligned_penalty = unaligned_penalty,
-    #                                               try_reverse_complement = try_reverse_complement,
-    #                                               length_normalization = length_normalization);
-    #            similarities[i,k] = diffLogoObj$distance;
-    #        }
-    #    }
-    #}
     
     diffLogoObjMatrix = list();
     for ( i in 1:dim) {
@@ -347,37 +327,20 @@ prepareDiffLogoTable = function (
         }
     }
 
-
     leafOrder=1:dim;
     if(enableClustering) {
-        #if (multiple_align_pwms) {
-           # hc = list()
-            #distance_matrix = multiple_pwms_alignment$distance_matrix
-            #for (i in 1:ncol(distance_matrix)) {
-            #    distance_matrix[[i,i]] = 0
-            #    for (j in 1:i) {
-            #        distance_matrix[[i, j]] = distance_matrix[[j, i]];
-            #    }
-            #}
-            #opt = order.optimal( as.dist(distance_matrix), multiple_pwms_alignment$merge);
-            #hc$merge = opt$merge;
-            #leafOrder = opt = hc$order = opt$order;
+        distance = dist(similarities);
+        hc = hclust(distance, "average");
+        opt = order.optimal(distance,hc$merge);
+        hc$merge=opt$merge;
+        hc$order=opt$order;
 
-            #hc$merge = multiple_pwms_alignment$merge;
-            #hc$height = multiple_pwms_alignment$height;
-            #hc$labels = names(PWMs);
-            #class(hc) = 'hclust';
-        #} else {
-            distance = dist(similarities);
-            hc = hclust(distance, "average");
-            opt = order.optimal(distance,hc$merge);
-            hc$merge=opt$merge;
-            hc$order=opt$order;
-        #}
         diffLogoTable$hc = hc;
+        leafOrder = diffLogoTable$hc$order;
     }
     diffLogoTable$diffLogoObjMatrix = diffLogoObjMatrix;
     diffLogoTable$PWMs = PWMs;
+    diffLogoTable$leafOrder = leafOrder;
     return (diffLogoTable);
 }
 
@@ -411,7 +374,9 @@ drawDiffLogoTable = function (
     if(showSequenceLogosTop) {
         st = 0.5;
     }
-    orderedMotifs = names(diffLogoObjMatrix)[hc$order];
+        
+    orderedMotifs = names(diffLogoObjMatrix)[diffLogoTable$leafOrder];
+
     dim = length(orderedMotifs);
     similarities = matrix(0,dim,dim);
     
