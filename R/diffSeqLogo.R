@@ -307,6 +307,7 @@ prepareDiffLogoTable = function (
     diffLogoObjMatrix = list();
     for ( i in 1:dim) {
         motif_i = names[i];
+        diffLogoObjMatrix[[ motif_i ]] = list()
         for ( k in 1:dim) {
             if( i != k ) {
                 motif_k = names[k];
@@ -328,7 +329,6 @@ prepareDiffLogoTable = function (
                     rightShiftMotif_k = alignment_length - originalPwmLengths[[ motif_k ]] - multiple_pwms_alignment$alignment$vector[[k]]$shift;
                     unaligned_from_right = max(rightShiftMotif_i, rightShiftMotif_k)
                 }
-
                 diffLogoObjMatrix[[motif_i]][[motif_k]] = 
                         createDiffLogoObject(  PWMs[[ motif_i ]],
                                                PWMs[[ motif_k ]],
@@ -376,7 +376,6 @@ prepareDiffLogoTable = function (
         #}
         diffLogoTable$hc = hc;
     }
-
     diffLogoTable$diffLogoObjMatrix = diffLogoObjMatrix;
     diffLogoTable$PWMs = PWMs;
     return (diffLogoTable);
@@ -412,7 +411,6 @@ drawDiffLogoTable = function (
     if(showSequenceLogosTop) {
         st = 0.5;
     }
-    
     orderedMotifs = names(diffLogoObjMatrix)[hc$order];
     dim = length(orderedMotifs);
     similarities = matrix(0,dim,dim);
@@ -508,7 +506,9 @@ diffLogoTable = function (
     if(sum(names(configuration) %in% names(diffLogoTableConfiguration(alphabet))) != length(configuration)) {
         stop(paste("Unknown arguments passed to diffLogoTable:",  paste(names(configuration[ !(names(configuration) %in% names(diffLogoTableConfiguration(alphabet)))]), sep=",")))
     }
-    
+    if(is.null(names(PWMs))) {
+      names(PWMs) = sapply((1:length(PWMs)), toString)
+    }
     diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration,...);
     diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
     hc = diffLogoTable[['hc']]
