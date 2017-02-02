@@ -374,12 +374,13 @@ drawDiffLogoTable = function (
     if(showSequenceLogosTop) {
         st = 0.5;
     }
-        
-    orderedMotifs = names(diffLogoObjMatrix)[diffLogoTable$leafOrder];
+    orderedMotifs = names(diffLogoObjMatrix)[hc$order];
 
     dim = length(orderedMotifs);
     similarities = matrix(0,dim,dim);
-    
+
+    # Filling similarity matrix and computing y axes limits.
+    # The order of motifs in diffLogoObjMatrix is the same as in orderedMotifs
     for ( i in 1:dim) {
         for ( k in 1:dim) {
             motif_i = orderedMotifs[i];
@@ -390,14 +391,14 @@ drawDiffLogoTable = function (
                 similarities[i,k]  = 0;
             }
             if(uniformYaxis) {
-                ymin = min(diffLogoObjMatrix[[motif_i]][[motif_k]]$ylim.negMax,ymin)
-                ymax = max(diffLogoObjMatrix[[motif_i]][[motif_k]]$ylim.posMax,ymax)
+                ymin = min(diffLogoObjMatrix[[motif_i]][[motif_k]]$ylim.negMax, ymin)
+                ymax = max(diffLogoObjMatrix[[motif_i]][[motif_k]]$ylim.posMax, ymax)
             }
         }
     }
     palette = colorRampPalette(c(rgb(0.9,1,0.9),rgb(1,0.9,0.9)))(100)
     colors = matrix(palette[cut(similarities,100)],dim,dim)
-    
+    # drawing the matrix of DiffLogos
     plot.new();
     dimV = c(dim, dim, dim + st + treeHeight, dim + st + treeHeight);
     for ( i in 1:dim) {
