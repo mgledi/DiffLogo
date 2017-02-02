@@ -288,6 +288,10 @@ prepareDiffLogoTable = function (
     for ( i in 1:dim) {
         motif_i = names[i];
         diffLogoObjMatrix[[ motif_i ]] = list()
+
+        # alignment size in columns is always equal
+        alignment_length = ncol(PWMs[[motif_i]]);
+
         for ( k in 1:dim) {
             if( i != k ) {
                 motif_k = names[k];
@@ -296,15 +300,10 @@ prepareDiffLogoTable = function (
                 unaligned_from_right = 0
                 if (multiple_align_pwms) {
                     # the number of unaligned left positions is the maximum of the two shifts of the motifs
-                    unaligned_from_left = max( multiple_pwms_alignment$alignment$vector[[i]]$shift, multiple_pwms_alignment$alignment$vector[[k]]$shift)
+                    unaligned_from_left = max( multiple_pwms_alignment$alignment$vector[[i]]$shift,
+                                               multiple_pwms_alignment$alignment$vector[[k]]$shift)
                     
                     # the number of unaligned right positions is the length of the alignment minus the orignal pwm length
-                    alignment_length = max(
-                        multiple_pwms_alignment$alignment$vector[[i]]$shift + originalPwmLengths[[ motif_i ]],
-                        multiple_pwms_alignment$alignment$vector[[k]]$shift + originalPwmLengths[[ motif_k ]])
-                    
-                    alignment_length = ncol(PWMs[[motif_i]]);
-                    
                     rightShiftMotif_i = alignment_length - originalPwmLengths[[ motif_i ]] - multiple_pwms_alignment$alignment$vector[[i]]$shift;
                     rightShiftMotif_k = alignment_length - originalPwmLengths[[ motif_k ]] - multiple_pwms_alignment$alignment$vector[[k]]$shift;
                     unaligned_from_right = max(rightShiftMotif_i, rightShiftMotif_k)
