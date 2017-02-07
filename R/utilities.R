@@ -38,3 +38,60 @@ getPwmFromAlignment = function(alignment, alphabet, pseudoCount) {
     }
     return(pwm);
 }
+
+getSequencesFromFastaFile = function(filename) {
+    connection = file(filename ,open="r");
+    lines = as.vector(read.delim(connection)[,1]);
+    close(connection);
+    lines = lines[grep("^[^>]",lines)]
+    lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
+    lines = toupper(lines);
+    return(lines);
+}
+
+getSequencesFromAlignmentFile = function(filename) {
+    connection = file(filename ,open="r");
+    lines = as.vector(read.delim(connection)[,1]);
+    close(connection);
+    lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
+    lines = toupper(lines);
+    return(lines);
+}
+
+getPwmFromPwmFile = function(filename) {
+    lines = readLines(filename);
+    # replace all whitespaces by one " "
+    lines = gsub("\\s+", " ", lines);
+    tc = textConnection(lines);
+    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
+    close(tc);
+    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    return(pwm);
+}
+
+getPwmFromPfmFile = function(filename) {
+    lines = readLines(filename);
+    # replace all whitespaces by one " "
+    lines = gsub("\\s+", " ", lines);
+    tc = textConnection(lines);
+    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
+    close(tc);
+    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    return(pwm);
+}
+
+getPwmFromHomerFile = function(filename) {
+    # First read lines
+    lines = readLines(filename);
+    lines = lines[grep("^[^>]",lines)]
+    # replace all whitespaces by one " "
+    lines = gsub("\\s+", " ", lines);
+    tc = textConnection(lines);
+    pwm = as.matrix(read.delim(tc, sep = " ",header=F));
+    close(tc);
+
+    # transpose
+    pwm = t(pwm); 
+    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    return(pwm);
+}
