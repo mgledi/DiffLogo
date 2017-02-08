@@ -1,0 +1,21 @@
+\name{pwmDivergence}
+\alias{pwmDivergence}
+\title{PWM divergence}
+\usage{
+  pwmDivergence(pwm_left, pwm_right,
+    divergence = shannonDivergence)
+}
+\arguments{
+  \item{pwm_left}{is a PWM representation in type of matrix}
+  \item{pwm_right}{is a PWM representation in type of
+  matrix. The result is symmetric on pwm_left and pwm_right}
+  \item{divergence}{is a Divergence function on columns.}
+}
+\value{
+  float - sum of divergences
+}
+\description{
+  Counts PWM divergence as sum of divergencies of their
+  columns.
+}
+

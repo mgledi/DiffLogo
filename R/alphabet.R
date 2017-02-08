@@ -20,7 +20,7 @@ Letter = function(x,y) {
 ##' @exportClass Alphabet
 ##' @author Martin Nettling
 ##' @examples
-##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),supportReverseComplement)
+##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),TRUE)
 Alphabet = function(chars, cols, supportReverseComplement) {
    obj = list(chars=chars,cols=cols,size=length(chars),supportReverseComplement = supportReverseComplement);
    class(obj)="Alphabet";

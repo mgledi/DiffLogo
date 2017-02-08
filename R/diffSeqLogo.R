@@ -20,9 +20,9 @@
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##'
 ##' pwm1 = motifs[[motif_names[[1]]]]
@@ -147,9 +147,9 @@ createDiffLogoObject = function (pwm1, pwm2,
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##'
 ##' pwm1 = motifs[[motif_names[[1]]]]
@@ -221,9 +221,9 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##'
 ##' pwm1 = motifs[[motif_names[[1]]]]
@@ -456,9 +456,9 @@ drawDiffLogoTable = function (
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##'
 ##' diffLogoTable(motifs)
@@ -479,5 +479,3 @@ diffLogoTable = function (
     hc = diffLogoTable[['hc']]
     drawDiffLogoTable(diffLogoTable[['PWMs']], diffLogoObjMatrix, hc, alphabet, configuration, ... );
 }
-
-

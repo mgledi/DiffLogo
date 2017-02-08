@@ -12,9 +12,9 @@
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##' 
 ##' pwm1 = motifs[[motif_names[[1]]]]
@@ -43,9 +43,9 @@ normalizedDifferenceOfProbabilities = function(p1,p2) {
 ##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 ##' motifs = list()
 ##' for (name in motif_names) {
-##'   fileName = paste(motif_folder,"/",name,".txt",sep="")
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
 ##'   file = system.file(fileName, package = "DiffLogo")
-##'   motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
 ##' 
 ##' pwm1 = motifs[[motif_names[[1]]]]
@@ -75,9 +75,9 @@ differenceOfICs = function(p1,p2) {
 ##' @examples
 ##' motif_folder= "extdata/pwm"
 ##' motif_name = "HepG2"
-##' fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+##' fileName = paste(motif_folder,"/",motif_name,".pwm",sep="")
 ##' file = system.file(fileName, package = "DiffLogo")
-##' motif = as.matrix(read.delim(file,header=FALSE))
+##' motif = getPwmFromPwmFile(file)
 ##' seqLogo(pwm = motif, baseDistribution = probabilities)
 probabilities = function(p) {
   return(p);

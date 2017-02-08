@@ -57,9 +57,9 @@ motif_folder = "extdata/pwm"
 motif_names_dna = c("H1-hESC", "MCF7", "HeLa-S3", "HepG2", "HUVEC")
 motifs_dna = list()
 for (name in motif_names_dna) {
-  fileName = paste(motif_folder,"/",name,".txt",sep="")
+  fileName = paste(motif_folder,"/",name,".pwm",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs_dna[[name]] = as.matrix(read.delim(file,header=FALSE))
+  motifs_dna[[name]] = getPwmFromPwmFile(file)
 }
 ## import three DNA motifs from table
 motif_folder = "extdata/alignments"
@@ -68,10 +68,7 @@ motifs_dna2 = list()
 for (name in motif_names_dna2) {
   fileName = paste(motif_folder,"/",name,".txt",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  fileContent <- readLines(file)
-  fileContent <- unlist(lapply(X = fileContent, FUN = function(x){ strsplit(x = x, split = "\t")[[1]][[1]] }))
-  #fileContent <- fileContent[seq(from = 2, by = 2, length.out = floor(length(fileContent)/2))]
-  motifs_dna2[[name]] = getPwmFromAlignment(fileContent, DNA, 1)
+  motifs_dna2[[name]] = getPwmFromAlignmentFile(file)
 }
 ## import three ASN motifs from fasta files
 motif_folder = "extdata/alignments"
@@ -80,9 +77,7 @@ motifs_asn = list()
 for (name in motif_names_asn) {
   fileName = paste(motif_folder,"/",name,".fa",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  fileContent <- readLines(file)
-  fileContent <- fileContent[seq(from = 2, by = 2, length.out = floor(length(fileContent)/2))]
-  motifs_asn[[name]] = getPwmFromAlignment(fileContent, ASN, 1)
+  motifs_asn[[name]] = getPwmFromFastaFile(file)
 }
 @
 

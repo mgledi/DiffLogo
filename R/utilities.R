@@ -16,6 +16,9 @@
 ##' motif = getPwmFromAlignment(readLines(file), ASN, 1)
 ##' seqLogo(pwm = motif, alphabet=ASN)
 getPwmFromAlignment = function(alignment, alphabet=NULL, pseudoCount=0) {
+    alignment <- gsub("\\s+", "", alignment)
+    alignment <- alignment[!grepl(pattern = "^$", x = alignment)]
+    
     if(is.null(alphabet))
       alphabet <- getAlphabetFromSequences(alignment)
     
@@ -45,11 +48,13 @@ getPwmFromAlignment = function(alignment, alphabet=NULL, pseudoCount=0) {
     return(pwm);
 }
 
+##' @export
 getAlphabetFromSequences <- function(sequences){
   characters <- unique(unlist(strsplit(sequences, split = "")))
   alphabet <- getAlphabetFromCharacters(characters)
   return(alphabet)
 }
+##' @export
 getAlphabetFromCharacters <- function(characters){
   chars <- paste(sort(characters), collapse = "")
   if(grepl(pattern = "^\\-?A?C?G?T?$", x = chars)){
@@ -59,7 +64,7 @@ getAlphabetFromCharacters <- function(characters){
   } else
     return(ASN)
 }
-
+##' @export
 getPwmFromFile <- function(filename){
   extension <- tolower(file_ext(filename))
   
@@ -90,7 +95,7 @@ getPwmFromFile <- function(filename){
   
   return(pwm)
 }
-
+##' @export
 getPwmFromFastaFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
@@ -102,7 +107,7 @@ getPwmFromFastaFile = function(filename) {
     pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
-
+##' @export
 getPwmFromAlignmentFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
@@ -113,7 +118,7 @@ getPwmFromAlignmentFile = function(filename) {
     pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
-
+##' @export
 getPwmFromPwmFile = function(filename) {
     lines = readLines(filename);
     # replace all whitespaces by one " "
@@ -124,7 +129,7 @@ getPwmFromPwmFile = function(filename) {
     pwm = pwm / apply(pwm,2,sum); # normalize pwm
     return(pwm);
 }
-
+##' @export
 getPwmFromPfmOrJasperFile = function(filename) {
     lines = readLines(filename);
     # replace all whitespaces by one " "
@@ -135,7 +140,7 @@ getPwmFromPfmOrJasperFile = function(filename) {
     pwm = pwm / apply(pwm,2,sum); # normalize pwm
     return(pwm);
 }
-
+##' @export
 getPwmFromHomerFile = function(filename) {
     # First read lines
     lines = readLines(filename);
@@ -143,7 +148,7 @@ getPwmFromHomerFile = function(filename) {
     # replace all whitespaces by one " "
     lines = gsub("\\s+", " ", lines);
     tc = textConnection(lines);
-    pwm = as.matrix(read.delim(tc, sep = " ",header=F));
+    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
     close(tc);
 
     # transpose

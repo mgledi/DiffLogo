@@ -1,0 +1,20 @@
+\name{reverseAlignmentVector}
+\alias{reverseAlignmentVector}
+\title{Reverse for alignment vector}
+\usage{
+  reverseAlignmentVector(alignment_vector, pwms)
+}
+\arguments{
+  \item{alignment_vector}{list of list which $shift and
+  $orientation} \item{pwms}{list of matrixes.}
+}
+\value{
+  list - reversed alignment vector
+}
+\description{
+  Returns alignment vector as if all pwm were reverted.
+}
+\author{
+  Lando Andrey
+}
+

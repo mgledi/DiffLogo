@@ -19,6 +19,7 @@
 ##' @export
 ##' @author Lando Andrey
 ##' @examples
+##' diffLogoTableConfiguration(DNA)
 diffLogoTableConfiguration = function(
 		alphabet,
 		stackHeight=shannonDivergence,

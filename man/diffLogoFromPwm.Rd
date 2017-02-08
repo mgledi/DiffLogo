@@ -5,7 +5,10 @@
   diffLogoFromPwm(pwm1, pwm2, ymin = 0,
     ymax = 0, stackHeight = shannonDivergence,
     baseDistribution = normalizedDifferenceOfProbabilities,
-    sparse = FALSE, alphabet = DNA)
+    sparse = FALSE, alphabet = DNA, align_pwms = F,
+    unaligned_penalty = divergencePenaltyForUnaligned,
+    try_reverse_complement = T, base_distribution = NULL,
+    length_normalization = F)
 }
 \arguments{
   \item{pwm1}{representation of the first position weight
@@ -14,10 +17,21 @@
   of type pwm, data.frame, or matrix} \item{ymin}{minimum
   value on the y-axis} \item{ymax}{maximum value on the y-
   axis} \item{stackHeight}{function for the height of a
-  stack at position i} \item{baseDistribution}{function for
-  the heights of the individual bases} \item{sparse}{if TRUE
-  margins are reduced and tickmarks are removed from the logo}
-  \item{alphabet}{of type Alphabet}
+  stack at position i} \item{baseDistribution}{function
+  for the heights of the individual bases} \item{sparse}
+  {if TRUE margins are reduced and tickmarks are removed
+  from the logo} \item{alphabet}{of type Alphabet}
+  \item{align_pwms}{if true, DiffLogo will align pwms
+  before plotting} \item{unaligned_penalty}{is a function
+  for localPwmAlignment.} \item{try_reverse_complement}
+  {if True, alignment will try reverse complement pwms}
+  \item{base_distribution}{is a vector of length nrow(pwm)
+  that is added to unaligned columns of pwms for comparing.
+  If NULL, uniform distribution is used} \item{If}{true, will
+  minimize the average divergence between PWMs. Otherwise will
+  minimize the sum of divergences between positions. In both
+  cases unalignes positions are compared to base_distribution
+  and are counted when computing the alignment length.}
 }
 \description{
   Draws the difference of two sequence logos.
@@ -27,9 +41,9 @@ motif_folder= "extdata/pwm"
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 motifs = list()
 for (name in motif_names) {
-  fileName = paste(motif_folder,"/",name,".txt",sep="")
+  fileName = paste(motif_folder,"/",name,".pwm",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+  motifs[[name]] = getPwmFromPwmFile(file)
 }
 
 pwm1 = motifs[[motif_names[[1]]]]
