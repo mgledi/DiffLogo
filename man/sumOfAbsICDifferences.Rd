@@ -21,9 +21,9 @@ motif_folder= "extdata/pwm"
 motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
 motifs = list()
 for (name in motif_names) {
-  fileName = paste(motif_folder,"/",name,".txt",sep="")
+  fileName = paste(motif_folder,"/",name,".pwm",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs[[name]] = as.matrix(read.delim(file,header=FALSE))
+  motifs[[name]] = getPwmFromPwmFile(file)
 }
 
 pwm1 = motifs[[motif_names[[1]]]]

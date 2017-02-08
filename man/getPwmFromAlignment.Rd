@@ -2,7 +2,8 @@
 \alias{getPwmFromAlignment}
 \title{Create PWM from alignment}
 \usage{
-  getPwmFromAlignment(alignment, alphabet, pseudoCount)
+  getPwmFromAlignment(alignment, alphabet = NULL,
+    pseudoCount = 0)
 }
 \arguments{
   \item{alignment}{a vector or list of sequences each

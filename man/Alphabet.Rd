@@ -2,7 +2,7 @@
 \alias{Alphabet}
 \title{built alphabet}
 \usage{
-  Alphabet(chars, cols)
+  Alphabet(chars, cols, supportReverseComplement)
 }
 \arguments{
   \item{chars}{set of symbols} \item{cols}{set of colors; one
@@ -16,7 +16,7 @@
   symbols and colors
 }
 \examples{
-DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"))
+DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),TRUE)
 }
 \author{
   Martin Nettling

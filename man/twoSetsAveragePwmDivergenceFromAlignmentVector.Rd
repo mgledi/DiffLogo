@@ -1,0 +1,29 @@
+\name{twoSetsAveragePwmDivergenceFromAlignmentVector}
+\alias{twoSetsAveragePwmDivergenceFromAlignmentVector}
+\title{Average divergence between two sets.}
+\usage{
+  twoSetsAveragePwmDivergenceFromAlignmentVector(left_pwms_list,
+    left_pwms_alignment, right_pwms_list, right_pwms_alignment,
+    divergence = shannonDivergence)
+}
+\arguments{
+  \item{left_pwms_list}{is a list of matrixes}
+  \item{left_pwms_alignment}{is a list of shifts ($shift) and
+  orientations ($direction)} \item{right_pwms_list}{is a list
+  of matrixes} \item{right_pwms_alignment}{is a list of shifts
+  ($shift) and orientations ($direction)} \item{divergence}
+  {divergence measure.}
+}
+\value{
+  float
+}
+\description{
+  Computes average pwm divergence from alignment vector for
+  two datasets. This equals to average divergence between all
+  pairs where one pwm comes from left set, and other comes
+  from right
+}
+\author{
+  Lando Andrey
+}
+

@@ -18,9 +18,9 @@
 \examples{
 motif_folder= "extdata/pwm"
 motif_name = "HepG2"
-fileName = paste(motif_folder,"/",motif_name,".txt",sep="")
+fileName = paste(motif_folder,"/",motif_name,".pwm",sep="")
 file = system.file(fileName, package = "DiffLogo")
-motif = as.matrix(read.delim(file,header=FALSE))
+motif = getPwmFromPwmFile(file)
 seqLogo(pwm = motif, stackHeight = sumProbabilities)
 }
 \author{

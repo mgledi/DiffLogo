@@ -19,6 +19,7 @@
 ##' @export
 ##' @author Lando Andrey
 ##' @examples
+##' diffLogoTableConfiguration(DNA)
 diffLogoTableConfiguration = function(
 		alphabet,
 		stackHeight=shannonDivergence,
@@ -79,8 +80,9 @@ extractNames = function(PWMs) {
     return (names);
 }
 
-
 revCompPwm = function (pwm) {
+    if(nrow(pwm) != 4)
+      stop("Can only reverse complement DNA and RNA alphabet.")
     result = pwm[nrow(pwm):1, ncol(pwm):1]
     rownames(result) = rownames(pwm)
     return(result)

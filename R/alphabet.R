@@ -20,7 +20,7 @@ Letter = function(x,y) {
 ##' @exportClass Alphabet
 ##' @author Martin Nettling
 ##' @examples
-##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),supportReverseComplement)
+##' DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),TRUE)
 Alphabet = function(chars, cols, supportReverseComplement) {
    obj = list(chars=chars,cols=cols,size=length(chars),supportReverseComplement = supportReverseComplement);
    class(obj)="Alphabet";
@@ -248,5 +248,16 @@ c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkB
 ASN = Alphabet(
     c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y"),
     c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5),
+    FALSE
+);
+
+##' the alphabet of all 26 characters
+##'
+##' @title Complete character alphabet
+##' @export
+##' @author Hendrik Treutler
+FULL_ALPHABET = Alphabet(
+    c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"),
+    c(c1, c2 ,c3, c4, c5, c6, c7, c8, c1, c2, c3, c4, c5, c6, c7, c8, c1, c2, c3, c4, c5, c6, c7, c8, c1, c2),
     FALSE
 );

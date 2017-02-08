@@ -59,12 +59,12 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,  unaligned_
 ##'
 ##' @title Align pwms
 ##' @param PWM is a matrix of type matrix
-##' @param
 ##' @param divergence is a measure of difference between two pwm columns. Smaller is more similar. If you want to use non-uniform background distribution, provide your own function.
-##' @param distance for unaligned columns at edges of matrixes. See divergencePenaltyForUnaligned as an example for providing your own function
-##' @param If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG.
-##' @param If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @param unaligned_penalty distance for unaligned columns at edges of matrixes. See divergencePenaltyForUnaligned as an example for providing your own function
+##' @param try_reverse_complement If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG.
+##' @param length_normalization If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
 ##' @export
+##' @return list of length two containing the alignment and the divergence
 ##' @author Lando Andrey
 localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence, unaligned_penalty=divergencePenaltyForUnaligned, try_reverse_complement=T, base_distribution=NULL, length_normalization = F) {
     no_change = list("shift"=0, "direction"="forward")

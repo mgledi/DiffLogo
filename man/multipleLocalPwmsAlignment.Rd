@@ -1,0 +1,30 @@
+\name{multipleLocalPwmsAlignment}
+\alias{multipleLocalPwmsAlignment}
+\title{Multiple PWMs alignment}
+\usage{
+  multipleLocalPwmsAlignment(pwms,
+    divergence = shannonDivergence,
+    unaligned_penalty = divergencePenaltyForUnaligned,
+    try_reverse_complement = T, base_distribution = NULL,
+    length_normalization = F)
+}
+\arguments{
+  \item{pwms}{list of pwms} \item{divergence}{Divergence
+  measure.} \item{unaligned_penalty}{is a function for
+  localPwmAlignment.} \item{try_reverse_complement}
+  {if True, alignment will try reverse complement pwms}
+  \item{stackHeight}{function for the height of a stack at
+  position i} \item{base_distribution}{is a vector of length
+  nrow(pwm) that is added to unaligned columns of pwms for
+  comparing. If NULL, uniform distribution is used}
+}
+\value{
+  list
+}
+\description{
+  Creates a multiple alignment of pwms
+}
+\author{
+  Lando Andrey
+}
+

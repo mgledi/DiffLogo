@@ -1,0 +1,22 @@
+\name{extendPwmsFromAlignmentVector}
+\alias{extendPwmsFromAlignmentVector}
+\title{Extend pwms with respect to alignment}
+\usage{
+  extendPwmsFromAlignmentVector(pwms, alignment_vector,
+    base_distribution = NULL)
+}
+\arguments{
+  \item{pwms}{is a list of matrixes} \item{alignment_vector}
+  {is a list of shifts ($shift) and orientations ($direction)}
+  \item{base_distribution}{is a vector of length nrow(pwm)
+  that is added to unaligned columns of pwms for comparing. If
+  NULL, uniform distribution is used}
+}
+\description{
+  Extends pwms by adding base_distribution to both sides, so
+  that they keep aligned, but have equal length.
+}
+\author{
+  Lando Andrey
+}
+

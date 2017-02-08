@@ -1,0 +1,35 @@
+\name{pwmsDistanceMatrix}
+\alias{pwmsDistanceMatrix}
+\title{Multiple PWMs alignment}
+\usage{
+  pwmsDistanceMatrix(pwms, diagonal_value = 0,
+    bottom_default_value = NULL, divergence = shannonDivergence,
+    unaligned_penalty = divergencePenaltyForUnaligned,
+    try_reverse_complement = T, base_distribution = NULL,
+    length_normalization = F)
+}
+\arguments{
+  \item{pwms}{list of pwms} \item{diagonal_value}{value
+  to put on diagonal.} \item{bottom_default_value}
+  {value to put on bottom triangle. Set to NULL to get
+  symmetric distance matrix.} \item{divergence}{divergence
+  measure.} \item{unaligned_penalty}{is a function for
+  localPwmAlignment.} \item{try_reverse_complement}
+  {if True, alignment will try reverse complement
+  pwms} \item{base_distribution}{is a vector of length
+  nrow(pwm) that is added to unaligned columns of pwms
+  for comparing. If NULL, uniform distribution is used}
+  \item{length_normalization}{is a vector of length nrow(pwm)
+  that is added to unaligned columns of pwms for comparing. If
+  NULL, uniform distribution is used}
+}
+\value{
+  list
+}
+\description{
+  Creates a distance matrix for pwms
+}
+\author{
+  Lando Andrey
+}
+
