@@ -57,12 +57,19 @@ getAlphabetFromSequences <- function(sequences){
 ##' @export
 getAlphabetFromCharacters <- function(characters){
   chars <- paste(sort(characters), collapse = "")
-  if(grepl(pattern = "^\\-?A?C?G?T?$", x = chars)){
+  
+  dnaRegEx <- paste("^\\-?", paste(sort(DNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
+  rnaRegEx <- paste("^\\-?", paste(sort(RNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
+  asnRegEx <- paste("^\\-?", paste(sort(ASN$chars), "?", sep = "", collapse = ""), "$", sep = "")
+  
+  if(grepl(pattern = dnaRegEx, x = chars)){
     return(DNA)
-  } else if(grepl(pattern = "^\\-A?C?G?U?$", x = chars)){
+  } else if(grepl(pattern = rnaRegEx, x = chars)){
     return(DNA)
-  } else
+  } else if(grepl(pattern = asnRegEx, x = chars)){
     return(ASN)
+  } else
+    stop(paste("Unrecognized alphabet:", chars))
 }
 ##' @export
 getPwmFromFile <- function(filename){
