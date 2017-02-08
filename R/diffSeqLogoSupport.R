@@ -35,6 +35,9 @@ diffLogoTableConfiguration = function(
 		unaligned_penalty=divergencePenaltyForUnaligned,
 		try_reverse_complement=T,
 		length_normalization=F) {
+    if (!alphabet$supportReverseComplement) {
+       try_reverse_complement = F;
+    }
     return(list(
 		uniformYaxis=uniformYaxis,
 		sparse=sparse,
