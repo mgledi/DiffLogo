@@ -39,23 +39,64 @@ getPwmFromAlignment = function(alignment, alphabet, pseudoCount) {
     return(pwm);
 }
 
-getSequencesFromFastaFile = function(filename) {
+getAlphabetFromSequences <- function(sequences){
+  characters <- unique(unlist(strsplit(sequences, split = "")))
+  alphabet <- getAlphabetFromCharacters(characters)
+  return(alphabet)
+}
+getAlphabetFromCharacters <- function(characters){
+  chars <- paste(sort(characters), collapse = "")
+  if(grepl(pattern = "^A?C?G?T?$", x = chars)){
+    return(DNA)
+  } else if(grepl(pattern = "^A?C?G?U?$", x = chars)){
+    return(DNA)
+  } else
+    return(ASN)
+}
+
+getPwmFromFile <- function(filename){
+  extension <- tolower(file_ext(filename))
+  #fileContent <- readLines(con = filename)
+  
+  pwm <- NULL
+  if(extension == "fa" || extension == "fasta")
+    pwm <- getPwmFromFastaFile(filename)
+  if(extension == "txt" || extension == "text" || extension == "al" || extension == "alignment")
+    pwm <- getPwmFromAlignmentFile(filename)
+  if(extension == "pwm")
+    pwm <- getPwmFromPwmFile(filename)
+  if(extension == "pfm")
+    pwm <- getPwmFromPfmOrJasperFile(filename)
+  if(extension == "motif")
+    pwm <- getPwmFromHomerFile(filename)
+  
+  if(is.null(pwm))
+    stop(paste("The file extension", extension, "is not supported."))
+  
+  return(pwm)
+}
+
+getPwmFromFastaFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
     close(connection);
     lines = lines[grep("^[^>]",lines)]
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
-    return(lines);
+    
+    pwm <- getPwmFromAlignment(alignment = lines, alphabet = getAlphabetFromSequences(lines), pseudoCount = 0)
+    return(pwm);
 }
 
-getSequencesFromAlignmentFile = function(filename) {
+getPwmFromAlignmentFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
     close(connection);
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
-    return(lines);
+    
+    pwm <- getPwmFromAlignment(alignment = lines, alphabet = getAlphabetFromSequences(lines), pseudoCount = 0)
+    return(pwm);
 }
 
 getPwmFromPwmFile = function(filename) {
@@ -69,7 +110,7 @@ getPwmFromPwmFile = function(filename) {
     return(pwm);
 }
 
-getPwmFromPfmFile = function(filename) {
+getPwmFromPfmOrJasperFile = function(filename) {
     lines = readLines(filename);
     # replace all whitespaces by one " "
     lines = gsub("\\s+", " ", lines);
