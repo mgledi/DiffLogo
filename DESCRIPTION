@@ -32,3 +32,5 @@ Collate:
     'seqLogo.R'
     'stackHeights.R'
     'utilities.R'
+    'diffSeqLogoSupport.R'
+    'pwmAlignment.R'
