@@ -47,10 +47,10 @@ createDiffLogoObject = function (pwm1, pwm2,
     if (align_pwms) {
         alignment = localPwmAlignment(
             pwm1, pwm2,
-            divergence= stackHeight,
-            unaligned_penalty= unaligned_penalty,
-            try_reverse_complement= T,
-            base_distribution= base_distribution,
+            divergence = stackHeight,
+            unaligned_penalty = unaligned_penalty,
+            try_reverse_complement = try_reverse_complement && alphabet$supportReverseComplement,
+            base_distribution = base_distribution,
             length_normalization = length_normalization);
         aligned_extended_pwms = extendPwmsFromAlignmentVector(list(pwm1, pwm2), alignment$vector, base_distribution);        
         unaligned_from_left = max(alignment$vector[[1]]$shift, alignment$vector[[2]]$shift);

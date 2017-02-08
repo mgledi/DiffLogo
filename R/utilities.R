@@ -50,28 +50,28 @@ getPwmFromAlignment = function(alignment, alphabet=NULL, pseudoCount=0) {
 
 ##' @export
 getAlphabetFromSequences <- function(sequences){
-  characters <- unique(unlist(strsplit(sequences, split = "")))
-  alphabet <- getAlphabetFromCharacters(characters)
-  return(alphabet)
+    characters <- unique(unlist(strsplit(sequences, split = "")))
+    alphabet <- getAlphabetFromCharacters(characters)
+    return(alphabet)
 }
 ##' @export
 getAlphabetFromCharacters <- function(characters){
-  chars <- paste(sort(characters), collapse = "")
+    chars <- paste(sort(characters), collapse = "")
   
-  dnaRegEx <- paste("^\\-?", paste(sort(DNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
-  rnaRegEx <- paste("^\\-?", paste(sort(RNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
-  asnRegEx <- paste("^\\-?", paste(sort(ASN$chars), "?", sep = "", collapse = ""), "$", sep = "")
+    dnaRegEx <- paste("^\\-?", paste(sort(DNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
+    rnaRegEx <- paste("^\\-?", paste(sort(RNA$chars), "?", sep = "", collapse = ""), "$", sep = "")
+    asnRegEx <- paste("^\\-?", paste(sort(ASN$chars), "?", sep = "", collapse = ""), "$", sep = "")
   
-  if(grepl(pattern = dnaRegEx, x = chars)){
-    return(DNA)
-  } else if(grepl(pattern = rnaRegEx, x = chars)){
-    return(DNA)
-  } else if(grepl(pattern = asnRegEx, x = chars)){
-    return(ASN)
-  } else{
-    warning(paste("Unrecognized alphabet (not DNA, RNA, or ASN):", chars))
-    return(FULL_ALPHABET)
-  }
+    if(grepl(pattern = dnaRegEx, x = chars)){
+        return(DNA)
+    } else if(grepl(pattern = rnaRegEx, x = chars)){
+        return(DNA)
+    } else if(grepl(pattern = asnRegEx, x = chars)){
+        return(ASN)
+    } else{
+        warning(paste("Unrecognized alphabet (not DNA, RNA, or ASN):", chars))
+        return(FULL_ALPHABET)
+    }
 }
 ##' @export
 getPwmFromFile <- function(filename){
@@ -97,33 +97,48 @@ getPwmFromFile <- function(filename){
     }
   )
   
-  if(!is.null(error))
+  if(!is.null(error)) {
     stop(paste("Could not parse file", basename(filename), ". Error:", error))
-  if(is.null(pwm))
+  }
+  if(is.null(pwm)) {
     stop(paste("The file extension", extension, "of file", basename(filename),"is not supported."))
+  }
   
   return(pwm)
 }
+
 ##' @export
-getPwmFromFastaFile = function(filename) {
+getSequencesFromFastaFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
     close(connection);
     lines = lines[grep("^[^>]",lines)]
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
-    
+    return(lines);
+}
+
+
+##' @export
+getPwmFromFastaFile = function(filename) {
+    lines = getSequencesFromFastaFile(filename);
     pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
+
 ##' @export
-getPwmFromAlignmentFile = function(filename) {
+getSequencesFromAlignmentFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
     close(connection);
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
-    
+    return(lines);
+}
+
+##' @export
+getPwmFromAlignmentFile = function(filename) {
+    lines = getSequencesFromAlignmentFile(filename);
     pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
