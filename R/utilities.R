@@ -68,8 +68,10 @@ getAlphabetFromCharacters <- function(characters){
     return(DNA)
   } else if(grepl(pattern = asnRegEx, x = chars)){
     return(ASN)
-  } else
-    stop(paste("Unrecognized alphabet:", chars))
+  } else{
+    warning(paste("Unrecognized alphabet (not DNA, RNA, or ASN):", chars))
+    return(FULL_ALPHABET)
+  }
 }
 ##' @export
 getPwmFromFile <- function(filename){
