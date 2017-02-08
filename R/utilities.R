@@ -15,11 +15,17 @@
 ##' file = system.file(fileName, package = "DiffLogo")
 ##' motif = getPwmFromAlignment(readLines(file), ASN, 1)
 ##' seqLogo(pwm = motif, alphabet=ASN)
-getPwmFromAlignment = function(alignment, alphabet, pseudoCount) {
+getPwmFromAlignment = function(alignment, alphabet=NULL, pseudoCount=0) {
+    if(is.null(alphabet))
+      alphabet <- getAlphabetFromSequences(alignment)
+    
     alphabetSize = alphabet$size
     alignmentLength = nchar(alignment[[1]])
     numberOfSequences = length(alignment)
-
+    
+    if(length(unique(unlist(lapply(X = alignment, FUN = nchar)))) > 1)
+      stop("Alignment comprises sequences with different lengths.")
+    
     pwm = matrix(nrow = alphabetSize, ncol = alignmentLength)
     colnames(pwm) = 1:alignmentLength
     rownames(pwm) = alphabet$chars
@@ -46,9 +52,9 @@ getAlphabetFromSequences <- function(sequences){
 }
 getAlphabetFromCharacters <- function(characters){
   chars <- paste(sort(characters), collapse = "")
-  if(grepl(pattern = "^A?C?G?T?$", x = chars)){
+  if(grepl(pattern = "^\\-?A?C?G?T?$", x = chars)){
     return(DNA)
-  } else if(grepl(pattern = "^A?C?G?U?$", x = chars)){
+  } else if(grepl(pattern = "^\\-A?C?G?U?$", x = chars)){
     return(DNA)
   } else
     return(ASN)
@@ -56,22 +62,31 @@ getAlphabetFromCharacters <- function(characters){
 
 getPwmFromFile <- function(filename){
   extension <- tolower(file_ext(filename))
-  #fileContent <- readLines(con = filename)
   
   pwm <- NULL
-  if(extension == "fa" || extension == "fasta")
-    pwm <- getPwmFromFastaFile(filename)
-  if(extension == "txt" || extension == "text" || extension == "al" || extension == "alignment")
-    pwm <- getPwmFromAlignmentFile(filename)
-  if(extension == "pwm")
-    pwm <- getPwmFromPwmFile(filename)
-  if(extension == "pfm")
-    pwm <- getPwmFromPfmOrJasperFile(filename)
-  if(extension == "motif")
-    pwm <- getPwmFromHomerFile(filename)
+  error <- NULL
+  tryCatch(
+    {
+      if(extension == "fa" || extension == "fasta")
+        pwm <- getPwmFromFastaFile(filename)
+      if(extension == "txt" || extension == "text" || extension == "al" || extension == "alignment")
+        pwm <- getPwmFromAlignmentFile(filename)
+      if(extension == "pwm")
+        pwm <- getPwmFromPwmFile(filename)
+      if(extension == "pfm")
+        pwm <- getPwmFromPfmOrJasperFile(filename)
+      if(extension == "motif")
+        pwm <- getPwmFromHomerFile(filename)
+    }, 
+    error = function(e) {
+      error <- e
+    }
+  )
   
+  if(!is.null(error))
+    stop(paste("Could not parse file", basename(filename), ". Error:", error))
   if(is.null(pwm))
-    stop(paste("The file extension", extension, "is not supported."))
+    stop(paste("The file extension", extension, "of file", basename(filename),"is not supported."))
   
   return(pwm)
 }
@@ -84,7 +99,7 @@ getPwmFromFastaFile = function(filename) {
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
     
-    pwm <- getPwmFromAlignment(alignment = lines, alphabet = getAlphabetFromSequences(lines), pseudoCount = 0)
+    pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
 
@@ -95,7 +110,7 @@ getPwmFromAlignmentFile = function(filename) {
     lines = lines[sapply(lines,nchar) > 0]; # remove empty lines
     lines = toupper(lines);
     
-    pwm <- getPwmFromAlignment(alignment = lines, alphabet = getAlphabetFromSequences(lines), pseudoCount = 0)
+    pwm <- getPwmFromAlignment(alignment = lines)
     return(pwm);
 }
 
