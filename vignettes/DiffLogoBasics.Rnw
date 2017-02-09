@@ -77,7 +77,7 @@ motifs_asn = list()
 for (name in motif_names_asn) {
   fileName = paste(motif_folder,"/",name,".fa",sep="")
   file = system.file(fileName, package = "DiffLogo")
-  motifs_asn[[name]] = getPwmFromFastaFile(file)
+  motifs_asn[[name]] = getPwmFromFastaFile(file, FULL_ALPHABET)
 }
 @
 

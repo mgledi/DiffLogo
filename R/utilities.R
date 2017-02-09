@@ -120,9 +120,9 @@ getSequencesFromFastaFile = function(filename) {
 
 
 ##' @export
-getPwmFromFastaFile = function(filename) {
+getPwmFromFastaFile = function(filename,alphabet=NULL) {
     lines = getSequencesFromFastaFile(filename);
-    pwm <- getPwmFromAlignment(alignment = lines)
+    pwm <- getPwmFromAlignment(alignment = lines, alphabet = alphabet)
     return(pwm);
 }
 
@@ -137,9 +137,9 @@ getSequencesFromAlignmentFile = function(filename) {
 }
 
 ##' @export
-getPwmFromAlignmentFile = function(filename) {
+getPwmFromAlignmentFile = function(filename,alphabet=NULL) {
     lines = getSequencesFromAlignmentFile(filename);
-    pwm <- getPwmFromAlignment(alignment = lines)
+    pwm <- getPwmFromAlignment(alignment = lines, alphabet = alphabet)
     return(pwm);
 }
 ##' @export

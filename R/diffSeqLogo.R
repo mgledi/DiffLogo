@@ -270,7 +270,7 @@ prepareDiffLogoTable = function (
     dim = length(PWMs);
     similarities = matrix(0,dim,dim);
     names = extractNames(PWMs);
-    diffLogoTable = list();
+    diffLogoTableObj = list();
     for ( i in 1:dim) {
         PWMs[[names[i]]] = preconditionTransformPWM(PWMs[[names[i]]],alphabet);
     }
@@ -333,25 +333,26 @@ prepareDiffLogoTable = function (
         hc$merge=opt$merge;
         hc$order=opt$order;
 
-        diffLogoTable$hc = hc;
-        leafOrder = diffLogoTable$hc$order;
+        diffLogoTableObj$hc = hc;
+        leafOrder = diffLogoTableObj$hc$order;
     }
-    diffLogoTable$diffLogoObjMatrix = diffLogoObjMatrix;
-    diffLogoTable$PWMs = PWMs;
-    diffLogoTable$leafOrder = leafOrder;
-    diffLogoTable$configuration = configuration;
-    diffLogoTable$alphabet = alphabet;
-    return (diffLogoTable);
+    diffLogoTableObj$diffLogoObjMatrix = diffLogoObjMatrix;
+    diffLogoTableObj$PWMs = PWMs;
+    diffLogoTableObj$leafOrder = leafOrder;
+    diffLogoTableObj$configuration = configuration;
+    diffLogoTableObj$alphabet = alphabet;
+    return (diffLogoTableObj);
 }
 
 ##' Draws a table of DiffLogos.
 ##'
 ##'
 drawDiffLogoTable = function (
-            diffLogoTable,
+            diffLogoTableObj,
             ...
 ) {
-    configuration        = diffLogoTable$configuration
+    alphabet             = diffLogoTableObj$alphabet
+    configuration        = diffLogoTableObj$configuration
     enableClustering     = configuration$enableClustering
     uniformYaxis         = configuration$uniformYaxis
     sparse               = configuration$sparse
@@ -360,8 +361,8 @@ drawDiffLogoTable = function (
     margin               = configuration$margin
     ratio                = configuration$ratio
 
-    PWMs = diffLogoTable$PWMs;
-    diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']];
+    PWMs = diffLogoTableObj$PWMs;
+    diffLogoObjMatrix = diffLogoTableObj[['diffLogoObjMatrix']];
 
     marDiffLogo = getMarginsSeqLogo(sparse);
     marSeqLogo = getMarginsSeqLogo(sparse);
@@ -373,7 +374,7 @@ drawDiffLogoTable = function (
     if(showSequenceLogosTop) {
         st = 0.5;
     }
-    orderedMotifs = names(diffLogoObjMatrix)[diffLogoTable$leafOrder];
+    orderedMotifs = names(diffLogoObjMatrix)[diffLogoTableObj$leafOrder];
     
     dim = length(orderedMotifs);
     similarities = matrix(0,dim,dim);
@@ -433,7 +434,7 @@ drawDiffLogoTable = function (
     # draw cluster tree
     if(treeHeight > 0 && enableClustering) {
         par(fig=c(0 + 0.5, dim - 0.5, dim + st, dim + st + treeHeight) / dimV * c(1-margin,1-margin,1-margin*ratio,1-margin*ratio) + c(margin,margin,margin*ratio,margin*ratio), new=TRUE, mar=c(.0,.0,.1,.0))
-        plot(diffLogoTable$hc, xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n", labels=rep("",dim), main="" )
+        plot(diffLogoTableObj$hc, xaxt="n",yaxt="n",xaxs="i",yaxs="i",bty="n", labels=rep("",dim), main="" )
     }
 
     # add names
@@ -476,6 +477,6 @@ diffLogoTable = function (
     if(is.null(names(PWMs))) {
       names(PWMs) = sapply((1:length(PWMs)), toString)
     }
-    diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration,...);
-    drawDiffLogoTable(diffLogoTable, ... );
+    diffLogoTableObj = prepareDiffLogoTable(PWMs,alphabet,configuration,...);
+    drawDiffLogoTable(diffLogoTableObj, ... );
 }
