@@ -44,7 +44,7 @@ pwm1 <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1, 18:2] ## trim and reverse
 pwm2 <- list$"Hsapiens-jolma2013-CTCF"
 
 ## DiffLogo can also handle motifs of different length
-pwm_long <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1] ## reverse complement
+pwm_long <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1,] ## reverse complement
 pwm_short <- list$"Hsapiens-jolma2013-CTCF"
 @
 
@@ -133,7 +133,7 @@ diffLogoTable(PWMs = motifs_dna)
 ## plot table of difference logos for E-Box motifs (DNA)
 diffLogoTable(PWMs = motifs_dna2)
 ## plot table of difference logos for F-Box motifs (ASN)
-diffLogoTable(PWMs = motifs_asn, alphabet = ASN)
+diffLogoTable(PWMs = motifs_asn, alphabet = FULL_ALPHABET)
 @
 
 
@@ -144,7 +144,7 @@ The user is able to export the generated visualizations in various formats. Plea
 <<Export>>=
 ## parameters
 widthToHeightRatio = 16/10;
-size = length(motifs) * 2
+size = length(motifs_dna) * 2
 resolution <- 300
 width <- size * widthToHeightRatio
 height <- size
@@ -160,7 +160,7 @@ fileName <- "Comparison_of_multiple_motifs.png"
 png(
   filename = fileName, res = resolution,
   width = width * resolution, height = height * resolution)
-diffLogoTable(PWMs = motifs)
+diffLogoTable(PWMs = motifs_dna)
 dev.off()
 @
 
