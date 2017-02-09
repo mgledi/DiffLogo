@@ -92,6 +92,7 @@ localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence, 
         result_divergence = alignment$divergence
         best_divergence = alignment$divergence
     }
+    
     if (try_reverse_complement) {
         alignment = findBestShiftForPwms(pwm_left, revCompPwm(pwm_right),
                                          divergence=divergence,
@@ -269,31 +270,32 @@ reverseAlignmentVector = function(alignment_vector, pwms) {
 ##' @export
 ##' @exportClass DiffLogo
 ##' @author Lando Andrey
-alignPwmSets = function(left_pwms_set, left_alignment, right_pwms_set, right_alignment) {
+alignPwmSets = function(left_pwms_set, left_alignment, right_pwms_set, right_alignment, try_reverse_complement) {
     stopifnot(length(left_pwms_set)==length(left_alignment$vector))
     stopifnot(length(right_pwms_set)==length(right_alignment$vector))
     result = list()
     best_divergence = Inf
-    alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment,
-                                        right_pwms_set, right_alignment)
+    alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment, right_pwms_set, right_alignment)
     if (alignment$divergence < best_divergence) {
        result = alignment
        best_divergence = alignment$divergence
     }
 
-    alignment = findBestShiftForPwmSets(right_pwms_set, right_alignment,
-                                        left_pwms_set, left_alignment)
+    alignment = findBestShiftForPwmSets(right_pwms_set, right_alignment, left_pwms_set, left_alignment)
     if (alignment$divergence < best_divergence) {
        best_divergence = alignment$divergence
        result$vector = c(alignment$vector[(length(right_pwms_set)+1):(length(alignment$vector))],
                             alignment$vector[1:length(right_pwms_set)])
        result$divergence = best_divergence
     }
-    right_alignment$vector = reverseAlignmentVector(right_alignment$vector, right_pwms_set)
-    alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment, right_pwms_set, right_alignment)
-    if (alignment$divergence < best_divergence) {
-       result = alignment
-       best_divergence = alignment$divergence
+
+    if(try_reverse_complement) {
+      right_alignment$vector = reverseAlignmentVector(right_alignment$vector, right_pwms_set)
+      alignment = findBestShiftForPwmSets(left_pwms_set, left_alignment, right_pwms_set, right_alignment)
+      if (alignment$divergence < best_divergence) {
+         result = alignment
+         best_divergence = alignment$divergence
+      }
     }
 
     alignment = findBestShiftForPwmSets(right_pwms_set, right_alignment, left_pwms_set, left_alignment)
@@ -358,28 +360,28 @@ minimumMatrixElementIndexes = function(matrix) {
     return(list(first_index, second_index))
 }
 
-addLastTreeNodeToDistanceMatrix = function(distance_matrix, tree_nodes) {
+addLastTreeNodeToDistanceMatrix = function(distance_matrix, tree_nodes, try_reverse_complement) {
     distance_matrix = cbind(distance_matrix, rep(Inf, ncol(distance_matrix)))
     distance_matrix = rbind(distance_matrix, rep(Inf, ncol(distance_matrix)))
     last = ncol(distance_matrix)
     if (last > 0) {
         for (i in 1:(last-1)) {
-            distance_matrix[[i, last]] = alignPwmSets(
-                tree_nodes[[last]]$pwms, tree_nodes[[last]]$pwms_alignment,
-                tree_nodes[[i]]$pwms,    tree_nodes[[i]]$pwms_alignment)$divergence
+            distance_matrix[[i, last]] = alignPwmSets( tree_nodes[[last]]$pwms, tree_nodes[[last]]$pwms_alignment,
+                tree_nodes[[i]]$pwms,tree_nodes[[i]]$pwms_alignment, try_reverse_complement)$divergence
         }
     }
     return(distance_matrix)
 }
 
-joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter) {
+joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter, try_reverse_complement) {
     min_pwm_row_col = minimumMatrixElementIndexes(distance_matrix)
     first_pwm_index = min_pwm_row_col[[1]]
     second_pwm_index = min_pwm_row_col[[2]]
     pwms_alignment = alignPwmSets(tree_nodes[[first_pwm_index]]$pwms,
                                   tree_nodes[[first_pwm_index]]$pwms_alignment,
                                   tree_nodes[[second_pwm_index]]$pwms,
-                                  tree_nodes[[second_pwm_index]]$pwms_alignment)
+                                  tree_nodes[[second_pwm_index]]$pwms_alignment,
+                                  try_reverse_complement)
     stopifnot(length(c(tree_nodes[[first_pwm_index]]$pwms, tree_nodes[[second_pwm_index]]$pwms)) == length(pwms_alignment$vector))
     tree_nodes = c(tree_nodes,
                    list(
@@ -398,12 +400,12 @@ joinTwoNodesInAlignmentTree = function(distance_matrix, tree_nodes, join_counter
     distance_matrix = matrix(distance_matrix[-c(first_pwm_index, second_pwm_index), -c(first_pwm_index, second_pwm_index)],
         nrow = nrow(distance_matrix)-2, ncol = ncol(distance_matrix)-2)
     if (ncol(distance_matrix) != 0) {
-        distance_matrix = addLastTreeNodeToDistanceMatrix(distance_matrix, tree_nodes)
+        distance_matrix = addLastTreeNodeToDistanceMatrix(distance_matrix, tree_nodes, try_reverse_complement)
     }
     return(list("distance_matrix"=distance_matrix, "tree_nodes"=tree_nodes))
 }
 
-alignmentTree = function(pwms, distance_matrix) {
+alignmentTree = function(pwms, distance_matrix, try_reverse_complement) {
     tree_nodes = list()
     for (i in 1:length(pwms)) {
         tree_nodes = c(tree_nodes,
@@ -420,7 +422,7 @@ alignmentTree = function(pwms, distance_matrix) {
     }
     join_counter = 1
     for (step in 1:(length(pwms)-1)) {
-        joined = joinTwoNodesInAlignmentTree(distance_matrix, tree_nodes, join_counter)
+        joined = joinTwoNodesInAlignmentTree(distance_matrix, tree_nodes, join_counter, try_reverse_complement)
         distance_matrix = joined$distance_matrix
         tree_nodes = joined$tree_nodes
         join_counter = join_counter+1
@@ -480,7 +482,7 @@ multipleLocalPwmsAlignment = function(
         try_reverse_complement=try_reverse_complement,
         base_distribution=base_distribution,
         length_normalization = length_normalization);
-    alignment_tree_nodes = alignmentTree(pwms, distance_matrix)
+    alignment_tree_nodes = alignmentTree(pwms, distance_matrix, try_reverse_complement)
     traversal_result = alignmentTreeLeftRightTriversal(alignment_tree_nodes)
     alignment_tree_nodes$pwms_alignment$vector = alignment_tree_nodes$pwms_alignment$vector[ sort.list( unlist( traversal_result$order))];
     alignment_length = 0;

@@ -264,10 +264,9 @@ prepareDiffLogoTable = function (
     baseDistribution       = configuration$baseDistribution
     multiple_align_pwms    = configuration$multiple_align_pwms
     align_pwms             = configuration$align_pwms
-    unaligned_penalty      = configuration$unaligned_penalty
-    try_reverse_complement = configuration$try_reverse_complement
+    unaligned_penalty      = configuration$unaligned_penalty;
+    try_reverse_complement = (configuration$try_reverse_complement && alphabet$supportReverseComplement)
     length_normalization   = configuration$length_normalization
-    
     dim = length(PWMs);
     similarities = matrix(0,dim,dim);
     names = extractNames(PWMs);
@@ -277,7 +276,7 @@ prepareDiffLogoTable = function (
     }
 
     if (multiple_align_pwms) {
-        multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs);
+        multiple_pwms_alignment = multipleLocalPwmsAlignment(PWMs, try_reverse_complement = try_reverse_complement);
         originalPwmLengths = lapply(PWMs, ncol);
         PWMs = extendPwmsFromAlignmentVector( PWMs, multiple_pwms_alignment$alignment$vector);
         stopifnot(dim==length(PWMs))
