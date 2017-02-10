@@ -150,7 +150,7 @@ getPwmFromPwmFile = function(filename) {
     tc = textConnection(lines);
     pwm = as.matrix(read.delim(tc, sep=" ", header=F));
     close(tc);
-    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    pwm = normalizePWM(pwm);
     return(pwm);
 }
 ##' @export
@@ -167,7 +167,7 @@ getPwmFromPfmOrJasparFile = function(filename) {
     tc = textConnection(lines);
     pwm = as.matrix(read.delim(tc, sep=" ", header=F));
     close(tc);
-    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    pwm = normalizePWM(pwm);
     return(pwm);
 }
 ##' @export
@@ -183,6 +183,15 @@ getPwmFromHomerFile = function(filename) {
 
     # transpose
     pwm = t(pwm); 
-    pwm = pwm / apply(pwm,2,sum); # normalize pwm
+    pwm = normalizePWM(pwm);
     return(pwm);
 }
+
+##' @export
+normalizePWM = function(pwm) {
+    for( i in 1:ncol(pwm)) {
+        pwm[,i] = pwm[,i] / sum(pwm[,i]);
+    }
+    return(pwm);
+}
+
