@@ -154,10 +154,16 @@ getPwmFromPwmFile = function(filename) {
     return(pwm);
 }
 ##' @export
-getPwmFromPfmOrJasperFile = function(filename) {
+getPwmFromPfmOrJasparFile = function(filename) {
     lines = readLines(filename);
+    lines = lines[grep("^[^>]",lines)]
     # replace all whitespaces by one " "
     lines = gsub("\\s+", " ", lines);
+    # remove ACGT
+    lines = gsub("[ACGT]", "", lines);    
+    # remove opening gap
+    lines = gsub("\\s+\\[", "", lines);
+    lines = gsub("\\s+\\]", "", lines);
     tc = textConnection(lines);
     pwm = as.matrix(read.delim(tc, sep=" ", header=F));
     close(tc);
