@@ -1,4 +1,4 @@
- ##' Default configuration list for diffLogoTable
+##' Default configuration list for diffLogoTable
 ##'
 ##' @title Configuration object for diffLogoTable
 ##' @param stackHeight function for the height of a stack at position i
@@ -110,4 +110,101 @@ baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NU
        base_distribution = rep(1.0/alphabet_length, each=alphabet_length)
     }
     return(matrix(rep(base_distribution, each=length, pwm_length), nrow=alphabet_length))
+}
+
+##' Calculates the p-value for the null-hypothesis that two given probability vectors p1, p2 calculated from n1/n2 observations arise from the same distribution
+##'
+##' @title p-value that two PWM-positions are from the same distribution
+##' @param p1 first probability vector with one probability for each symbol of the alphabet
+##' @param p2 second probability vector with one probability for each symbol of the alphabet
+##' @param n1 number of observations for the calculation of p1
+##' @param n2 number of observations for the calculation of p2
+##' @param stackHeight function for the calculation of a divergence measure for two probability vectors
+##' @param numberOfPermutations the number of permutations to perform for the calculation of stackHeights
+##' @param plotGammaDistributionFit if TRUE the fit of a gamma distribution to the sampled stackHeights is plotted
+##' @export
+##' @author Hendrik Treutler
+##' @examples
+##' p1 <- c(0.2, 0.3, 0.1, 0.4)
+##' p2 <- c(0.2, 0.1, 0.3, 0.4)
+##' n1 <- 100
+##' n2 <- 200
+##' numberOfPermutations = 100
+##' plotGammaDistributionFit = TRUE
+##' 
+##' pValue <- calculatePvalue(p1 = p1, p2 = p2, n1 = n1, n2 = n2, stackHeight = shannonDivergence, numberOfPermutations = numberOfPermutations, plotGammaDistributionFit = plotGammaDistributionFit)
+calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numberOfPermutations = 100, plotGammaDistributionFit = FALSE){
+  ############################################################################################
+  ## preconditions
+  preconditionVectorSameSize(p1, p2)
+  preconditionBaseDistribution(p1)
+  preconditionBaseDistribution(p2)
+  preconditionProbabilityVector(p1)
+  preconditionProbabilityVector(p2)
+  
+  if(any(is.na(n1), is.na(n2), is.null(n1), is.null(n2), !is.numeric(n1), !is.numeric(n2), n1<=0, n2<=0))
+    stop("Given counts are corrupt!")
+  
+  ############################################################################################
+  ## divergence to test
+  height <- stackHeight(p1 = p1, p2 = p2)
+  preconditionStackHeight(height)
+  observedDivergence <- height$height
+  
+  ############################################################################################
+  ## parameters
+  alphabet <- 1:length(p1)
+  p <- (p1+p2) / 2
+  
+  n <- n1 + n2
+  a <- as.integer(round(p * n))
+  
+  ############################################################################################
+  ## permutations
+  multiplier <- 1:length(alphabet)
+  seed <- sum((1/p1) * multiplier) * sum((1/p2) * multiplier)
+  set.seed(seed)
+  
+  symbols <- unlist(sapply(X = alphabet, FUN = function(x){rep(x = x, times = a[[x]])}))
+  classes <- c(rep(x = TRUE, times = n1), rep(x = FALSE, times = n2))
+  
+  divergences <- vector(mode = "numeric", length = numberOfPermutations)
+  for(idx in 1:numberOfPermutations){
+    symbols2 <- symbols[classes[sample(n)]]
+    a1 <- unlist(lapply(X = alphabet, FUN = function(x){sum(symbols2 == x)}))
+    a2 <- a - a1
+    divergences[[idx]] <- stackHeight(p1 = a1 / n1, p2 = a2 / n2)$height
+  }
+  maximumDivergence <- max(max(divergences) * 2, observedDivergence * 2)
+  
+  ############################################################################################
+  ## fit gamma distribution
+  med.gam <- mean(divergences)
+  var.gam <- var(divergences)
+  rate <- med.gam/var.gam
+  alpha <- ((med.gam)^2)/var.gam
+  scale <- 1/rate
+  
+  gammaDistX <- seq(from=0, to=maximumDivergence, length.out = 10000)
+  gammaDistY <- dgamma(x = gammaDistX, rate = rate, shape = alpha)
+  gammaDistY <- gammaDistY/sum(gammaDistY)
+  gammaDistYcum <- cumsum(gammaDistY)
+  
+  ############################################################################################
+  ## plot
+  if(plotGammaDistributionFit){
+    cumSumValuesX <- sort(divergences)
+    cumSumValuesY <- (1:numberOfPermutations) / numberOfPermutations
+    
+    plot(NA, xlim = c(0,maximumDivergence), ylim = c(0, 1), ylab = "p", xlab = "x", main = paste("p = (", paste(p, collapse = ","), "), n1 = ", n1, ", n2 = ", n2, ", ", nameOfMeasure, sep = ""))
+    lines(x = cumSumValuesX, y = cumSumValuesY, col = "blue")
+    lines(x = gammaDistX, y = gammaDistYcum, col = "green")
+    legend(x = max(divergences)/2, y = 0.3, legend = c("Empirisch", paste("Gamma, k=", round(rate, digits = 2), ", theta=", round(alpha, digits = 2), sep = "")), lty = c(1, 1), col = c("blue", "green"))
+  }
+  
+  ############################################################################################
+  ## p-value
+  pValue <- 1 - gammaDistYcum[[min(which(gammaDistX > observedDivergence))]]
+  
+  return(pValue)
 }

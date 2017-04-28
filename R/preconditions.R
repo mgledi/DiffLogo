@@ -1,7 +1,12 @@
 preconditionPWM = function(pwm) {
-    if (any(abs(1 - apply(pwm, 2, sum)) > 0.01)) { # check if the sum of each columns is near 1
-        stop("Columns of PWM must add up to 1.0")
-    }
+  if (any(abs(1 - apply(pwm, 2, sum)) > 0.01)) { # check if the sum of each columns is near 1
+    stop("Columns of PWM must add up to 1.0")
+  }
+}
+preconditionProbabilityVector = function(vec) {
+  if (abs(1 - sum(vec)) > 0.01) { # check if the sum of each columns is near 1
+    stop("Vector must add up to 1.0")
+  }
 }
 
 preconditionTransformPWM = function(pwm, alphabet) {
@@ -17,9 +22,14 @@ preconditionTransformPWM = function(pwm, alphabet) {
 }
 
 preconditionPWMSameSize = function(pwm1, pwm2) {
-    if(ncol(pwm1) != ncol(pwm2) || nrow(pwm1) != nrow(pwm2)) {  # check if the two PWMs have the same length
-        stop("The two given PWMs must have the same dimension");
-    }
+  if(ncol(pwm1) != ncol(pwm2) || nrow(pwm1) != nrow(pwm2)) {  # check if the two PWMs have the same length
+    stop("The two given PWMs must have the same dimension");
+  }
+}
+preconditionVectorSameSize = function(vec1, vec2) {
+  if(length(vec1) != length(vec2)) {  # check if the two vectors have the same length
+    stop("The two given vectors must have the same length");
+  }
 }
 
 preconditionStackHeight = function(h) {
