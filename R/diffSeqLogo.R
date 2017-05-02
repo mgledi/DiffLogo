@@ -381,7 +381,6 @@ drawDiffLogoTable = function (
 
     # Filling similarity matrix and computing y axes limits.
     # The order of motifs in diffLogoObjMatrix is the same as in orderedMotifs
-    print(diffLogoObjMatrix$leafOrder)
     for ( i in 1:dim) {
         for ( k in 1:dim) {
             motif_i = orderedMotifs[i];

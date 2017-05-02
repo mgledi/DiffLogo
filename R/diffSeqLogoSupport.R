@@ -112,6 +112,39 @@ baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NU
     return(matrix(rep(base_distribution, each=length, pwm_length), nrow=alphabet_length))
 }
 
+
+enrichDiffLogoTableWithPvalues <- function(diffLogoObjMatrix, sampleSizes, stackHeight=shannonDivergence, numberOfPermutations = 100 ) {
+  motifs = names(diffLogoObjMatrix);
+  dim = length(motifs);
+  for ( i in 1:dim) {
+    for ( k in 1:dim) {
+      motif_i = motifs[i];
+      motif_k = motifs[k];
+      if(!is.null(diffLogoObjMatrix[[motif_i]][[motif_k]])) {
+        diffLogoObjMatrix[[motif_i]][[motif_k]] = enrichDiffLogoObjectWithPvalues(
+                                                          diffLogoObjMatrix[[motif_i]][[motif_k]],
+                                                          sampleSizes[[motif_i]],
+                                                          sampleSizes[[motif_k]]
+                                                    );
+      }
+    }
+  }
+  return(diffLogoObjMatrix);
+}
+
+enrichDiffLogoObjectWithPvalues <- function(diffLogoObj, n1, n2, stackHeight=shannonDivergence, numberOfPermutations = 100) {
+    pwm1 = diffLogoObj$pwm1
+    pwm2 = diffLogoObj$pwm2
+    npos = ncol(diffLogoObj$pwm1);
+    pvals = rep(1,npos);
+    for (j in (diffLogoObj$unaligned_from_left+1):(npos - diffLogoObj$unaligned_from_right)) {
+      pvals[j] = calculatePvalue(pwm1[,j], pwm2[,j], n1, n2);
+    }
+    diffLogoObj$pvals = pvals;
+    return(diffLogoObj);
+} 
+
+
 ##' Calculates the p-value for the null-hypothesis that two given probability vectors p1, p2 calculated from n1/n2 observations arise from the same distribution
 ##'
 ##' @title p-value that two PWM-positions are from the same distribution
@@ -154,11 +187,12 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   ############################################################################################
   ## parameters
   alphabet <- 1:length(p1)
-  p <- (p1+p2) / 2
-  
-  n <- n1 + n2
-  a <- as.integer(round(p * n))
-  
+  p = (p1 + p2) / 2
+  n = n1 + n2
+  a = as.integer(round(p * n))
+  # the rounding can cause that sum(a) != n
+  n = sum(a);
+
   ############################################################################################
   ## permutations
   multiplier <- 1:length(alphabet)
@@ -166,13 +200,14 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   set.seed(seed)
   
   symbols <- unlist(sapply(X = alphabet, FUN = function(x){rep(x = x, times = a[[x]])}))
-  classes <- c(rep(x = TRUE, times = n1), rep(x = FALSE, times = n2))
-  
+  classes <- c(rep(x = TRUE, times = n1), rep(x = FALSE, times = n - n1))
+
   divergences <- vector(mode = "numeric", length = numberOfPermutations)
   for(idx in 1:numberOfPermutations){
-    symbols2 <- symbols[classes[sample(n)]]
-    a1 <- unlist(lapply(X = alphabet, FUN = function(x){sum(symbols2 == x)}))
-    a2 <- a - a1
+    newOrder = classes[sample(n)];
+    symbols2 = symbols[newOrder]
+    a1 = unlist(lapply(X = alphabet, FUN = function(x){sum(symbols2 == x)}))
+    a2 = a - a1
     divergences[[idx]] <- stackHeight(p1 = a1 / n1, p2 = a2 / n2)$height
   }
   maximumDivergence <- max(max(divergences) * 2, observedDivergence * 2)
