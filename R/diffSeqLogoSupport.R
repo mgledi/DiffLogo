@@ -174,15 +174,19 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   preconditionBaseDistribution(p2)
   preconditionProbabilityVector(p1)
   preconditionProbabilityVector(p2)
-  
+
+  if(all(p1==p2)) {
+    return(1);
+  }
+
   if(any(is.na(n1), is.na(n2), is.null(n1), is.null(n2), !is.numeric(n1), !is.numeric(n2), n1<=0, n2<=0))
     stop("Given counts are corrupt!")
   
   ############################################################################################
   ## divergence to test
-  height <- stackHeight(p1 = p1, p2 = p2)
+  height = stackHeight(p1 = p1, p2 = p2)
   preconditionStackHeight(height)
-  observedDivergence <- height$height
+  observedDivergence = height$height
   
   ############################################################################################
   ## parameters
@@ -196,7 +200,7 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   ############################################################################################
   ## permutations
   multiplier <- 1:length(alphabet)
-  seed <- sum((1/p1) * multiplier) * sum((1/p2) * multiplier)
+  seed <- sum((1 / (p1+1e-3)) * multiplier) * sum((1 / (p2+1e-3)) * multiplier)
   set.seed(seed)
   
   symbols <- unlist(sapply(X = alphabet, FUN = function(x){rep(x = x, times = a[[x]])}))
@@ -206,11 +210,12 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   for(idx in 1:numberOfPermutations){
     newOrder = classes[sample(n)];
     symbols2 = symbols[newOrder]
+
     a1 = unlist(lapply(X = alphabet, FUN = function(x){sum(symbols2 == x)}))
     a2 = a - a1
-    divergences[[idx]] <- stackHeight(p1 = a1 / n1, p2 = a2 / n2)$height
+    divergences[[idx]] = stackHeight(p1 = a1 / n1, p2 = a2 / n2)$height
   }
-  maximumDivergence <- max(max(divergences) * 2, observedDivergence * 2)
+  maximumDivergence = max(max(divergences) * 2, observedDivergence * 2)
   
   ############################################################################################
   ## fit gamma distribution
@@ -221,9 +226,13 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   scale <- 1/rate
   
   gammaDistX <- seq(from=0, to=maximumDivergence, length.out = 10000)
+
   gammaDistY <- dgamma(x = gammaDistX, rate = rate, shape = alpha)
-  gammaDistY <- gammaDistY/sum(gammaDistY)
-  gammaDistYcum <- cumsum(gammaDistY)
+  if(gammaDistY[1] == Inf) {
+    gammaDistY[1] = 0;
+  }
+  gammaDistY = gammaDistY / sum(gammaDistY)  
+  gammaDistYcum = cumsum(gammaDistY)
   
   ############################################################################################
   ## plot

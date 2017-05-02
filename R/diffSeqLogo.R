@@ -195,6 +195,26 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if (!is.null(diffLogoObj$unaligned_from_right) && diffLogoObj$unaligned_from_right>0) {
         rect(diffLogoObj$npos-diffLogoObj$unaligned_from_right+0.5, -ymin, diffLogoObj$npos+0.5, -ymax, col="gray", border="gray")
     }
+
+
+        print(diffLogoObj$pvals);
+    if(!is.null(diffLogoObj$pvals)) {
+        print(diffLogoObj$pvals);
+        leftOffset = 0;
+        if(!is.null(diffLogoObj$unaligned_from_left)) {
+            leftOffset = diffLogoObj$unaligned_from_left;
+        }
+        if(!is.null(diffLogoObj$unaligned_from_right)) {
+            rightOffset = diffLogoObj$unaligned_from_right;
+        }
+        npos = ncol(diffLogoObj$pwm1);
+        for (j in (leftOffset+1):(npos - rightOffset)) {
+            if( diffLogoObj$pvals[j] < 0.05  ) {
+                text(j, ymin, "*");
+            }
+        }
+    }
+    
     lines(c(0,diffLogoObj$npos), c(0,0) ) # the line at y = 0
 }
 
