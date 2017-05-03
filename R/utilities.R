@@ -88,7 +88,7 @@ getPwmFromFile <- function(filename){
       if(extension == "pwm")
         pwm <- getPwmFromPwmFile(filename)
       if(extension == "pfm")
-        pwm <- getPwmFromPfmOrJasperFile(filename)
+        pwm <- getPwmFromPfmOrJasparFile(filename)
       if(extension == "motif")
         pwm <- getPwmFromHomerFile(filename)
     }, 
