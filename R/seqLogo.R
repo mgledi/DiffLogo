@@ -16,7 +16,7 @@
 ##' file = system.file(fileName, package = "DiffLogo")
 ##' motif = getPwmFromPwmFile(file)
 ##' seqLogo(pwm = motif)
-seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA) { 
+seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationContent, baseDistribution=probabilities, alphabet=DNA, main=NULL) { 
     pwm = preconditionTransformPWM(pwm,alphabet);
     preconditionPWM(pwm);
 
@@ -50,9 +50,9 @@ seqLogo = function (pwm, sparse=FALSE, drawLines=0.5, stackHeight=informationCon
     }
     if(sparse) {
         plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)),xaxt="n", ylab="",
-        mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=FALSE,xlab="")
+        mgp=c(0, .35, 0),tck=-0.02, cex.axis=0.8, frame.plot=FALSE,xlab="", main=main)
     } else {
-        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=FALSE,xlab="Position")
+        plot(NA, xlim=c(0.5,x.pos), ylim=c(0,log2(alphabet$size)), xaxt="n", ylab=sh$ylab, frame.plot=FALSE,xlab="Position", main=main)
     }
 
     for(y in seq(0,log2(alphabet$size),drawLines)) {

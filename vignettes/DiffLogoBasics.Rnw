@@ -40,11 +40,11 @@ library(MotifDb)
 hitIndeces <- grep ('CTCF', values (MotifDb)$geneSymbol, ignore.case=TRUE)
 list    <- as.list(MotifDb[hitIndeces])
 
-pwm1 <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1, 18:2] ## trim and reverse complement
+pwm1 <- reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[, 2:18]) ## trim and reverse complement
 pwm2 <- list$"Hsapiens-jolma2013-CTCF"
 
 ## DiffLogo can also handle motifs of different length
-pwm_long <- list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[4:1,] ## reverse complement
+pwm_long <- reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1") ## reverse complement
 pwm_short <- list$"Hsapiens-jolma2013-CTCF"
 @
 
@@ -165,13 +165,21 @@ dev.off()
 @
 
 \section{PWMs alignment}
-User is able to get aligned PWMs:
+User is able to align a set of PWMs. Hanging ends are filled with an uniform distribution and details are given in the list from function \texttt{multipleLocalPwmsAlignment}.
 
+<<Alignment>>=
 ## align pwms and than plot seqLogo of them
-pwms = list(pwm1_long, pwm1, pwm2)
+pwms = list(pwm_long, pwm_short)
 multiple_pwms_alignment = multipleLocalPwmsAlignment(pwms)
-aligned_pwms = extendPwmsFromAlignmentVector(multiple_pwms_alignment$alignment$vector, pwms)
-seqLogo(aligned_pwms[[2]]) ## seqLogo of aligned pwm1
+aligned_pwms = extendPwmsFromAlignmentVector(pwms, multiple_pwms_alignment$alignment$vector)
+
+## seqLogo of aligned pwms
+layout(mat = matrix(data = 1:4, nrow = 2, ncol = 2))
+seqLogo(pwms[[1]], main = "Unaligned")
+seqLogo(pwms[[2]])
+seqLogo(aligned_pwms[[1]], main = "Aligned")
+seqLogo(aligned_pwms[[2]])
+@
 
 \section*{Literature}
 
