@@ -7,6 +7,7 @@
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet
+##' @param main the main title for the plot
 ##' @export
 ##' @author Martin Nettling
 ##' @examples

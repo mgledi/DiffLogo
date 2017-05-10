@@ -15,4 +15,3 @@ the alphabet of all 26 characters
 Hendrik Treutler
 }
 \keyword{datasets}
-

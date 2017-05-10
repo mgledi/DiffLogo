@@ -20,4 +20,3 @@ Returns alignment vector as if all pwm were reverted.
 \author{
 Lando Andrey
 }
-

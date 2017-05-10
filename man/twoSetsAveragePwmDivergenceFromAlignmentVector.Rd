@@ -28,4 +28,3 @@ Computes average pwm divergence from alignment vector for two datasets. This equ
 \author{
 Lando Andrey
 }
-

@@ -15,4 +15,3 @@ the RNA alphabet, i.e. A, C, G, U
 Martin Nettling
 }
 \keyword{datasets}
-

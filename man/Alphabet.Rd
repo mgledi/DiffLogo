@@ -23,4 +23,3 @@ DNA = Alphabet(c("A","C","G","T"),c("green4","blue","orange","red"),TRUE)
 \author{
 Martin Nettling
 }
-

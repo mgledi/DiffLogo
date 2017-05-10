@@ -27,4 +27,3 @@ Align two sets of pwms
 \author{
 Lando Andrey
 }
-

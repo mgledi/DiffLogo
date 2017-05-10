@@ -30,4 +30,3 @@ seqLogo(pwm = motif, alphabet=ASN)
 \author{
 Hendrik Treutler
 }
-

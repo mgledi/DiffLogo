@@ -19,4 +19,3 @@ float - sum of divergences
 \description{
 Counts PWM divergence as sum of divergencies of their columns.
 }
-

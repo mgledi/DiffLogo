@@ -15,4 +15,3 @@ the amino acid alphabet (20 symbols), i.e. A, C, D, E, F, G, H, I, K, L, M, N, P
 Martin Nettling
 }
 \keyword{datasets}
-

@@ -26,4 +26,3 @@ seqLogo(pwm = motif, stackHeight = sumProbabilities)
 \author{
 Martin Nettling
 }
-

@@ -11,4 +11,3 @@ switchDirection(direction)
 If 'forward' return 'reverse'
 If 'reverse' return 'forward'
 }
-

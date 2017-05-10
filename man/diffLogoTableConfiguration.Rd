@@ -10,7 +10,8 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
   enableClustering = TRUE, treeHeight = 0.5, margin = 0.02, ratio = 1,
   align_pwms = F, multiple_align_pwms = T,
   unaligned_penalty = divergencePenaltyForUnaligned,
-  try_reverse_complement = T, length_normalization = F)
+  try_reverse_complement = T, length_normalization = F,
+  calculatePvalues = F, numberOfPermutations = 100)
 }
 \arguments{
 \item{alphabet}{of type Alphabet}
@@ -41,6 +42,10 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
 
 \item{length_normalization}{if True, divergence between pwms is divided by length of pwms.}
 
+\item{calculatePvalues}{p-values for the significance of distribution differences}
+
+\item{numberOfPermutations}{number of permutations for the permutation test for the calculation of p-values}
+
 \item{...}{set of parameters passed to the function 'axis' for plotting}
 }
 \description{
@@ -52,4 +57,3 @@ diffLogoTableConfiguration(DNA)
 \author{
 Lando Andrey
 }
-

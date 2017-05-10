@@ -15,4 +15,3 @@ the DNA alphabet, i.e. A, C, G, T
 Martin Nettling
 }
 \keyword{datasets}
-

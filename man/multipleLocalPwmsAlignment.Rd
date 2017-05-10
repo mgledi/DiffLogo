@@ -31,4 +31,3 @@ Creates a multiple alignment of pwms
 \author{
 Lando Andrey
 }
-

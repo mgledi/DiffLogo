@@ -4,10 +4,15 @@
 \alias{diffLogoTable}
 \title{Draw DiffLogo-table}
 \usage{
-diffLogoTable(PWMs, alphabet = DNA, configuration = list(), ...)
+diffLogoTable(PWMs, sampleSizes = NULL, alphabet = DNA,
+  configuration = list(), ...)
 }
 \arguments{
 \item{PWMs}{a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix}
+
+\item{sampleSizes}{the number of sequences behind each PWM}
+
+\item{alphabet}{the alphabet of the given PWMs}
 
 \item{configuration}{list of (probably part of) of configuration options. See diffLogoTableConfiguration.}
 
@@ -31,4 +36,3 @@ diffLogoTable(motifs)
 \author{
 Martin Nettling
 }
-

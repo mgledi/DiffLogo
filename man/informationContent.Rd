@@ -26,4 +26,3 @@ seqLogo(pwm = motif, stackHeight = informationContent)
 \author{
 Martin Nettling
 }
-

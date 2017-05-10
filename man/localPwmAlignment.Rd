@@ -29,4 +29,3 @@ Finds best local alignment for two PWMs.
 \author{
 Lando Andrey
 }
-

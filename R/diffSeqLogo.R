@@ -197,9 +197,7 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     }
 
 
-        print(diffLogoObj$pvals);
     if(!is.null(diffLogoObj$pvals)) {
-        print(diffLogoObj$pvals);
         leftOffset = 0;
         if(!is.null(diffLogoObj$unaligned_from_left)) {
             leftOffset = diffLogoObj$unaligned_from_left;
@@ -257,7 +255,8 @@ diffLogoFromPwm = function (
                       sparse=FALSE, alphabet=DNA, align_pwms=F,
                       unaligned_penalty=divergencePenaltyForUnaligned,
                       try_reverse_complement=T, base_distribution=NULL,
-                      length_normalization = F) {
+                      length_normalization = F,
+                      calculatePvalues = F, n1=NULL, n2=NULL) {
     diffLogoObj = createDiffLogoObject(
                       pwm1, pwm2, stackHeight=stackHeight,
                       baseDistribution=baseDistribution,
@@ -266,14 +265,35 @@ diffLogoFromPwm = function (
                       unaligned_penalty=unaligned_penalty,
                       try_reverse_complement=try_reverse_complement,
                       base_distribution=NULL, length_normalization = length_normalization);
+    if(calculatePvalues)
+      diffLogoObj <- enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
     diffLogo(diffLogoObj, ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
 ##' Prepares a DiffLogoTable and generates an object that contains the hirarchical clustering and a matrix of prepared difference logos. 
 ##'
-##'
+##' @title Prepare a table of difflogo objects
+##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
+##' @param sampleSizes the number of sequences behind each PWM
+##' @param alphabet the alphabet of the given PWMs
+##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
+##' @export
+##' @author Martin Nettling
+##' @examples
+##' motif_folder= "extdata/pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = getPwmFromPwmFile(file)
+##' }
+##' sampleSizes <- c(100, 150, 200, 250)
+##' 
+##' diffLogoTableObj = prepareDiffLogoTable(motifs);
 prepareDiffLogoTable = function (
             PWMs,
+            sampleSizes=NULL,
             alphabet=DNA,
             configuration=list(),
             ...
@@ -287,6 +307,8 @@ prepareDiffLogoTable = function (
     unaligned_penalty      = configuration$unaligned_penalty;
     try_reverse_complement = (configuration$try_reverse_complement && alphabet$supportReverseComplement)
     length_normalization   = configuration$length_normalization
+    calculatePvalues       = configuration$calculatePvalues
+    numberOfPermutations   = configuration$numberOfPermutations
     dim = length(PWMs);
     similarities = matrix(0,dim,dim);
     names = extractNames(PWMs);
@@ -356,6 +378,9 @@ prepareDiffLogoTable = function (
         diffLogoTableObj$hc = hc;
         leafOrder = diffLogoTableObj$hc$order;
     }
+    if(calculatePvalues)
+      diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoObjMatrix, sampleSizes, stackHeight, numberOfPermutations)
+    
     diffLogoTableObj$diffLogoObjMatrix = diffLogoObjMatrix;
     diffLogoTableObj$PWMs = PWMs;
     diffLogoTableObj$leafOrder = leafOrder;
@@ -468,6 +493,8 @@ drawDiffLogoTable = function (
 ##'
 ##' @title Draw DiffLogo-table
 ##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
+##' @param sampleSizes the number of sequences behind each PWM
+##' @param alphabet the alphabet of the given PWMs
 ##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
 ##' @param ... set of parameters passed to the function 'axis' for plotting
 ##' @export
@@ -486,6 +513,7 @@ drawDiffLogoTable = function (
 ##' diffLogoTable(motifs)
 diffLogoTable = function (
             PWMs,
+            sampleSizes=NULL,
             alphabet=DNA,
             configuration=list(),
             ...
@@ -496,6 +524,6 @@ diffLogoTable = function (
     if(is.null(names(PWMs))) {
       names(PWMs) = sapply((1:length(PWMs)), toString)
     }
-    diffLogoTableObj = prepareDiffLogoTable(PWMs,alphabet,configuration,...);
+    diffLogoTableObj = prepareDiffLogoTable(PWMs,sampleSizes,alphabet,configuration,...);
     drawDiffLogoTable(diffLogoTableObj, ... );
 }

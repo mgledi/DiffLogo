@@ -26,4 +26,3 @@ seqLogo(pwm = motif, baseDistribution = probabilities)
 \author{
 Martin Nettling
 }
-

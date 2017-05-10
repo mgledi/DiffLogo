@@ -35,4 +35,3 @@ diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, stackHeight = sumOfAbsICDifferences)
 \author{
 Martin Nettling
 }
-

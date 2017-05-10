@@ -36,4 +36,3 @@ Creates a distance matrix for pwms
 \author{
 Lando Andrey
 }
-

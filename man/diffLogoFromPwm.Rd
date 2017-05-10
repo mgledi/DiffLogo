@@ -10,7 +10,7 @@ diffLogoFromPwm(pwm1, pwm2, ymin = 0, ymax = 0,
   alphabet = DNA, align_pwms = F,
   unaligned_penalty = divergencePenaltyForUnaligned,
   try_reverse_complement = T, base_distribution = NULL,
-  length_normalization = F)
+  length_normalization = F, calculatePvalues = F, n1 = NULL, n2 = NULL)
 }
 \arguments{
 \item{pwm1}{representation of the first position weight matrix (PWM) of type pwm, data.frame, or matrix}
@@ -60,4 +60,3 @@ diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 \author{
 Martin Nettling
 }
-

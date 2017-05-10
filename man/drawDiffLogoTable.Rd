@@ -9,4 +9,3 @@ drawDiffLogoTable(diffLogoTableObj, ...)
 \description{
 Draws a table of DiffLogos.
 }
-

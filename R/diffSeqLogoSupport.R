@@ -15,6 +15,8 @@
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param length_normalization if True, divergence between pwms is divided by length of pwms.
+##' @param calculatePvalues p-values for the significance of distribution differences
+##' @param numberOfPermutations number of permutations for the permutation test for the calculation of p-values
 ##' @param ... set of parameters passed to the function 'axis' for plotting
 ##' @export
 ##' @author Lando Andrey
@@ -35,7 +37,9 @@ diffLogoTableConfiguration = function(
 		multiple_align_pwms=T,
 		unaligned_penalty=divergencePenaltyForUnaligned,
 		try_reverse_complement=T,
-		length_normalization=F) {
+		length_normalization=F,
+		calculatePvalues=F,
+		numberOfPermutations=100) {
     if (!alphabet$supportReverseComplement) {
        try_reverse_complement = F;
     }
@@ -53,7 +57,9 @@ diffLogoTableConfiguration = function(
 		align_pwms=align_pwms,
 		unaligned_penalty=unaligned_penalty,
 		try_reverse_complement=try_reverse_complement && alphabet$supportReverseComplement,
-		length_normalization=length_normalization))
+		length_normalization=length_normalization,
+		calculatePvalues=calculatePvalues,
+		numberOfPermutations=numberOfPermutations))
 }
 
 getMarginsDiffLogo = function(sparse) {
@@ -112,8 +118,33 @@ baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NU
     return(matrix(rep(base_distribution, each=length, pwm_length), nrow=alphabet_length))
 }
 
-
+##' Enriches a matrix of difflogo objects with p-values which quantifies the probability that two PWM-positions are from the same distribution
+##'
+##' @title Enriches a matrix of difflogo objects with p-values
+##' @param diffLogoObjMatrix matrix of difflogo objects
+##' @param sampleSizes number of sequences behind the pwms behind the given difflogo objects
+##' @param stackHeight function for the calculation of a divergence measure for two probability vectors
+##' @param numberOfPermutations the number of permutations to perform for the calculation of stackHeights
+##' @export
+##' @author Martin Nettling
+##' @examples
+##' motif_folder= "extdata/pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = getPwmFromPwmFile(file)
+##' }
+##' sampleSizes <- c(100, 150, 200, 250)
+##' names(sampleSizes) <- motif_names
+##' 
+##' diffLogoTableObj = prepareDiffLogoTable(motifs);
+##' diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes)
 enrichDiffLogoTableWithPvalues <- function(diffLogoObjMatrix, sampleSizes, stackHeight=shannonDivergence, numberOfPermutations = 100 ) {
+  if(is.null(sampleSizes))
+    stop("No sample sizes given!")
+  
   motifs = names(diffLogoObjMatrix);
   dim = length(motifs);
   for ( i in 1:dim) {
@@ -138,7 +169,7 @@ enrichDiffLogoObjectWithPvalues <- function(diffLogoObj, n1, n2, stackHeight=sha
     npos = ncol(diffLogoObj$pwm1);
     pvals = rep(1,npos);
     for (j in (diffLogoObj$unaligned_from_left+1):(npos - diffLogoObj$unaligned_from_right)) {
-      pvals[j] = calculatePvalue(pwm1[,j], pwm2[,j], n1, n2);
+      pvals[j] = calculatePvalue(p1 = pwm1[,j], p2 = pwm2[,j], n1 = n1, n2 = n2, stackHeight = stackHeight, numberOfPermutations = numberOfPermutations);
     }
     diffLogoObj$pvals = pvals;
     return(diffLogoObj);
@@ -240,10 +271,10 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
     cumSumValuesX <- sort(divergences)
     cumSumValuesY <- (1:numberOfPermutations) / numberOfPermutations
     
-    plot(NA, xlim = c(0,maximumDivergence), ylim = c(0, 1), ylab = "p", xlab = "x", main = paste("p = (", paste(p, collapse = ","), "), n1 = ", n1, ", n2 = ", n2, ", ", nameOfMeasure, sep = ""))
+    plot(NA, xlim = c(0,maximumDivergence), ylim = c(0, 1), ylab = "p", xlab = "x", main = paste("p = (", paste(p, collapse = ","), "), n1 = ", n1, ", n2 = ", n2, sep = ""))
     lines(x = cumSumValuesX, y = cumSumValuesY, col = "blue")
     lines(x = gammaDistX, y = gammaDistYcum, col = "green")
-    legend(x = max(divergences)/2, y = 0.3, legend = c("Empirisch", paste("Gamma, k=", round(rate, digits = 2), ", theta=", round(alpha, digits = 2), sep = "")), lty = c(1, 1), col = c("blue", "green"))
+    legend(x = max(divergences)/2, y = 0.3, legend = c("Empiric", paste("Gamma, k=", round(rate, digits = 2), ", theta=", round(alpha, digits = 2), sep = "")), lty = c(1, 1), col = c("blue", "green"))
   }
   
   ############################################################################################

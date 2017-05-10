@@ -9,4 +9,3 @@ baseDistributionPwm(pwm_length, alphabet_length, base_distribution = NULL)
 \description{
 Generates a PWM consisting of only the uniform distribtuion or the given base_distribution (if defined).
 }
-

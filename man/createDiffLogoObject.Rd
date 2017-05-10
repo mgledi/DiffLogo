@@ -57,4 +57,3 @@ diffLogo(diffLogoObj)
 \author{
 Martin Nettling
 }
-
