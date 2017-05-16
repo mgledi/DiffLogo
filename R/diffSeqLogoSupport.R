@@ -38,28 +38,28 @@ diffLogoTableConfiguration = function(
 		unaligned_penalty=divergencePenaltyForUnaligned,
 		try_reverse_complement=T,
 		length_normalization=F,
-		calculatePvalues=F,
 		numberOfPermutations=100) {
-    if (!alphabet$supportReverseComplement) {
-       try_reverse_complement = F;
-    }
-    return(list(
-		uniformYaxis=uniformYaxis,
-		sparse=sparse,
-		showSequenceLogosTop=showSequenceLogosTop,
-		enableClustering=enableClustering,
-		treeHeight=treeHeight,
-		margin=margin,
-		ratio=ratio,
-		stackHeight=stackHeight,
-		baseDistribution=baseDistribution,
-		multiple_align_pwms=multiple_align_pwms,
-		align_pwms=align_pwms,
-		unaligned_penalty=unaligned_penalty,
-		try_reverse_complement=try_reverse_complement && alphabet$supportReverseComplement,
-		length_normalization=length_normalization,
-		calculatePvalues=calculatePvalues,
-		numberOfPermutations=numberOfPermutations))
+    #if (!alphabet$supportReverseComplement) {
+    #   try_reverse_complement = F;
+    #}
+    return(
+      list(
+    		uniformYaxis=uniformYaxis,
+    		sparse=sparse,
+    		showSequenceLogosTop=showSequenceLogosTop,
+    		enableClustering=enableClustering,
+    		treeHeight=treeHeight,
+    		margin=margin,
+    		ratio=ratio,
+    		stackHeight=stackHeight,
+    		baseDistribution=baseDistribution,
+    		multiple_align_pwms=multiple_align_pwms,
+    		align_pwms=align_pwms,
+    		unaligned_penalty=unaligned_penalty,
+    		try_reverse_complement=try_reverse_complement && alphabet$supportReverseComplement,
+    		length_normalization=length_normalization,
+    		numberOfPermutations=numberOfPermutations)
+    )
 }
 
 getMarginsDiffLogo = function(sparse) {

@@ -157,7 +157,7 @@ createDiffLogoObject = function (pwm1, pwm2,
 ##'
 ##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 ##' diffLogo(diffLogoObj)
-diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
+diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE, diffLogoConfiguration = list()) {
     if(class(diffLogoObj) != "DiffLogo") {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
         stop(msg)
@@ -195,7 +195,6 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE) {
     if (!is.null(diffLogoObj$unaligned_from_right) && diffLogoObj$unaligned_from_right>0) {
         rect(diffLogoObj$npos-diffLogoObj$unaligned_from_right+0.5, -ymin, diffLogoObj$npos+0.5, -ymax, col="gray", border="gray")
     }
-
 
     if(!is.null(diffLogoObj$pvals)) {
         leftOffset = 0;
@@ -255,8 +254,7 @@ diffLogoFromPwm = function (
                       sparse=FALSE, alphabet=DNA, align_pwms=F,
                       unaligned_penalty=divergencePenaltyForUnaligned,
                       try_reverse_complement=T, base_distribution=NULL,
-                      length_normalization = F,
-                      calculatePvalues = F, n1=NULL, n2=NULL) {
+                      length_normalization = F) {
     diffLogoObj = createDiffLogoObject(
                       pwm1, pwm2, stackHeight=stackHeight,
                       baseDistribution=baseDistribution,
@@ -265,8 +263,6 @@ diffLogoFromPwm = function (
                       unaligned_penalty=unaligned_penalty,
                       try_reverse_complement=try_reverse_complement,
                       base_distribution=NULL, length_normalization = length_normalization);
-    if(calculatePvalues)
-      diffLogoObj <- enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
     diffLogo(diffLogoObj, ymin=ymin, ymax=ymax, sparse=sparse)
 }
 
@@ -293,7 +289,6 @@ diffLogoFromPwm = function (
 ##' diffLogoTableObj = prepareDiffLogoTable(motifs);
 prepareDiffLogoTable = function (
             PWMs,
-            sampleSizes=NULL,
             alphabet=DNA,
             configuration=list(),
             ...
@@ -307,7 +302,6 @@ prepareDiffLogoTable = function (
     unaligned_penalty      = configuration$unaligned_penalty;
     try_reverse_complement = (configuration$try_reverse_complement && alphabet$supportReverseComplement)
     length_normalization   = configuration$length_normalization
-    calculatePvalues       = configuration$calculatePvalues
     numberOfPermutations   = configuration$numberOfPermutations
     dim = length(PWMs);
     similarities = matrix(0,dim,dim);
@@ -378,8 +372,6 @@ prepareDiffLogoTable = function (
         diffLogoTableObj$hc = hc;
         leafOrder = diffLogoTableObj$hc$order;
     }
-    if(calculatePvalues)
-      diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoObjMatrix, sampleSizes, stackHeight, numberOfPermutations)
     
     diffLogoTableObj$diffLogoObjMatrix = diffLogoObjMatrix;
     diffLogoTableObj$PWMs = PWMs;
@@ -524,6 +516,11 @@ diffLogoTable = function (
     if(is.null(names(PWMs))) {
       names(PWMs) = sapply((1:length(PWMs)), toString)
     }
-    diffLogoTableObj = prepareDiffLogoTable(PWMs,sampleSizes,alphabet,configuration,...);
+    diffLogoTableObj = prepareDiffLogoTable(PWMs, alphabet, configuration, ...);
+    print(sampleSizes)
+    if(!is.null(sampleSizes)) {
+      print("SampleSIzes")
+      diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, stackHeight, numberOfPermutations)
+    }
     drawDiffLogoTable(diffLogoTableObj, ... );
 }
