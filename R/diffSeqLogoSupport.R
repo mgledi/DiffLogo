@@ -231,7 +231,7 @@ calculatePvalue <- function(p1, p2, n1, n2, stackHeight=shannonDivergence, numbe
   ############################################################################################
   ## permutations
   multiplier <- 1:length(alphabet)
-  seed <- sum((1 / (p1+1e-3)) * multiplier) * sum((1 / (p2+1e-3)) * multiplier)
+  seed <- (sum((1 / (p1+1e-3)) * multiplier) * sum((1 / (p2+1e-3)) * multiplier)) %% 2147483647
   set.seed(seed)
   
   symbols <- unlist(sapply(X = alphabet, FUN = function(x){rep(x = x, times = a[[x]])}))
