@@ -123,7 +123,8 @@ diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 diffLogo(diffLogoObj)
 
 ## mark symbol stacks with significant changes
-diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2, calculatePvalues = T, n1 = n1, n2 = n2)
+diffLogoObj <- enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
+diffLogo(diffLogoObj)
 
 ## plot DiffLogo for PWMs of different length
 diffLogoFromPwm(pwm1 = pwm_long, pwm2 = pwm_short, align_pwms=T)
@@ -143,7 +144,7 @@ diffLogoTable(PWMs = motifs_dna2)
 ## plot table of difference logos for F-Box motifs (ASN)
 diffLogoTable(PWMs = motifs_asn, alphabet = FULL_ALPHABET)
 ## CTFC motifs (DNA) with asterisks to indicate significant differences
-diffLogoTable(PWMs = motifs_dna, sampleSizes = sampleSizes_dna, configuration = list("calculatePvalues"=T))
+diffLogoTable(PWMs = motifs_dna, sampleSizes = sampleSizes_dna)
 @
 
 
