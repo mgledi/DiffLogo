@@ -6,8 +6,8 @@
 \usage{
 multipleLocalPwmsAlignment(pwms, divergence = shannonDivergence,
   unaligned_penalty = divergencePenaltyForUnaligned,
-  try_reverse_complement = T, base_distribution = NULL,
-  length_normalization = F)
+  try_reverse_complement = TRUE, base_distribution = NULL,
+  length_normalization = FALSE)
 }
 \arguments{
 \item{pwms}{list of pwms}
@@ -20,13 +20,21 @@ multipleLocalPwmsAlignment(pwms, divergence = shannonDivergence,
 
 \item{base_distribution}{is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used}
 
-\item{stackHeight}{function for the height of a stack at position i}
+\item{length_normalization}{If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.}
 }
 \value{
 list
 }
 \description{
 Creates a multiple alignment of pwms
+}
+\examples{
+file1 = system.file("extdata/homer/Max.motif",   package = "DiffLogo")
+file2 = system.file("extdata/homer/c-Myc.motif", package = "DiffLogo")
+pwm1 = getPwmFromFile(file1)
+pwm2 = getPwmFromFile(file2)
+
+multiple_pwms_alignment = multipleLocalPwmsAlignment(list(pwm1, pwm2))
 }
 \author{
 Lando Andrey

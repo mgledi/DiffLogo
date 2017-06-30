@@ -37,19 +37,19 @@ PWMs can be represented as object of type pwm, data.frame, or matrix. The user i
 library(MotifDb)
 
 ## import motifs
-hitIndeces <- grep ('CTCF', values (MotifDb)$geneSymbol, ignore.case=TRUE)
-list    <- as.list(MotifDb[hitIndeces])
-sequenceCounts <- as.numeric(values (MotifDb)$sequenceCount[hitIndeces])
-names(sequenceCounts) <- names(list)
+hitIndeces = grep ('CTCF', values (MotifDb)$geneSymbol, ignore.case=TRUE)
+list    = as.list(MotifDb[hitIndeces])
+sequenceCounts = as.numeric(values (MotifDb)$sequenceCount[hitIndeces])
+names(sequenceCounts) = names(list)
 
-pwm1 <- reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[, 2:18]) ## trim and reverse complement
-pwm2 <- list$"Hsapiens-jolma2013-CTCF"
-n1 <- sequenceCounts["Hsapiens-JASPAR_CORE-CTCF-MA0139.1"]
-n2 <- sequenceCounts["Hsapiens-jolma2013-CTCF"]
+pwm1 = reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1"[, 2:18]) ## trim and reverse complement
+pwm2 = list$"Hsapiens-jolma2013-CTCF"
+n1 = sequenceCounts["Hsapiens-JASPAR_CORE-CTCF-MA0139.1"]
+n2 = sequenceCounts["Hsapiens-jolma2013-CTCF"]
 
 ## DiffLogo can also handle motifs of different length
-pwm_long <- reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1") ## reverse complement
-pwm_short <- list$"Hsapiens-jolma2013-CTCF"
+pwm_long = reverseComplement(list$"Hsapiens-JASPAR_CORE-CTCF-MA0139.1") ## reverse complement
+pwm_short = list$"Hsapiens-jolma2013-CTCF"
 @
 
 Here, we import two motifs from the transcription factor CTCF from package \emph{MotifDb} [3]. 
@@ -65,7 +65,7 @@ for (name in motif_names_dna) {
   file = system.file(fileName, package = "DiffLogo")
   motifs_dna[[name]] = getPwmFromPwmFile(file)
 }
-sampleSizes_dna <- c("H1-hESC"=100, "MCF7"=100, "HeLa-S3"=100, "HepG2"=100, "HUVEC"=100)
+sampleSizes_dna = c("H1-hESC"=100, "MCF7"=100, "HeLa-S3"=100, "HepG2"=100, "HUVEC"=100)
 ## import three DNA motifs from table
 motif_folder = "extdata/alignments"
 motif_names_dna2 = c("Mad", "Max", "Myc")
@@ -123,11 +123,11 @@ diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 diffLogo(diffLogoObj)
 
 ## mark symbol stacks with significant changes
-diffLogoObj <- enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
+diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
 diffLogo(diffLogoObj)
 
 ## plot DiffLogo for PWMs of different length
-diffLogoFromPwm(pwm1 = pwm_long, pwm2 = pwm_short, align_pwms=T)
+diffLogoFromPwm(pwm1 = pwm_long, pwm2 = pwm_short, align_pwms=TRUE)
 @
 
 
@@ -156,18 +156,18 @@ The user is able to export the generated visualizations in various formats. Plea
 ## parameters
 widthToHeightRatio = 16/10;
 size = length(motifs_dna) * 2
-resolution <- 300
-width <- size * widthToHeightRatio
-height <- size
+resolution = 300
+width = size * widthToHeightRatio
+height = size
 
 ## export single DiffLogo as pdf document
-fileName <- "Comparison_of_two_motifs.pdf"
+fileName = "Comparison_of_two_motifs.pdf"
 pdf(file = fileName, width = width, height = height)
 diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 dev.off()
 
 ## export DiffLogo table as png image
-fileName <- "Comparison_of_multiple_motifs.png"
+fileName = "Comparison_of_multiple_motifs.png"
 png(
   filename = fileName, res = resolution,
   width = width * resolution, height = height * resolution)

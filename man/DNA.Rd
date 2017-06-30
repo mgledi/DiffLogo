@@ -11,6 +11,9 @@ DNA
 \description{
 the DNA alphabet, i.e. A, C, G, T
 }
+\examples{
+DNA
+}
 \author{
 Martin Nettling
 }

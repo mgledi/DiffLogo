@@ -10,7 +10,9 @@
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
-##' @param If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @param length_normalization If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @param unaligned_from_left the number of unaligned positions on the left
+##' @param unaligned_from_right the number of unaligned positions on the right
 ##' @return DiffLogo object
 ##' @export
 ##' @exportClass DiffLogo
@@ -33,11 +35,11 @@
 createDiffLogoObject = function (pwm1, pwm2, 
                                  stackHeight=shannonDivergence,
                                  baseDistribution= normalizedDifferenceOfProbabilities,
-                                 alphabet=DNA, align_pwms=F,
+                                 alphabet=DNA, align_pwms=FALSE,
                                  unaligned_penalty=divergencePenaltyForUnaligned,
-                                 try_reverse_complement=T,
+                                 try_reverse_complement=TRUE,
                                  base_distribution=NULL,
-                                 length_normalization = F,
+                                 length_normalization = FALSE,
                                  unaligned_from_left = 0,
                                  unaligned_from_right = 0) {
     pwm1 = preconditionTransformPWM(pwm1,alphabet);
@@ -140,6 +142,8 @@ createDiffLogoObject = function (pwm1, pwm2,
 ##' @param ymin minimum value on the y-axis
 ##' @param ymax maximum value on the y-axis
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
+##' @param diffLogoConfiguration list of configuration parameters (see function diffLogoTableConfiguration(...))
+##' @return none (draws difference logo)
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -230,7 +234,8 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE, diffLogoConfigur
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
-##' @param If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @param length_normalization If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
+##' @return none (draws difference logo)
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -242,19 +247,19 @@ diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE, diffLogoConfigur
 ##'   file = system.file(fileName, package = "DiffLogo")
 ##'   motifs[[name]] = getPwmFromPwmFile(file)
 ##' }
-##'
+##' 
 ##' pwm1 = motifs[[motif_names[[1]]]]
 ##' pwm2 = motifs[[motif_names[[2]]]]
-##'
+##' 
 ##' diffLogoFromPwm(pwm1 = pwm1, pwm2 = pwm2)
 diffLogoFromPwm = function (
                       pwm1, pwm2, ymin=0, ymax=0,
                       stackHeight=shannonDivergence,
                       baseDistribution=normalizedDifferenceOfProbabilities,
-                      sparse=FALSE, alphabet=DNA, align_pwms=F,
+                      sparse=FALSE, alphabet=DNA, align_pwms=FALSE,
                       unaligned_penalty=divergencePenaltyForUnaligned,
-                      try_reverse_complement=T, base_distribution=NULL,
-                      length_normalization = F) {
+                      try_reverse_complement=TRUE, base_distribution=NULL,
+                      length_normalization = FALSE) {
     diffLogoObj = createDiffLogoObject(
                       pwm1, pwm2, stackHeight=stackHeight,
                       baseDistribution=baseDistribution,
@@ -270,9 +275,9 @@ diffLogoFromPwm = function (
 ##'
 ##' @title Prepare a table of difflogo objects
 ##' @param PWMs a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix
-##' @param sampleSizes the number of sequences behind each PWM
 ##' @param alphabet the alphabet of the given PWMs
 ##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
+##' @return matrix of difference logos
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -290,8 +295,7 @@ diffLogoFromPwm = function (
 prepareDiffLogoTable = function (
             PWMs,
             alphabet=DNA,
-            configuration=list(),
-            ...
+            configuration=list()
 ) {
     configuration        = modifyList(diffLogoTableConfiguration(alphabet), configuration)
     enableClustering     = configuration$enableClustering
@@ -383,7 +387,23 @@ prepareDiffLogoTable = function (
 
 ##' Draws a table of DiffLogos.
 ##'
+##' @title Draws a table of DiffLogos
+##' @param diffLogoTableObj the diffLogoTable-Object created by function prepareDiffLogoTable(...)
+##' @param ... optional parameters for functon axis
+##' @return none (draws difference logo)
+##' @export
+##' @examples
+##' motif_folder= "extdata/pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = getPwmFromPwmFile(file)
+##' }
 ##'
+##' diffLogoTableObj = prepareDiffLogoTable(motifs)
+##' drawDiffLogoTable(diffLogoTableObj)
 drawDiffLogoTable = function (
             diffLogoTableObj,
             ...
@@ -489,6 +509,7 @@ drawDiffLogoTable = function (
 ##' @param alphabet the alphabet of the given PWMs
 ##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
 ##' @param ... set of parameters passed to the function 'axis' for plotting
+##' @return none (draws table of difference logos)
 ##' @export
 ##' @importFrom cba order.optimal
 ##' @author Martin Nettling
@@ -516,11 +537,12 @@ diffLogoTable = function (
     if(is.null(names(PWMs))) {
       names(PWMs) = sapply((1:length(PWMs)), toString)
     }
+    
+    configuration        = modifyList(diffLogoTableConfiguration(alphabet), configuration)
     diffLogoTableObj = prepareDiffLogoTable(PWMs, alphabet, configuration, ...);
-    print(sampleSizes)
+    
     if(!is.null(sampleSizes)) {
-      print("SampleSIzes")
-      diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, stackHeight, numberOfPermutations)
+      diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, configuration$stackHeight, configuration$numberOfPermutations)
     }
     drawDiffLogoTable(diffLogoTableObj, ... );
 }

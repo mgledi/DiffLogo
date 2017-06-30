@@ -48,13 +48,29 @@ getPwmFromAlignment = function(alignment, alphabet=NULL, pseudoCount=0) {
     return(pwm);
 }
 
+##' returns the alphabet which fits to the given sequences
+##' 
+##' @title returns the alphabet which fits to the given sequences
+##' @param sequences a character vector of sequences
+##' @return an alphabet of type Alphabet
+##' 
 ##' @export
+##' @examples 
+##' alphabet = getAlphabetFromSequences("AACCGGTT")
 getAlphabetFromSequences <- function(sequences){
     characters <- unique(unlist(strsplit(sequences, split = "")))
     alphabet <- getAlphabetFromCharacters(characters)
     return(alphabet)
 }
+##' returns the alphabet which fits to the given characters
+##' 
+##' @title returns the alphabet which fits to the given characters
+##' @param characters a character vector of characters
+##' @return an alphabet of type Alphabet
+##' 
 ##' @export
+##' @examples 
+##' alphabet = getAlphabetFromSequences(c("A","A","C","C","G","G","T","T"))
 getAlphabetFromCharacters <- function(characters){
     chars <- paste(sort(characters), collapse = "")
   
@@ -73,7 +89,18 @@ getAlphabetFromCharacters <- function(characters){
         return(FULL_ALPHABET)
     }
 }
+##' Generates a pwm from a file of different formats. 
+##' Supported formats are FASTA files (.fa, .fasta), alignment files (.txt, .text, .al, .alignment), PWM files (.pwm), JASPAR / Position Frequency Matrix files (.pfm), and homer files (.motif).
+##' 
+##' @title generates a pwm from a file of different formats
+##' @param filename the file
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/pwm/H1-hESC.pwm"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromFile(file)
 getPwmFromFile <- function(filename){
   extension <- tolower(file_ext(filename))
   
@@ -107,7 +134,17 @@ getPwmFromFile <- function(filename){
   return(pwm)
 }
 
+##' extracts the sequences from a FASTA file
+##' 
+##' @title extracts the sequences from a FASTA file
+##' @param filename the FASTA file
+##' @return a vector of sequences
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/alignments/F-box_bacteria.seq.fa"
+##' file = system.file(fileName, package = "DiffLogo")
+##' sequences = getSequencesFromFastaFile(file)
 getSequencesFromFastaFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
@@ -119,14 +156,35 @@ getSequencesFromFastaFile = function(filename) {
 }
 
 
+##' generates a pwm from a FASTA file
+##' 
+##' @title generates a pwm from a FASTA file
+##' @param filename the FASTA file
+##' @param alphabet the desired alphabet of type Alphabet
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/alignments/F-box_bacteria.seq.fa"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromFastaFile(file)
 getPwmFromFastaFile = function(filename,alphabet=NULL) {
     lines = getSequencesFromFastaFile(filename);
     pwm <- getPwmFromAlignment(alignment = lines, alphabet = alphabet)
     return(pwm);
 }
 
+##' extracts the sequences from an alignment file
+##' 
+##' @title extracts the sequences from an alignment file
+##' @param filename the alignment file
+##' @return a vector of sequences
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/alignments/calamodulin_1.txt"
+##' file = system.file(fileName, package = "DiffLogo")
+##' sequences = getSequencesFromAlignmentFile(file)
 getSequencesFromAlignmentFile = function(filename) {
     connection = file(filename ,open="r");
     lines = as.vector(read.delim(connection)[,1]);
@@ -136,24 +194,57 @@ getSequencesFromAlignmentFile = function(filename) {
     return(lines);
 }
 
+##' generates a pwm from an alignment file
+##' 
+##' @title generates a pwm from an alignment file
+##' @param filename the alignment file
+##' @param alphabet the desired alphabet of type Alphabet
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/alignments/calamodulin_1.txt"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromAlignmentFile(file)
 getPwmFromAlignmentFile = function(filename,alphabet=NULL) {
     lines = getSequencesFromAlignmentFile(filename);
     pwm <- getPwmFromAlignment(alignment = lines, alphabet = alphabet)
     return(pwm);
 }
+
+##' generates a pwm from a pwm file
+##' 
+##' @title generates a pwm from a pwm file
+##' @param filename the pwm file
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/pwm/H1-hESC.pwm"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromPwmFile(file)
 getPwmFromPwmFile = function(filename) {
     lines = readLines(filename);
     # replace all whitespaces by one " "
     lines = gsub("\\s+", " ", lines);
     tc = textConnection(lines);
-    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
+    pwm = as.matrix(read.delim(tc, sep=" ", header=FALSE));
     close(tc);
     pwm = normalizePWM(pwm);
     return(pwm);
 }
+
+##' generates a pwm from a jaspar file
+##' 
+##' @title generates a pwm from a jaspar file
+##' @param filename the jaspar file
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/pfm/ctcf_jaspar.pfm"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromPfmOrJasparFile(file)
 getPwmFromPfmOrJasparFile = function(filename) {
     lines = readLines(filename);
     lines = lines[grep("^[^>]",lines)]
@@ -165,12 +256,23 @@ getPwmFromPfmOrJasparFile = function(filename) {
     lines = gsub("\\s+\\[", "", lines);
     lines = gsub("\\s+\\]", "", lines);
     tc = textConnection(lines);
-    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
+    pwm = as.matrix(read.delim(tc, sep=" ", header=FALSE));
     close(tc);
     pwm = normalizePWM(pwm);
     return(pwm);
 }
+
+##' generates a pwm from a homer file
+##' 
+##' @title generates a pwm from a homer file
+##' @param filename the homer file
+##' @return a pwm
+##' 
 ##' @export
+##' @examples 
+##' fileName = "extdata/homer/CTCF_Zf_CD4.motif"
+##' file = system.file(fileName, package = "DiffLogo")
+##' pwm = getPwmFromHomerFile(file)
 getPwmFromHomerFile = function(filename) {
     # First read lines
     lines = readLines(filename);
@@ -178,7 +280,7 @@ getPwmFromHomerFile = function(filename) {
     # replace all whitespaces by one " "
     lines = gsub("\\s+", " ", lines);
     tc = textConnection(lines);
-    pwm = as.matrix(read.delim(tc, sep=" ", header=F));
+    pwm = as.matrix(read.delim(tc, sep=" ", header=FALSE));
     close(tc);
 
     # transpose
@@ -187,7 +289,16 @@ getPwmFromHomerFile = function(filename) {
     return(pwm);
 }
 
+##' normalizes the given pwm to column-sums of 1.0
+##' 
+##' @title normalizes the given pwm
+##' @param pwm a pwm
+##' @return a normalized pwm
+##' 
 ##' @export
+##' @examples 
+##' pwm = matrix(1:40, nrow = 4, dimnames = list(c("A","C","G","T"), 1:10))
+##' pwm = normalizePWM(pwm)
 normalizePWM = function(pwm) {
     for( i in 1:ncol(pwm)) {
         pwm[,i] = pwm[,i] / sum(pwm[,i]);

@@ -2,10 +2,31 @@
 % Please edit documentation in R/diffSeqLogo.R
 \name{drawDiffLogoTable}
 \alias{drawDiffLogoTable}
-\title{Draws a table of DiffLogos.}
+\title{Draws a table of DiffLogos}
 \usage{
 drawDiffLogoTable(diffLogoTableObj, ...)
 }
+\arguments{
+\item{diffLogoTableObj}{the diffLogoTable-Object created by function prepareDiffLogoTable(...)}
+
+\item{...}{optional parameters for functon axis}
+}
+\value{
+none (draws difference logo)
+}
 \description{
 Draws a table of DiffLogos.
+}
+\examples{
+motif_folder= "extdata/pwm"
+motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+motifs = list()
+for (name in motif_names) {
+  fileName = paste(motif_folder,"/",name,".pwm",sep="")
+  file = system.file(fileName, package = "DiffLogo")
+  motifs[[name]] = getPwmFromPwmFile(file)
+}
+
+diffLogoTableObj = prepareDiffLogoTable(motifs)
+drawDiffLogoTable(diffLogoTableObj)
 }

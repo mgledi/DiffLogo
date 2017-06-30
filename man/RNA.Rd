@@ -11,6 +11,9 @@ RNA
 \description{
 the RNA alphabet, i.e. A, C, G, U
 }
+\examples{
+RNA
+}
 \author{
 Martin Nettling
 }

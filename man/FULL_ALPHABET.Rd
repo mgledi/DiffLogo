@@ -11,6 +11,9 @@ FULL_ALPHABET
 \description{
 the alphabet of all 26 characters
 }
+\examples{
+FULL_ALPHABET
+}
 \author{
 Hendrik Treutler
 }

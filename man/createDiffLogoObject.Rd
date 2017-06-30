@@ -6,9 +6,9 @@
 \usage{
 createDiffLogoObject(pwm1, pwm2, stackHeight = shannonDivergence,
   baseDistribution = normalizedDifferenceOfProbabilities, alphabet = DNA,
-  align_pwms = F, unaligned_penalty = divergencePenaltyForUnaligned,
-  try_reverse_complement = T, base_distribution = NULL,
-  length_normalization = F, unaligned_from_left = 0,
+  align_pwms = FALSE, unaligned_penalty = divergencePenaltyForUnaligned,
+  try_reverse_complement = TRUE, base_distribution = NULL,
+  length_normalization = FALSE, unaligned_from_left = 0,
   unaligned_from_right = 0)
 }
 \arguments{
@@ -30,7 +30,11 @@ createDiffLogoObject(pwm1, pwm2, stackHeight = shannonDivergence,
 
 \item{base_distribution}{is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used}
 
-\item{If}{true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.}
+\item{length_normalization}{If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.}
+
+\item{unaligned_from_left}{the number of unaligned positions on the left}
+
+\item{unaligned_from_right}{the number of unaligned positions on the right}
 }
 \value{
 DiffLogo object

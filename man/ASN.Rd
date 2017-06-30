@@ -11,6 +11,9 @@ ASN
 \description{
 the amino acid alphabet (20 symbols), i.e. A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y
 }
+\examples{
+ASN
+}
 \author{
 Martin Nettling
 }

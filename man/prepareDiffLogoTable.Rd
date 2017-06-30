@@ -4,17 +4,17 @@
 \alias{prepareDiffLogoTable}
 \title{Prepare a table of difflogo objects}
 \usage{
-prepareDiffLogoTable(PWMs, sampleSizes = NULL, alphabet = DNA,
-  configuration = list(), ...)
+prepareDiffLogoTable(PWMs, alphabet = DNA, configuration = list())
 }
 \arguments{
 \item{PWMs}{a list/vector of position weight matrices (PWMs) each of type pwm, data.frame, or matrix}
 
-\item{sampleSizes}{the number of sequences behind each PWM}
-
 \item{alphabet}{the alphabet of the given PWMs}
 
 \item{configuration}{list of (probably part of) of configuration options. See diffLogoTableConfiguration.}
+}
+\value{
+matrix of difference logos
 }
 \description{
 Prepares a DiffLogoTable and generates an object that contains the hirarchical clustering and a matrix of prepared difference logos.

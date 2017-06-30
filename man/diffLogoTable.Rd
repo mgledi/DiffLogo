@@ -18,6 +18,9 @@ diffLogoTable(PWMs, sampleSizes = NULL, alphabet = DNA,
 
 \item{...}{set of parameters passed to the function 'axis' for plotting}
 }
+\value{
+none (draws table of difference logos)
+}
 \description{
 Draws a table of DiffLogos.
 }

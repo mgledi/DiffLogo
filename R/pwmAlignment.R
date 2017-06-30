@@ -58,15 +58,16 @@ findBestShiftForPwms = function(static_pwm, shifted_pwm, divergence,  unaligned_
 ##' Finds best local alignment for two PWMs.
 ##'
 ##' @title Align pwms
-##' @param PWM is a matrix of type matrix
+##' @param pwm_left first PWM, a matrix of type matrix
+##' @param pwm_right first PWM, a matrix of type matrix
 ##' @param divergence is a measure of difference between two pwm columns. Smaller is more similar. If you want to use non-uniform background distribution, provide your own function.
 ##' @param unaligned_penalty distance for unaligned columns at edges of matrixes. See divergencePenaltyForUnaligned as an example for providing your own function
-##' @param try_reverse_complement If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG.
+##' @param try_reverse_complement If false the alignment will not be performed on reverse complements. If true, the input pwms should have column order of ACTG/ACGU.
+##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
 ##' @param length_normalization If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
-##' @export
 ##' @return list of length two containing the alignment and the divergence
 ##' @author Lando Andrey
-localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence, unaligned_penalty=divergencePenaltyForUnaligned, try_reverse_complement=T, base_distribution=NULL, length_normalization = F) {
+localPwmAlignment = function(pwm_left, pwm_right, divergence=shannonDivergence, unaligned_penalty=divergencePenaltyForUnaligned, try_reverse_complement=TRUE, base_distribution=NULL, length_normalization = FALSE) {
     no_change = list("shift"=0, "direction"="forward")
     result_alignment_vector = list()
     best_divergence = Inf
@@ -135,8 +136,18 @@ addAfter = function (matrix, to_add_length, base_distribution=NULL) {
 ##' @param pwms is a list of matrixes
 ##' @param alignment_vector is a list of shifts ($shift) and orientations ($direction)
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
+##' @return extended pwms
 ##' @export
 ##' @author Lando Andrey
+##' @examples 
+##' file1 = system.file("extdata/homer/Max.motif",   package = "DiffLogo")
+##' file2 = system.file("extdata/homer/c-Myc.motif", package = "DiffLogo")
+##' pwm1 = getPwmFromFile(file1)
+##' pwm2 = getPwmFromFile(file2)
+##' 
+##' pwms <- list(pwm1, pwm2)
+##' multiple_pwms_alignment = multipleLocalPwmsAlignment(pwms)
+##' aligned_pwms = extendPwmsFromAlignmentVector(pwms, multiple_pwms_alignment$alignment$vector)
 extendPwmsFromAlignmentVector = function(pwms, alignment_vector, base_distribution=NULL) {
     stopifnot(length(pwms)==length(alignment_vector))
     max_length = 0
@@ -161,7 +172,6 @@ extendPwmsFromAlignmentVector = function(pwms, alignment_vector, base_distributi
 ##' @param right_pwms_list is a list of matrixes
 ##' @param right_pwms_alignment is a list of shifts ($shift) and orientations ($direction)
 ##' @param divergence divergence measure.
-##' @export
 ##' @return float
 ##' @author Lando Andrey
 twoSetsAveragePwmDivergenceFromAlignmentVector = function(left_pwms_list,
@@ -219,15 +229,18 @@ findBestShiftForPwmSets = function(static_pwms_list, static_pwms_alignment,
     return(result)
 }
 
-##' If 'forward' return 'reverse'
-##' If 'reverse' return 'forward'
+##' Switches between 'forward' and 'reverse'
+##' 
+##' @title Switches between 'forward' and 'reverse'
+##' @param direction either 'forward' or 'reverse'
+##' @return either 'reverse' or 'forward'
 switchDirection = function(direction) {
     if (direction=='forward') {
        return('reverse')
     } else if (direction=='reverse') {
        return('forward')
     }
-    stopifnot(F);
+    stopifnot(FALSE);
 }
 
 ##' Returns alignment vector as if all pwm were reverted.
@@ -235,7 +248,6 @@ switchDirection = function(direction) {
 ##' @title Reverse for alignment vector
 ##' @param alignment_vector list of list which $shift and $orientation
 ##' @param pwms list of matrixes.
-##' @export
 ##' @return list - reversed alignment vector
 ##' @author Lando Andrey
 reverseAlignmentVector = function(alignment_vector, pwms) {
@@ -262,13 +274,11 @@ reverseAlignmentVector = function(alignment_vector, pwms) {
 ##'
 ##' @title Multiple PWMs alignment
 ##' @param left_pwms_set list of pwms(matrixes)
-##' @param left_aligment alignment of left_pwms_set. 
+##' @param left_alignment alignment of left_pwms_set. 
 ##' @param right_pwms_set list of pwms;
 ##' @param right_alignment alignment of right_pwms_set.
 ##' @param try_reverse_complement if true(default), also try reverse complement.
 ##' @return list - alignment of concatination of left_pwms_set and right_pwms_set
-##' @export
-##' @exportClass DiffLogo
 ##' @author Lando Andrey
 alignPwmSets = function(left_pwms_set, left_alignment, right_pwms_set, right_alignment, try_reverse_complement) {
     stopifnot(length(left_pwms_set)==length(left_alignment$vector))
@@ -319,16 +329,14 @@ alignPwmSets = function(left_pwms_set, left_alignment, right_pwms_set, right_ali
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
 ##' @param length_normalization is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
 ##' @return list
-##' @export
-##' @exportClass DiffLogo
 ##' @author Lando Andrey
 pwmsDistanceMatrix = function(pwms,
                               diagonal_value = 0,
                               bottom_default_value = NULL,
                               divergence=shannonDivergence,
                               unaligned_penalty=divergencePenaltyForUnaligned,
-                              try_reverse_complement=T, base_distribution=NULL,
-                              length_normalization = F){
+                              try_reverse_complement=TRUE, base_distribution=NULL,
+                              length_normalization = FALSE){
     distance_matrix = matrix(0, ncol=length(pwms), nrow=length(pwms))
     for (i in 1:(length(pwms)-1)) {
         distance_matrix[[i, i]] = diagonal_value
@@ -459,19 +467,25 @@ alignmentTreeLeftRightTriversal = function(node) {
 ##' @param divergence Divergence measure.
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
-##' @param stackHeight function for the height of a stack at position i
 ##' @param base_distribution is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used
-##' @return list
+##' @param length_normalization If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.
 ##' @export
-##' @exportClass DiffLogo
+##' @return list
 ##' @author Lando Andrey
+##' @examples 
+##' file1 = system.file("extdata/homer/Max.motif",   package = "DiffLogo")
+##' file2 = system.file("extdata/homer/c-Myc.motif", package = "DiffLogo")
+##' pwm1 = getPwmFromFile(file1)
+##' pwm2 = getPwmFromFile(file2)
+##' 
+##' multiple_pwms_alignment = multipleLocalPwmsAlignment(list(pwm1, pwm2))
 multipleLocalPwmsAlignment = function(
   pwms,
   divergence=shannonDivergence,
   unaligned_penalty=divergencePenaltyForUnaligned,
-  try_reverse_complement=T,
+  try_reverse_complement=TRUE,
   base_distribution=NULL,
-  length_normalization = F)
+  length_normalization = FALSE)
 {
     distance_matrix = pwmsDistanceMatrix(
         pwms,
@@ -491,7 +505,7 @@ multipleLocalPwmsAlignment = function(
     }
     return(list("alignment"=alignment_tree_nodes$pwms_alignment,
                 "order"=unlist(traversal_result$order),
-                "merge"=t(matrix(unlist(traversal_result$merge), 2, byrow=F)),
+                "merge"=t(matrix(unlist(traversal_result$merge), 2, byrow=FALSE)),
                 "height"=unlist(traversal_result$height),
                 "raw_tree"=list(alignment_tree_nodes),
                 "distance_matrix"=distance_matrix,

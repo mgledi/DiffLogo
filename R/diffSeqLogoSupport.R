@@ -11,13 +11,14 @@
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
 ##' @param alphabet of type Alphabet
-##' @param align_pwms if True, will align and extend pwms in each sell of diffLogoTable independently.
+##' @param align_pwms if True, will align and extend pwms in each cell of diffLogoTable independently.
+##' @param multiple_align_pwms if True, will align and extend pwms in the diffLogoTable jointly.
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param length_normalization if True, divergence between pwms is divided by length of pwms.
-##' @param calculatePvalues p-values for the significance of distribution differences
 ##' @param numberOfPermutations number of permutations for the permutation test for the calculation of p-values
 ##' @param ... set of parameters passed to the function 'axis' for plotting
+##' @return list of parameters
 ##' @export
 ##' @author Lando Andrey
 ##' @examples
@@ -33,11 +34,11 @@ diffLogoTableConfiguration = function(
 		treeHeight=0.5,
 		margin=0.02,
 		ratio=1,
-		align_pwms=F,
-		multiple_align_pwms=T,
+		align_pwms=FALSE,
+		multiple_align_pwms=TRUE,
 		unaligned_penalty=divergencePenaltyForUnaligned,
-		try_reverse_complement=T,
-		length_normalization=F,
+		try_reverse_complement=TRUE,
+		length_normalization=FALSE,
 		numberOfPermutations=100) {
     #if (!alphabet$supportReverseComplement) {
     #   try_reverse_complement = F;
@@ -110,7 +111,13 @@ pwmDivergence = function(pwm_left, pwm_right, divergence=shannonDivergence) {
     })));
 }
 
-##' Generates a PWM consisting of only the uniform distribtuion or the given base_distribution (if defined).
+##' Generates a PWM consisting of only the uniform distribution or the given base_distribution (if defined).
+##' 
+##' @title Generates a PWM
+##' @param pwm_length the number of positions
+##' @param alphabet_length the alphabet size
+##' @param base_distribution optional base distribution for each PWM position
+##' @return a PWM
 baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NULL) {
     if (is.null(base_distribution)) {
        base_distribution = rep(1.0/alphabet_length, each=alphabet_length)
@@ -125,6 +132,7 @@ baseDistributionPwm = function(pwm_length, alphabet_length, base_distribution=NU
 ##' @param sampleSizes number of sequences behind the pwms behind the given difflogo objects
 ##' @param stackHeight function for the calculation of a divergence measure for two probability vectors
 ##' @param numberOfPermutations the number of permutations to perform for the calculation of stackHeights
+##' @return matrix of difflogo objects enriched with p-values
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -163,6 +171,32 @@ enrichDiffLogoTableWithPvalues <- function(diffLogoObjMatrix, sampleSizes, stack
   return(diffLogoObjMatrix);
 }
 
+##' Enriches a difflogo object with p-values which quantifies the probability that two PWM-positions are from the same distribution
+##'
+##' @title Enriches a difflogo object with p-values
+##' @param diffLogoObj matrix of difflogo objects
+##' @param n1 the number of sequences behind the first pwm behind the given difflogo object
+##' @param n2 the number of sequences behind the second pwm behind the given difflogo object
+##' @param stackHeight function for the calculation of a divergence measure for two probability vectors
+##' @param numberOfPermutations the number of permutations to perform for the calculation of stackHeights
+##' @return enriched difflogo object
+##' @export
+##' @examples 
+##' motif_folder= "extdata/pwm"
+##' motif_names = c("HepG2","MCF7","HUVEC","ProgFib")
+##' motifs = list()
+##' for (name in motif_names) {
+##'   fileName = paste(motif_folder,"/",name,".pwm",sep="")
+##'   file = system.file(fileName, package = "DiffLogo")
+##'   motifs[[name]] = getPwmFromPwmFile(file)
+##' }
+##' 
+##' pwm1 = motifs[[motif_names[[1]]]]
+##' pwm2 = motifs[[motif_names[[2]]]]
+##' n1 <- 100
+##' n2 <- 100
+##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
+##' diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj, n1, n2)
 enrichDiffLogoObjectWithPvalues <- function(diffLogoObj, n1, n2, stackHeight=shannonDivergence, numberOfPermutations = 100) {
     pwm1 = diffLogoObj$pwm1
     pwm2 = diffLogoObj$pwm2
@@ -186,6 +220,7 @@ enrichDiffLogoObjectWithPvalues <- function(diffLogoObj, n1, n2, stackHeight=sha
 ##' @param stackHeight function for the calculation of a divergence measure for two probability vectors
 ##' @param numberOfPermutations the number of permutations to perform for the calculation of stackHeights
 ##' @param plotGammaDistributionFit if TRUE the fit of a gamma distribution to the sampled stackHeights is plotted
+##' @return a numeric p-value
 ##' @export
 ##' @author Hendrik Treutler
 ##' @examples

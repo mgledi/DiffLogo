@@ -7,10 +7,10 @@
 diffLogoFromPwm(pwm1, pwm2, ymin = 0, ymax = 0,
   stackHeight = shannonDivergence,
   baseDistribution = normalizedDifferenceOfProbabilities, sparse = FALSE,
-  alphabet = DNA, align_pwms = F,
+  alphabet = DNA, align_pwms = FALSE,
   unaligned_penalty = divergencePenaltyForUnaligned,
-  try_reverse_complement = T, base_distribution = NULL,
-  length_normalization = F, calculatePvalues = F, n1 = NULL, n2 = NULL)
+  try_reverse_complement = TRUE, base_distribution = NULL,
+  length_normalization = FALSE)
 }
 \arguments{
 \item{pwm1}{representation of the first position weight matrix (PWM) of type pwm, data.frame, or matrix}
@@ -37,7 +37,10 @@ diffLogoFromPwm(pwm1, pwm2, ymin = 0, ymax = 0,
 
 \item{base_distribution}{is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used}
 
-\item{If}{true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.}
+\item{length_normalization}{If true, will minimize the average divergence between PWMs. Otherwise will minimize the sum of divergences between positions. In both cases unalignes positions are compared to base_distribution and are counted when computing the alignment length.}
+}
+\value{
+none (draws difference logo)
 }
 \description{
 Draws the difference of two sequence logos.

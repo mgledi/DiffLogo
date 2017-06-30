@@ -4,7 +4,8 @@
 \alias{diffLogo}
 \title{Draw DiffLogo}
 \usage{
-diffLogo(diffLogoObj, ymin = 0, ymax = 0, sparse = FALSE)
+diffLogo(diffLogoObj, ymin = 0, ymax = 0, sparse = FALSE,
+  diffLogoConfiguration = list())
 }
 \arguments{
 \item{diffLogoObj}{a DiffLogoObject created by the function createDiffLogoObject}
@@ -14,6 +15,11 @@ diffLogo(diffLogoObj, ymin = 0, ymax = 0, sparse = FALSE)
 \item{ymax}{maximum value on the y-axis}
 
 \item{sparse}{if TRUE margins are reduced and tickmarks are removed from the logo}
+
+\item{diffLogoConfiguration}{list of configuration parameters (see function diffLogoTableConfiguration(...))}
+}
+\value{
+none (draws difference logo)
 }
 \description{
 Draws the difference of two sequence logos.

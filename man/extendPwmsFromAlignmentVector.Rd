@@ -14,8 +14,21 @@ extendPwmsFromAlignmentVector(pwms, alignment_vector,
 
 \item{base_distribution}{is a vector of length nrow(pwm) that is added to unaligned columns of pwms for comparing. If NULL, uniform distribution is used}
 }
+\value{
+extended pwms
+}
 \description{
 Extends pwms by adding base_distribution to both sides, so that they keep aligned, but have equal length.
+}
+\examples{
+file1 = system.file("extdata/homer/Max.motif",   package = "DiffLogo")
+file2 = system.file("extdata/homer/c-Myc.motif", package = "DiffLogo")
+pwm1 = getPwmFromFile(file1)
+pwm2 = getPwmFromFile(file2)
+
+pwms <- list(pwm1, pwm2)
+multiple_pwms_alignment = multipleLocalPwmsAlignment(pwms)
+aligned_pwms = extendPwmsFromAlignmentVector(pwms, multiple_pwms_alignment$alignment$vector)
 }
 \author{
 Lando Andrey

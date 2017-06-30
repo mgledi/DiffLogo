@@ -2,10 +2,20 @@
 % Please edit documentation in R/diffSeqLogoSupport.R
 \name{baseDistributionPwm}
 \alias{baseDistributionPwm}
-\title{Generates a PWM consisting of only the uniform distribtuion or the given base_distribution (if defined).}
+\title{Generates a PWM}
 \usage{
 baseDistributionPwm(pwm_length, alphabet_length, base_distribution = NULL)
 }
+\arguments{
+\item{pwm_length}{the number of positions}
+
+\item{alphabet_length}{the alphabet size}
+
+\item{base_distribution}{optional base distribution for each PWM position}
+}
+\value{
+a PWM
+}
 \description{
-Generates a PWM consisting of only the uniform distribtuion or the given base_distribution (if defined).
+Generates a PWM consisting of only the uniform distribution or the given base_distribution (if defined).
 }

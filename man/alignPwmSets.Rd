@@ -10,13 +10,13 @@ alignPwmSets(left_pwms_set, left_alignment, right_pwms_set, right_alignment,
 \arguments{
 \item{left_pwms_set}{list of pwms(matrixes)}
 
+\item{left_alignment}{alignment of left_pwms_set.}
+
 \item{right_pwms_set}{list of pwms;}
 
 \item{right_alignment}{alignment of right_pwms_set.}
 
 \item{try_reverse_complement}{if true(default), also try reverse complement.}
-
-\item{left_aligment}{alignment of left_pwms_set.}
 }
 \value{
 list - alignment of concatination of left_pwms_set and right_pwms_set

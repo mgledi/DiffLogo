@@ -15,6 +15,7 @@ Letter = function(x,y) {
 ##' @title built alphabet
 ##' @param chars set of symbols
 ##' @param cols set of colors; one for each symbol
+##' @param supportReverseComplement boolean whether the alphabet supports reverse complementation (like DNA/RNA) or not (like ASN)
 ##' @return the Alphabet object
 ##' @export
 ##' @exportClass Alphabet
@@ -221,6 +222,8 @@ if(FALSE){
 ##' @title DNA alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples 
+##' DNA
 DNA = Alphabet(
     c("A","C","G","T"),
     c("green4","blue","orange","red"),
@@ -232,6 +235,8 @@ DNA = Alphabet(
 ##' @title RNA alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples 
+##' RNA
 RNA = Alphabet(
     c("A","C","G","U"),
     c("green4","blue","orange","red"),
@@ -245,6 +250,8 @@ c1="Light green"; c2="Green"; c3="Dark green"; c4="Blue"; c5="violet"; c6="DarkB
 ##' @title ASN alphabet
 ##' @export
 ##' @author Martin Nettling
+##' @examples 
+##' ASN
 ASN = Alphabet(
     c("A","C","D","E","F","G","H","I","K","L","M","N","P","Q","R","S","T","V","W","Y"),
     c(c1, c2 ,c3, c3, c5, c1, c6, c4, c7, c4, c4, c3, c8, c3, c7, c9, c9, c4, c5, c5),
@@ -256,6 +263,8 @@ ASN = Alphabet(
 ##' @title Complete character alphabet
 ##' @export
 ##' @author Hendrik Treutler
+##' @examples 
+##' FULL_ALPHABET
 FULL_ALPHABET = Alphabet(
     c("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"),
     c(c1, c2 ,c3, c4, c5, c6, c7, c8, c1, c2, c3, c4, c5, c6, c7, c8, c1, c2, c3, c4, c5, c6, c7, c8, c1, c2),

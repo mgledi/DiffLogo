@@ -22,6 +22,9 @@ calculatePvalue(p1, p2, n1, n2, stackHeight = shannonDivergence,
 
 \item{plotGammaDistributionFit}{if TRUE the fit of a gamma distribution to the sampled stackHeights is plotted}
 }
+\value{
+a numeric p-value
+}
 \description{
 Calculates the p-value for the null-hypothesis that two given probability vectors p1, p2 calculated from n1/n2 observations arise from the same distribution
 }

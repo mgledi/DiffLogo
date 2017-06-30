@@ -8,6 +8,7 @@
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param alphabet of type Alphabet
 ##' @param main the main title for the plot
+##' @return none (draws sequence logo)
 ##' @export
 ##' @author Martin Nettling
 ##' @examples

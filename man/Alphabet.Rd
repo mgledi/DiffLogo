@@ -10,6 +10,8 @@ Alphabet(chars, cols, supportReverseComplement)
 \item{chars}{set of symbols}
 
 \item{cols}{set of colors; one for each symbol}
+
+\item{supportReverseComplement}{boolean whether the alphabet supports reverse complementation (like DNA/RNA) or not (like ASN)}
 }
 \value{
 the Alphabet object

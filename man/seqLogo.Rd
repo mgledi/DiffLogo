@@ -23,6 +23,9 @@ seqLogo(pwm, sparse = FALSE, drawLines = 0.5,
 
 \item{main}{the main title for the plot}
 }
+\value{
+none (draws sequence logo)
+}
 \description{
 Draws the classic sequence logo.
 }

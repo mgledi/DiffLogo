@@ -2,12 +2,16 @@
 % Please edit documentation in R/pwmAlignment.R
 \name{switchDirection}
 \alias{switchDirection}
-\title{If 'forward' return 'reverse'
-If 'reverse' return 'forward'}
+\title{Switches between 'forward' and 'reverse'}
 \usage{
 switchDirection(direction)
 }
+\arguments{
+\item{direction}{either 'forward' or 'reverse'}
+}
+\value{
+either 'reverse' or 'forward'
+}
 \description{
-If 'forward' return 'reverse'
-If 'reverse' return 'forward'
+Switches between 'forward' and 'reverse'
 }

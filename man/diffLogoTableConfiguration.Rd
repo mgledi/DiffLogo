@@ -8,10 +8,10 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
   baseDistribution = normalizedDifferenceOfProbabilities,
   uniformYaxis = TRUE, sparse = TRUE, showSequenceLogosTop = TRUE,
   enableClustering = TRUE, treeHeight = 0.5, margin = 0.02, ratio = 1,
-  align_pwms = F, multiple_align_pwms = T,
+  align_pwms = FALSE, multiple_align_pwms = TRUE,
   unaligned_penalty = divergencePenaltyForUnaligned,
-  try_reverse_complement = T, length_normalization = F,
-  calculatePvalues = F, numberOfPermutations = 100)
+  try_reverse_complement = TRUE, length_normalization = FALSE,
+  numberOfPermutations = 100)
 }
 \arguments{
 \item{alphabet}{of type Alphabet}
@@ -34,7 +34,9 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
 
 \item{ratio}{the ratio of the plot; this is needed to determine the margin sizes correctly}
 
-\item{align_pwms}{if True, will align and extend pwms in each sell of diffLogoTable independently.}
+\item{align_pwms}{if True, will align and extend pwms in each cell of diffLogoTable independently.}
+
+\item{multiple_align_pwms}{if True, will align and extend pwms in the diffLogoTable jointly.}
 
 \item{unaligned_penalty}{is a function for localPwmAlignment.}
 
@@ -42,11 +44,12 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
 
 \item{length_normalization}{if True, divergence between pwms is divided by length of pwms.}
 
-\item{calculatePvalues}{p-values for the significance of distribution differences}
-
 \item{numberOfPermutations}{number of permutations for the permutation test for the calculation of p-values}
 
 \item{...}{set of parameters passed to the function 'axis' for plotting}
+}
+\value{
+list of parameters
 }
 \description{
 Default configuration list for diffLogoTable

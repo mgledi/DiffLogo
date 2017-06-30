@@ -16,6 +16,9 @@ enrichDiffLogoTableWithPvalues(diffLogoObjMatrix, sampleSizes,
 
 \item{numberOfPermutations}{the number of permutations to perform for the calculation of stackHeights}
 }
+\value{
+matrix of difflogo objects enriched with p-values
+}
 \description{
 Enriches a matrix of difflogo objects with p-values which quantifies the probability that two PWM-positions are from the same distribution
 }
