@@ -15,17 +15,18 @@ Depends:
     R (>= 3.4),
     stats,
     cba
-Suggests:
-    knitr,
-    testthat,
-    seqLogo,
-    MotifDb,
+Imports:
     grDevices, 
     graphics, 
     utils, 
     tools
+Suggests:
+    knitr,
+    testthat,
+    seqLogo,
+    MotifDb
 VignetteBuilder: knitr
-Maintainer: Martin Nettling<martin.nettling@informatik.uni-halle.de>
+Maintainer: Hendrik Treutler<hendrik.treutler@gmail.com>
 Description: DiffLogo is an easy-to-use tool to visualize motif differences.
 License: GPL (>= 2)
 URL: https://github.com/mgledi/DiffLogo/
