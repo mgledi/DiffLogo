@@ -1,0 +1,18 @@
+citHeader("To cite the DiffLogo package in publications:")
+
+citEntry(entry="article",
+   author="M. Nettling, H. Treutler, J. Grau, J. Keilwagen, S. Posch, and I. Grosse",
+   title="DiffLogo: a comparative visualization of sequence motifs.",
+   journal="BMC bioinformatics",
+   year="2015",
+   volume="16",
+   issn = "1471--2105",
+   keywords = "logo, motif, sequence, tool",
+   pmid = "26577052",
+   url = "http://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-015-0767-x",
+   textVersion = paste("M. Nettling, H. Treutler, J. Grau, J. Keilwagen, S. Posch, and I. Grosse.",
+		       "DiffLogo: a comparative visualization of sequence motifs.",
+		       "BMC bioinformatics, 2015 Nov 17;16:387. doi: 10.1186/s12859-015-0767-x."))
+
+citFooter(paste(""))
+
