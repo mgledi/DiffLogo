@@ -10,11 +10,11 @@ preconditionProbabilityVector = function(vec) {
 }
 
 preconditionTransformPWM = function(pwm, alphabet) {
-    if (class(pwm) == "pwm") {
+    if (is(pwm, "pwm")) {
         return (pwm@pwm)
-    } else if (class(pwm) == "data.frame") {
+    } else if (is(pwm, "data.frame")) {
         return (as.matrix(pwm))
-    } else if (class(pwm) != "matrix") {
+    } else if (is(pwm, "matrix")) {
         print("pwm must be of class matrix or data.frame. Trying to convert")
         return (matrix(pwm,alphabet$size,length(pwm)/alphabet$size))
     }

@@ -163,7 +163,7 @@ createDiffLogoObject = function (pwm1, pwm2,
 ##' diffLogoObj = createDiffLogoObject(pwm1 = pwm1, pwm2 = pwm2)
 ##' diffLogo(diffLogoObj)
 diffLogo = function (diffLogoObj, ymin=0, ymax=0, sparse=FALSE, diffLogoConfiguration = list()) {
-    if(class(diffLogoObj) != "DiffLogo") {
+    if(!is(diffLogoObj, "DiffLogo")) {
         msg = paste("Expected DiffLogo, but got ", class(diffLogoObj), ". Use #createDiffLogoObject to get an DiffLogo from two PWMs.",sep="")
         stop(msg)
     }
