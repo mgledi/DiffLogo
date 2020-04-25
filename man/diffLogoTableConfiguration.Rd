@@ -7,14 +7,14 @@
 diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
   baseDistribution = normalizedDifferenceOfProbabilities,
   uniformYaxis = TRUE, sparse = TRUE, showSequenceLogosTop = TRUE,
-  enableClustering = TRUE, treeHeight = 0.5, margin = 0.02, ratio = 1,
-  align_pwms = FALSE, multiple_align_pwms = TRUE,
+  enableClustering = TRUE, treeHeight = 0.5, margin = 0.02,
+  ratio = 1, align_pwms = FALSE, multiple_align_pwms = TRUE,
   unaligned_penalty = divergencePenaltyForUnaligned,
   try_reverse_complement = TRUE, length_normalization = FALSE,
   numberOfPermutations = 100)
 }
 \arguments{
-\item{alphabet}{of type Alphabet}
+\item{alphabet}{used alphabet of type Alphabet}
 
 \item{stackHeight}{function for the height of a stack at position i}
 
@@ -45,8 +45,6 @@ diffLogoTableConfiguration(alphabet, stackHeight = shannonDivergence,
 \item{length_normalization}{if True, divergence between pwms is divided by length of pwms.}
 
 \item{numberOfPermutations}{number of permutations for the permutation test for the calculation of p-values}
-
-\item{...}{set of parameters passed to the function 'axis' for plotting}
 }
 \value{
 list of parameters

@@ -6,8 +6,8 @@
 \usage{
 diffLogoFromPwm(pwm1, pwm2, ymin = 0, ymax = 0,
   stackHeight = shannonDivergence,
-  baseDistribution = normalizedDifferenceOfProbabilities, sparse = FALSE,
-  alphabet = DNA, align_pwms = FALSE,
+  baseDistribution = normalizedDifferenceOfProbabilities,
+  sparse = FALSE, alphabet = DNA, align_pwms = FALSE,
   unaligned_penalty = divergencePenaltyForUnaligned,
   try_reverse_complement = TRUE, base_distribution = NULL,
   length_normalization = FALSE)

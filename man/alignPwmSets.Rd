@@ -4,8 +4,8 @@
 \alias{alignPwmSets}
 \title{Multiple PWMs alignment}
 \usage{
-alignPwmSets(left_pwms_set, left_alignment, right_pwms_set, right_alignment,
-  try_reverse_complement)
+alignPwmSets(left_pwms_set, left_alignment, right_pwms_set,
+  right_alignment, try_reverse_complement)
 }
 \arguments{
 \item{left_pwms_set}{list of pwms(matrixes)}

@@ -5,8 +5,9 @@
 \title{DiffLogo object}
 \usage{
 createDiffLogoObject(pwm1, pwm2, stackHeight = shannonDivergence,
-  baseDistribution = normalizedDifferenceOfProbabilities, alphabet = DNA,
-  align_pwms = FALSE, unaligned_penalty = divergencePenaltyForUnaligned,
+  baseDistribution = normalizedDifferenceOfProbabilities,
+  alphabet = DNA, align_pwms = FALSE,
+  unaligned_penalty = divergencePenaltyForUnaligned,
   try_reverse_complement = TRUE, base_distribution = NULL,
   length_normalization = FALSE, unaligned_from_left = 0,
   unaligned_from_right = 0)

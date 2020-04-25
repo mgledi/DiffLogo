@@ -4,8 +4,8 @@
 \alias{pwmsDistanceMatrix}
 \title{Multiple PWMs alignment}
 \usage{
-pwmsDistanceMatrix(pwms, diagonal_value = 0, bottom_default_value = NULL,
-  divergence = shannonDivergence,
+pwmsDistanceMatrix(pwms, diagonal_value = 0,
+  bottom_default_value = NULL, divergence = shannonDivergence,
   unaligned_penalty = divergencePenaltyForUnaligned,
   try_reverse_complement = TRUE, base_distribution = NULL,
   length_normalization = FALSE)

@@ -4,7 +4,8 @@
 \alias{baseDistributionPwm}
 \title{Generates a PWM}
 \usage{
-baseDistributionPwm(pwm_length, alphabet_length, base_distribution = NULL)
+baseDistributionPwm(pwm_length, alphabet_length,
+  base_distribution = NULL)
 }
 \arguments{
 \item{pwm_length}{the number of positions}

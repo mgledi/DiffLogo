@@ -102,7 +102,7 @@ getAlphabetFromCharacters <- function(characters){
 ##' file = system.file(fileName, package = "DiffLogo")
 ##' pwm = getPwmFromFile(file)
 getPwmFromFile <- function(filename){
-  extension <- tolower(file_ext(filename))
+  extension <- tolower(tools::file_ext(filename))
   
   pwm <- NULL
   error <- NULL
@@ -139,7 +139,7 @@ getPwmFromFile <- function(filename){
 ##' @title extracts the sequences from a FASTA file
 ##' @param filename the FASTA file
 ##' @return a vector of sequences
-##' 
+##' @importFrom utils read.delim
 ##' @export
 ##' @examples 
 ##' fileName = "extdata/alignments/F-box_bacteria.seq.fa"
@@ -179,7 +179,7 @@ getPwmFromFastaFile = function(filename,alphabet=NULL) {
 ##' @title extracts the sequences from an alignment file
 ##' @param filename the alignment file
 ##' @return a vector of sequences
-##' 
+##' @importFrom utils read.delim
 ##' @export
 ##' @examples 
 ##' fileName = "extdata/alignments/calamodulin_1.txt"
@@ -217,7 +217,7 @@ getPwmFromAlignmentFile = function(filename,alphabet=NULL) {
 ##' @title generates a pwm from a pwm file
 ##' @param filename the pwm file
 ##' @return a pwm
-##' 
+##' @importFrom utils read.delim
 ##' @export
 ##' @examples 
 ##' fileName = "extdata/pwm/H1-hESC.pwm"
@@ -239,7 +239,7 @@ getPwmFromPwmFile = function(filename) {
 ##' @title generates a pwm from a jaspar file
 ##' @param filename the jaspar file
 ##' @return a pwm
-##' 
+##' @importFrom utils read.delim
 ##' @export
 ##' @examples 
 ##' fileName = "extdata/pfm/ctcf_jaspar.pfm"
@@ -267,7 +267,7 @@ getPwmFromPfmOrJasparFile = function(filename) {
 ##' @title generates a pwm from a homer file
 ##' @param filename the homer file
 ##' @return a pwm
-##' 
+##' @importFrom utils read.delim
 ##' @export
 ##' @examples 
 ##' fileName = "extdata/homer/CTCF_Zf_CD4.motif"

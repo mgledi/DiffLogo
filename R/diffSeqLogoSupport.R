@@ -1,23 +1,22 @@
 ##' Default configuration list for diffLogoTable
 ##'
 ##' @title Configuration object for diffLogoTable
+##' @param alphabet used alphabet of type Alphabet
 ##' @param stackHeight function for the height of a stack at position i
 ##' @param baseDistribution function for the heights of the individual bases
 ##' @param uniformYaxis if TRUE each DiffLogo is plotted with the same scaling of the y-axis
 ##' @param sparse if TRUE margins are reduced and tickmarks are removed from the logo
 ##' @param showSequenceLogosTop if TRUE the classical sequence logos are drawn above each column of the table
-##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
 ##' @param enableClustering if TRUE the motifs are reordered, so that similar motifs have a small vertical and horizontal distance in the table
+##' @param treeHeight the height of the plotted cluster tree above the columns of the table; set equal to zero to omit the cluster tree
 ##' @param margin the space reseverved for labels
 ##' @param ratio the ratio of the plot; this is needed to determine the margin sizes correctly
-##' @param alphabet of type Alphabet
 ##' @param align_pwms if True, will align and extend pwms in each cell of diffLogoTable independently.
 ##' @param multiple_align_pwms if True, will align and extend pwms in the diffLogoTable jointly.
 ##' @param unaligned_penalty is a function for localPwmAlignment.
 ##' @param try_reverse_complement if True, alignment will try reverse complement pwms
 ##' @param length_normalization if True, divergence between pwms is divided by length of pwms.
 ##' @param numberOfPermutations number of permutations for the permutation test for the calculation of p-values
-##' @param ... set of parameters passed to the function 'axis' for plotting
 ##' @return list of parameters
 ##' @export
 ##' @author Lando Andrey
@@ -222,6 +221,8 @@ enrichDiffLogoObjectWithPvalues <- function(diffLogoObj, n1, n2, stackHeight=sha
 ##' @param plotGammaDistributionFit if TRUE the fit of a gamma distribution to the sampled stackHeights is plotted
 ##' @return a numeric p-value
 ##' @export
+##' @importFrom stats var dgamma
+##' @importFrom graphics plot lines legend
 ##' @author Hendrik Treutler
 ##' @examples
 ##' p1 <- c(0.2, 0.3, 0.1, 0.4)

@@ -145,6 +145,7 @@ createDiffLogoObject = function (pwm1, pwm2,
 ##' @param diffLogoConfiguration list of configuration parameters (see function diffLogoTableConfiguration(...))
 ##' @return none (draws difference logo)
 ##' @export
+##' @importFrom graphics plot axis polygon rect text lines
 ##' @author Martin Nettling
 ##' @examples
 ##' motif_folder= "extdata/pwm"
@@ -278,6 +279,9 @@ diffLogoFromPwm = function (
 ##' @param alphabet the alphabet of the given PWMs
 ##' @param configuration list of (probably part of) of configuration options. See diffLogoTableConfiguration.
 ##' @return matrix of difference logos
+##' @importFrom utils modifyList
+##' @importFrom stats dist
+##' @importFrom stats hclust
 ##' @export
 ##' @author Martin Nettling
 ##' @examples
@@ -391,6 +395,8 @@ prepareDiffLogoTable = function (
 ##' @param diffLogoTableObj the diffLogoTable-Object created by function prepareDiffLogoTable(...)
 ##' @param ... optional parameters for functon axis
 ##' @return none (draws difference logo)
+##' @importFrom grDevices colorRampPalette rgb
+##' @importFrom graphics plot.new par plot rect axis
 ##' @export
 ##' @examples
 ##' motif_folder= "extdata/pwm"
@@ -512,6 +518,7 @@ drawDiffLogoTable = function (
 ##' @return none (draws table of difference logos)
 ##' @export
 ##' @importFrom cba order.optimal
+##' @importFrom utils modifyList
 ##' @author Martin Nettling
 ##' @examples
 ##' motif_folder= "extdata/pwm"
